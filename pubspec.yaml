@@ -24,4 +24,6 @@ flutter:
         - asset: assets/fonts/Fredoka-Medium.ttf
         - asset: assets/fonts/Fredoka-Regular.ttf
         - asset: assets/fonts/Fredoka-SemiBold.ttf
+  assets:
+    - assets/images/logo.jpg
   uses-material-design: true

@@ -12,9 +12,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Fredoka'),
-      home: const Scaffold(
-        body: HeaderBar(title: "Hello world")
-      ),
+      home: Scaffold(
+        appBar: HeaderBar(headerTitle: "Hello world"),
+        ),
     );
   }
 }
