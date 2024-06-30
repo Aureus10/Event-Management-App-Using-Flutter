@@ -1,4 +1,4 @@
-import 'package:assignment/screens/splash.dart';
+import 'package:assignment/screens/splash_screen.dart';
 import 'package:assignment/widgets/bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +13,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Fredoka'),
-      //home: const SplashArt(),
-      home: Scaffold(bottomNavigationBar: BottomMenu(),)
+      home: const SplashArt(),
+      // home: const Scaffold(bottomNavigationBar: BottomMenu(),)
     );
   }
 }
