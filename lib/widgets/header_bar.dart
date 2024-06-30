@@ -10,7 +10,7 @@ class HeaderBar extends AppBar {
           title: Text(
             headerTitle,
             style: const TextStyle(
-              color: CustomizedColors.buttonFontColor,
+              color: CustomizedColors.fontColor,
               fontWeight: FontWeight.w600,
               fontSize: 32,
             ),

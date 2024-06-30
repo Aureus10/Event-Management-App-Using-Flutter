@@ -1,3 +1,4 @@
+import 'package:assignment/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class BottomMenu extends StatefulWidget {
@@ -32,10 +33,10 @@ class _BottomMenuState extends State<BottomMenu> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xFF444CB4),
-        unselectedItemColor: Colors.black,
+        selectedItemColor: CustomizedColors.selectedColor,
+        unselectedItemColor: CustomizedColors.disabledColor,
         onTap: _onSelected,
-        iconSize: 480,
+        //iconSize: 480,
         );
   }
 }

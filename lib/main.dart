@@ -13,9 +13,13 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'Fredoka'),
-      // home: const SplashArt(),
-      home: Scaffold(bottomNavigationBar: const BottomMenu(), appBar: HeaderBar(headerTitle: "hello world",),)
-    );
+        theme: ThemeData(fontFamily: 'Fredoka'),
+        // home: const SplashArt(),
+        home: Scaffold(
+          bottomNavigationBar: const BottomMenu(),
+          appBar: HeaderBar(
+            headerTitle: "hello world",
+          ),
+        ));
   }
 }
