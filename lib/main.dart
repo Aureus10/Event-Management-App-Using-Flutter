@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(fontFamily: 'Fredoka'),
       home: const SplashArt(),
-      // home: const Scaffold(bottomNavigationBar: BottomMenu(),)
+      // home: const Scaffold(bottomNavigationBar: BottomMenu(), appBar: HeaderBar())
     );
   }
 }

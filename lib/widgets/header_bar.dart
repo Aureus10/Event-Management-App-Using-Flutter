@@ -1,3 +1,4 @@
+import 'package:assignment/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class HeaderBar extends AppBar {
@@ -9,13 +10,13 @@ class HeaderBar extends AppBar {
           title: Text(
             headerTitle,
             style: const TextStyle(
-              color: Colors.white,
+              color: CustomizedColors.buttonFontColor,
               fontWeight: FontWeight.w600,
               fontSize: 32,
             ),
           ),
-          backgroundColor: const Color(0xff27a1ff),
-          shadowColor: Colors.black,
+          backgroundColor: CustomizedColors.backgroundColor,
+          shadowColor: CustomizedColors.fontColor,
           elevation: 30,
         );
 }
