@@ -1,4 +1,4 @@
-import 'package:assignment/widgets/headerBar.dart';
+import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,8 +10,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
+    return MaterialApp(
+      theme: ThemeData(fontFamily: 'Fredoka'),
+      home: const Scaffold(
         body: HeaderBar(title: "Hello world")
       ),
     );

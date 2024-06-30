@@ -13,7 +13,11 @@ class HeaderBar extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title, 
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 32,
+            ),
         ),
         backgroundColor: const Color(0xff27a1ff),
         shadowColor: Colors.black,
