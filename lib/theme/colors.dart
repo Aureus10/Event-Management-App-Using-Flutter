@@ -9,4 +9,5 @@ class CustomizedColors {
   static const Color selectedColor = Color(0xFF444CB4);
   static const Color unselectedColor = Color.fromARGB(255, 120, 120, 120);
   static const Color warningColor = Color(0xFFFF0000);
+
 }
