@@ -1,7 +1,6 @@
 import 'package:assignment/routes/routes.dart';
+import 'package:assignment/screens/login_screen.dart';
 import 'package:assignment/screens/splash_screen.dart';
-import 'package:assignment/widgets/bottom_navigation_bar.dart';
-import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 
 class MainApp extends StatelessWidget {
@@ -10,14 +9,11 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
         theme: ThemeData(fontFamily: 'Fredoka'),
-        home: const SplashArt(),
-        // home: Scaffold(
-        //   bottomNavigationBar: const BottomMenu(),
-        //   appBar: HeaderBar(
-        //     headerTitle: "hello world",
-        //   ),
-        // ),
+        // home: const SplashArt(),
+    
+        // home: const LoginScreen(),
         initialRoute: '/',
         routes: routesConfig,
         );

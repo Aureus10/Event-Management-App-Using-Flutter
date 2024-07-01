@@ -16,6 +16,14 @@ enum EventType {
   booth,
 }
 
+enum EventStatus {
+  scheduled,
+  ongoing,
+  completed,
+  cancelled,
+  postponed,
+}
+
 class Event {
 
   final Profile organizer;
@@ -29,6 +37,7 @@ class Event {
   final String capacity;
   final String imageLink;
   final bool isAnonymous;
+  EventStatus status;
   List<String>? materials;
   List<Profile>? participants;
 
@@ -44,6 +53,7 @@ class Event {
     required this.capacity,
     required this.imageLink,
     required this.isAnonymous,
+    required this.status,
     this.materials,
     this.participants,
   });

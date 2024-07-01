@@ -7,16 +7,33 @@ class HeaderBar extends AppBar {
     super.key,
     required this.headerTitle,
   }) : super(
-          title: Text(
-            headerTitle,
-            style: const TextStyle(
-              color: CustomizedColors.fontColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 32,
+            title: Text(
+              headerTitle,
+              style: const TextStyle(
+                color: CustomizedColors.fontColor,
+                fontWeight: FontWeight.w600,
+                fontSize: 32,
+              ),
             ),
-          ),
-          backgroundColor: CustomizedColors.backgroundColor,
-          shadowColor: CustomizedColors.fontColor,
-          elevation: 30,
-        );
+            backgroundColor: CustomizedColors.backgroundColor,
+            shadowColor: CustomizedColors.fontColor,
+            elevation: 30,
+            leading: GestureDetector(
+              onTap: () {},
+              child: Container(
+                margin: const EdgeInsets.all(10.0),
+                alignment: Alignment.center,
+                child: Text('back'),
+              ),
+            ),
+            actions: [
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  margin: const EdgeInsets.all(10.0),
+                  alignment: Alignment.center,
+                  child: Text('Menu'),
+                ),
+              ),
+            ]);
 }
