@@ -34,7 +34,7 @@ class _BottomMenuState extends State<BottomMenu> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: CustomizedColors.selectedColor,
-        unselectedItemColor: CustomizedColors.disabledColor,
+        unselectedItemColor: CustomizedColors.unselectedColor,
         onTap: _onSelected,
         //iconSize: 480,
         );
