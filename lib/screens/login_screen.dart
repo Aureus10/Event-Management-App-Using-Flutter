@@ -1,4 +1,10 @@
+import 'dart:io';
+
+import 'package:assignment/components/buttons.dart';
+import 'package:assignment/components/fonts.dart';
+import 'package:assignment/components/password_field.dart';
 import 'package:assignment/theme/colors.dart';
+import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
@@ -7,30 +13,12 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final _formKey = GlobalKey<FormState>();
-  bool _isVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    const h1TextStyle = TextStyle(
-      fontSize: 32,
-      fontWeight: FontWeight.w600,
-    );
-    const h2TextStyle = TextStyle(
-      fontSize: 28,
-      fontWeight: FontWeight.w600,
-    );
-    const h3TextStyle = TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-    );
+    
 
-    const linkTextStyle = TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      color: CustomizedColors.linkColor,
-      decoration: TextDecoration.underline,
-      decorationColor: CustomizedColors.linkColor,
-    );
+    
     return Scaffold(
         body: SafeArea(
             child: Padding(
@@ -49,13 +37,7 @@ class LoginScreen extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          const Text(
-            'Login',
-            style: h1TextStyle,
-            textAlign: TextAlign.left,
-          ),
-          // Form(child: ),
-
+          const HeaderText(text: 'Login'),
           Form(
             key: _formKey,
             child: Column(
@@ -81,18 +63,17 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(
                   height: 12,
                 ),
-                const Text('Password', style: h2TextStyle),
-                const PassField(),
+                const Text('Password', style: CustomizedFontStyle.h2TextStyle,),
+                const PasswordField(),
                 const SizedBox(
-                  width: 6,
+                  height: 6,
                 ),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  GestureDetector(
-                      onTap: () {},
-                      child: const Text(
-                        'Forgot Password?',
-                        style: linkTextStyle,
-                      )),
+                  CustomizedTextButton(
+                    displayText: "Forgot Password?",
+                    actionOnPressed: () {
+                    },
+                  ),
                 ]),
 
                 const SizedBox(
@@ -112,17 +93,17 @@ class LoginScreen extends StatelessWidget {
                 }
               },
               style: ElevatedButton.styleFrom(
-                  //     textStyle: const TextStyle(
-                  //       fontSize: 28,
-                  //       fontWeight: FontWeight.w600,
-                  //       color: CustomizedColors.buttonFontColor,
-                  //     ),
+                  textStyle: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w600,
+                    color: CustomizedColors.buttonFontColor,
+                  ),
                   backgroundColor: CustomizedColors.buttonColor),
               child: const Text(
                 "Login",
-                style: TextStyle(
-                  color: CustomizedColors.buttonFontColor,
-                ),
+                // style: TextStyle(
+                //   color: CustomizedColors.buttonFontColor,
+                // ),
               )),
           const SizedBox(
             height: 15,
@@ -139,7 +120,7 @@ class LoginScreen extends StatelessWidget {
               ),
               Text(
                 'or login with',
-                style: h3TextStyle,
+                style: CustomizedFontStyle.h3TextStyle,
               ),
               Divider(
                 thickness: 2,
@@ -152,44 +133,5 @@ class LoginScreen extends StatelessWidget {
         ],
       ),
     )));
-  }
-}
-
-class PassField extends StatefulWidget {
-  const PassField({super.key});
-
-  @override
-  State<PassField> createState() => PassFieldState();
-}
-
-class PassFieldState extends State<PassField> {
-  bool _isHidden = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      obscureText: _isHidden,
-      decoration: InputDecoration(
-        // icon: Icon(Icons.password),
-        hintText: '',
-        labelText: 'Passowrd*',
-        suffixIcon: IconButton(
-          icon: Icon(_isHidden ? Icons.visibility : Icons.visibility_off),
-          onPressed: () {
-            setState(
-              () {
-                _isHidden = !_isHidden;
-              },
-            );
-          },
-        ),
-      ),
-      validator: (value) {
-        if (!value!.isValidPassword) {
-          return "Invalid Password";
-        }
-        return null;
-      },
-    );
   }
 }
