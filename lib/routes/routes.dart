@@ -4,6 +4,6 @@ import 'package:flutter/material.dart';
 
 final Map<String, WidgetBuilder> routesConfig = {
   '/': (context) => const SplashArt(),
-  '/login': (context) => const LoginScreen(),
+  '/login': (context) => LoginScreen(),
 
 };
