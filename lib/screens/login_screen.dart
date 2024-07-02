@@ -16,9 +16,6 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-
-    
     return Scaffold(
         body: SafeArea(
             child: Padding(
@@ -63,7 +60,10 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(
                   height: 12,
                 ),
-                const Text('Password', style: CustomizedFontStyle.h2TextStyle,),
+                const Text(
+                  'Password',
+                  style: CustomizedFontStyle.h2TextStyle,
+                ),
                 const PasswordField(),
                 const SizedBox(
                   height: 6,
@@ -71,8 +71,7 @@ class LoginScreen extends StatelessWidget {
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   CustomizedTextButton(
                     displayText: "Forgot Password?",
-                    actionOnPressed: () {
-                    },
+                    actionOnPressed: () {},
                   ),
                 ]),
 
