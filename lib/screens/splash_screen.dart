@@ -2,7 +2,6 @@ import 'package:assignment/screens/login_screen.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
 class SplashArt extends StatefulWidget {
   const SplashArt({super.key});
@@ -17,10 +16,10 @@ class _SplashArtState extends State<SplashArt>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    Future.delayed(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => LoginScreen()));
-    });
+    // Future.delayed(const Duration(seconds: 2), () {
+    //   Navigator.of(context).pushReplacement(
+    //       MaterialPageRoute(builder: (_) => LoginScreen()));
+    // });
   }
 
   @override
@@ -57,20 +56,3 @@ class _SplashArtState extends State<SplashArt>
     );
   }
 }
-
-// class SplashArt extends StatelessWidget {
-//   const SplashArt({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const Scaffold(
-//       body: Center(
-//         child: Image(
-//           image: AssetImage('assets/images/logo.jpg'),
-//           width: 288,
-//           height: 288,
-//         ),
-//       ),
-//     );
-//   }
-// }
