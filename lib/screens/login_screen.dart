@@ -7,6 +7,7 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final _formKey = GlobalKey<FormState>();
+  bool _isVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +20,16 @@ class LoginScreen extends StatelessWidget {
       fontWeight: FontWeight.w600,
     );
     const h3TextStyle = TextStyle(
-      fontSize: 12,
+      fontSize: 16,
       fontWeight: FontWeight.w600,
     );
 
     const linkTextStyle = TextStyle(
-      fontSize: 12,
+      fontSize: 16,
       fontWeight: FontWeight.w600,
+      color: CustomizedColors.linkColor,
+      decoration: TextDecoration.underline,
+      decorationColor: CustomizedColors.linkColor,
     );
     return Scaffold(
         body: SafeArea(
@@ -57,11 +61,16 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Email Address',
-                  style: h2TextStyle,
-                ),
+                // const Text(
+                //   'Email Address',
+                //   style: h2TextStyle,
+                // ),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    // icon: Icon(Icons.email),
+                    hintText: 'example@gmail.com',
+                    labelText: 'Email*',
+                  ),
                   validator: (value) {
                     if (!value!.isValidEmail) {
                       return "Invalid Email";
@@ -69,27 +78,25 @@ class LoginScreen extends StatelessWidget {
                     return null;
                   },
                 ),
+                const SizedBox(
+                  height: 12,
+                ),
                 const Text('Password', style: h2TextStyle),
-                TextFormField(
-                  validator: (value) {
-                    if (!value!.isValidPassword) {
-                      return "Invalid Password";
-                    }
-                    return null;
-                  },
-                ),
+                const PassField(),
                 const SizedBox(
-                  width: 5,
+                  width: 6,
                 ),
-                const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Show Password', style: linkTextStyle),
-                    Text('Forgot Password?', style: h3TextStyle)
-                  ],
-                ),
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  GestureDetector(
+                      onTap: () {},
+                      child: const Text(
+                        'Forgot Password?',
+                        style: linkTextStyle,
+                      )),
+                ]),
+
                 const SizedBox(
-                  height: 5,
+                  height: 6,
                 ),
               ],
             ),
@@ -116,9 +123,73 @@ class LoginScreen extends StatelessWidget {
                 style: TextStyle(
                   color: CustomizedColors.buttonFontColor,
                 ),
-              ))
+              )),
+          const SizedBox(
+            height: 15,
+          ),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Divider(
+                height: 2,
+                thickness: 5,
+                indent: 0,
+                endIndent: 0,
+                color: Colors.black,
+              ),
+              Text(
+                'or login with',
+                style: h3TextStyle,
+              ),
+              Divider(
+                thickness: 2,
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 15,
+          ),
         ],
       ),
     )));
+  }
+}
+
+class PassField extends StatefulWidget {
+  const PassField({super.key});
+
+  @override
+  State<PassField> createState() => PassFieldState();
+}
+
+class PassFieldState extends State<PassField> {
+  bool _isHidden = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      obscureText: _isHidden,
+      decoration: InputDecoration(
+        // icon: Icon(Icons.password),
+        hintText: '',
+        labelText: 'Passowrd*',
+        suffixIcon: IconButton(
+          icon: Icon(_isHidden ? Icons.visibility : Icons.visibility_off),
+          onPressed: () {
+            setState(
+              () {
+                _isHidden = !_isHidden;
+              },
+            );
+          },
+        ),
+      ),
+      validator: (value) {
+        if (!value!.isValidPassword) {
+          return "Invalid Password";
+        }
+        return null;
+      },
+    );
   }
 }
