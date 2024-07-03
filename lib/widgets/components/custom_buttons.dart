@@ -59,7 +59,6 @@ class CustomLogoutButtonText extends StatelessWidget {
           'Logout',
           style: TextStyle(
             fontSize: 18,
-            // fontWeight: FontWeight.w500,
             color: CustomizedColors.fontColor,
           ),
         ));
