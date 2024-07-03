@@ -30,12 +30,12 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _password,
       );
     } on FirebaseAuthException catch (e) {
-      // ScaffoldMessenger.of(context).clearSnackBars();
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(
-      //     content: Text(e.message ?? 'Authentication failed.'),
-      //   ),
-      // );
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? 'Authentication failed.'),
+        ),
+      );
       // print(e.message);
     }
   }
@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 6,
                   ),
                   Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    CustomizedTextButton(
+                    CustomLink(
                       displayText: "Forgot Password?",
                       actionOnPressed: () {},
                     ),

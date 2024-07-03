@@ -1,5 +1,6 @@
+import 'package:assignment/widgets/bottom_navigation_bar.dart';
+import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/header_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -8,28 +9,18 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: HeaderBar(headerTitle: 'GesT EMS'),
-      body: Row(
-        children: [
-          const Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        appBar: HeaderBar(headerTitle: 'GesT EMS'),
+        bottomNavigationBar: const BottomMenu(),
+        body: Padding(
+          padding: EdgeInsets.all(10),
+          child: Column(
             children: [
-              Row(),
-              Row(),
+              Flexible(child: CustomLink(displayText: 'testing',actionOnPressed: () {},)),
+              Flexible(child: CustomLogoutButtonText()),
+              Flexible(child: CustomLogoutButton()),
+              Flexible(child: CustomActionButton(displayText: 'testing', actionOnPressed: () {},)),
             ],
           ),
-          const SizedBox(
-            height: 10,
-          ),
-          const Column(),
-          ElevatedButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-                Navigator.of(context).pushReplacementNamed('/login');
-              },
-              child: const Text('Signout'))
-        ],
-      ),
-    );
+        ));
   }
 }
