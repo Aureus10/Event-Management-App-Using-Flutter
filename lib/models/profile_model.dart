@@ -13,7 +13,8 @@ enum Gender {
 
 class Profile {
 
-  final String id;
+  final int id;
+  final UserType type;
   final int age;
   final Gender gender;
   final String email;
@@ -24,6 +25,7 @@ class Profile {
 
   const Profile({
     required this.id,
+    required this.type,
     required this.age,
     required this.gender,
     required this.email,
