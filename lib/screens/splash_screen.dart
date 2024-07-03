@@ -1,7 +1,3 @@
-import 'package:assignment/app.dart';
-import 'package:assignment/auth.dart';
-import 'package:assignment/screens/home_screen.dart';
-import 'package:assignment/screens/login_screen.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,26 +19,6 @@ class _SplashArtState extends State<SplashArt>
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.of(context).pushReplacementNamed('/auth');
     });
-
-    //   Stream authStateChanges = await Auth().authStateChanges;
-
-    //   if (authStateChanges.first != null) {
-
-    //   }
-
-    //   return StreamBuilder(
-    //       stream: Auth().authStateChanges,
-    //       builder: ((context, snapshot) {
-    //         if (snapshot.connectionState == ConnectionState.waiting) {
-    //           return const SizedBox.shrink();
-    //         }
-    //         if (snapshot.hasData) {
-    //           return const HomeScreen();
-    //         }
-    //         return const LoginScreen();
-    //       }),
-    //     );
-    // });
   }
 
   @override

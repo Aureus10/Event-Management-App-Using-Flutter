@@ -1,8 +1,7 @@
-import 'package:assignment/auth.dart';
+import 'package:assignment/controllers/auth.dart';
 import 'package:assignment/routes/routes.dart';
 import 'package:assignment/screens/home_screen.dart';
 import 'package:assignment/screens/login_screen.dart';
-import 'package:assignment/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 class MainApp extends StatelessWidget {

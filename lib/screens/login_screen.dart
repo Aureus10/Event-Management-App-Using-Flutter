@@ -1,7 +1,7 @@
-import 'package:assignment/auth.dart';
-import 'package:assignment/components/buttons.dart';
-import 'package:assignment/components/fonts.dart';
-import 'package:assignment/components/password_field.dart';
+import 'package:assignment/controllers/auth.dart';
+import 'package:assignment/widgets/components/custom_buttons.dart';
+import 'package:assignment/widgets/components/custom_text.dart';
+import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
@@ -36,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       //     content: Text(e.message ?? 'Authentication failed.'),
       //   ),
       // );
+      // print(e.message);
     }
   }
 
