@@ -1,10 +1,11 @@
+import 'package:assignment/models/base_model.dart';
 import 'package:assignment/models/event_model.dart';
 
 enum UserType { user, organizer, administrator }
 
 enum Gender { male, female }
 
-class ProfileModel {
+class ProfileModel implements BaseModel{
   final int id;
   final UserType type;
   final int age;
@@ -27,6 +28,7 @@ class ProfileModel {
     required this.imageLink,
   });
 
+  @override
   factory ProfileModel.fromMap(Map<String, dynamic> map) => ProfileModel(
         id: map['id'],
         type: UserType.values[map['type']],
@@ -40,6 +42,7 @@ class ProfileModel {
         imageLink: map['imageLink'],
       );
 
+  @override
   Map<String, dynamic> toMap() => {
       'id': id,
       'type': type,

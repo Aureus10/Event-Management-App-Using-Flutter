@@ -1,3 +1,4 @@
+import 'package:assignment/models/base_model.dart';
 import 'package:assignment/models/profile_model.dart';
 
 enum EventType {
@@ -24,7 +25,7 @@ enum EventStatus {
   postponed,
 }
 
-class EventModel {
+class EventModel implements BaseModel {
   final ProfileModel organizer;
   final String title;
   final String description;
@@ -57,6 +58,7 @@ class EventModel {
     this.participants,
   });
 
+  @override
   factory EventModel.fromMap(Map<String, dynamic> map) => EventModel(
         organizer: map['organizer'],
         title: map['title'],
@@ -75,6 +77,7 @@ class EventModel {
             map['participants'].map((item) => ProfileModel.fromMap(item))),
       );
 
+  @override
   Map<String, dynamic> toMap() => {
         'organizer': organizer,
         'title': title,
