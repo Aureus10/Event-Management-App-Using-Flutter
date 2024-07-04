@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
               Flexible(child: CustomLink(displayText: 'testing',actionOnPressed: () {},)),
               Flexible(child: CustomLogoutButtonText()),
               Flexible(child: CustomLogoutButton()),
-              Flexible(child: CustomActionButton(displayText: 'testing', actionOnPressed: () {},)),
+              Flexible(child: CustomActionButton(displayText: 'testing', actionOnPressed: () {},)),              
             ],
           ),
         ));

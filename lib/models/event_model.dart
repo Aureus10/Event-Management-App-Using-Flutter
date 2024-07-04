@@ -24,9 +24,8 @@ enum EventStatus {
   postponed,
 }
 
-class Event {
-
-  final Profile organizer;
+class EventModel {
+  final ProfileModel organizer;
   final String title;
   final String description;
   final String venue;
@@ -37,11 +36,11 @@ class Event {
   final String capacity;
   final String imageLink;
   final bool isAnonymous;
-  EventStatus status;
+  final EventStatus status;
   List<String>? materials;
-  List<Profile>? participants;
+  List<ProfileModel>? participants;
 
-  Event({
+  EventModel({
     required this.organizer,
     required this.title,
     required this.description,
@@ -58,4 +57,38 @@ class Event {
     this.participants,
   });
 
+  factory EventModel.fromMap(Map<String, dynamic> map) => EventModel(
+        organizer: map['organizer'],
+        title: map['title'],
+        description: map['description'],
+        venue: map['venue'],
+        fees: map['fees'],
+        contact: map['contact'],
+        type: EventType.values[map['type']],
+        datetime: List<DateTime>.from(map['datetime']),
+        capacity: map['capacity'],
+        imageLink: map['imageLink'],
+        isAnonymous: map['isAnonymous'],
+        status: EventStatus.values[map['status']],
+        materials: List<String>.from(map['materials']),
+        participants: List<ProfileModel>.from(
+            map['participants'].map((item) => ProfileModel.fromMap(item))),
+      );
+
+  Map<String, dynamic> toMap() => {
+        'organizer': organizer,
+        'title': title,
+        'description': description,
+        'venue': venue,
+        'fees': fees,
+        'contact': contact,
+        'type': type,
+        'datetime': datetime,
+        'capacity': capacity,
+        'imageLink': imageLink,
+        'isAnonymous': isAnonymous,
+        'status': status,
+        'materials': materials,
+        'participants': participants,
+      };
 }

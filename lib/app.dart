@@ -1,4 +1,4 @@
-import 'package:assignment/controllers/auth.dart';
+import 'package:assignment/services/auth.dart';
 import 'package:assignment/routes/routes.dart';
 import 'package:assignment/screens/home_screen.dart';
 import 'package:assignment/screens/login_screen.dart';

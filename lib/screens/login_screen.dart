@@ -1,4 +1,4 @@
-import 'package:assignment/controllers/auth.dart';
+import 'package:assignment/services/auth.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/custom_text.dart';
 import 'package:assignment/widgets/components/password_field.dart';
