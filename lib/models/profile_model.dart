@@ -1,18 +1,15 @@
-import 'package:assignment/models/base_model.dart';
-import 'package:assignment/models/event_model.dart';
-
 enum UserType { user, organizer, administrator }
 
 enum Gender { male, female }
 
-class ProfileModel implements BaseModel{
+class ProfileModel {
   final int id;
   final UserType type;
   final int age;
   final Gender gender;
   final String email;
   final String contact;
-  final List<EventModel> eventHistory;
+  final List<String>? eventHistory;
   final int creditScore;
   final String imageLink;
 
@@ -23,9 +20,9 @@ class ProfileModel implements BaseModel{
     required this.gender,
     required this.email,
     required this.contact,
-    required this.eventHistory,
     required this.creditScore,
     required this.imageLink,
+    this.eventHistory,
   });
 
   @override
@@ -36,22 +33,42 @@ class ProfileModel implements BaseModel{
         gender: Gender.values[map['gender']],
         email: map['email'],
         contact: map['contact'],
-        eventHistory: List<EventModel>.from(
-            map['eventHistory'].map((item) => EventModel.fromMap(item))),
+        eventHistory: List<String>.from(map['eventHistory']),
         creditScore: map['creditScore'],
         imageLink: map['imageLink'],
       );
 
-  @override
   Map<String, dynamic> toMap() => {
-      'id': id,
-      'type': type,
-      'age': age,
-      'gender': gender,
-      'email': email,
-      'contact': contact,
-      'eventHistory': eventHistory.map((event) => event.toMap()).toList(),
-      'creditScore': creditScore,
-      'imageLink': imageLink,
-    };
+        'id': id,
+        'type': type,
+        'age': age,
+        'gender': gender,
+        'email': email,
+        'contact': contact,
+        'eventHistory': eventHistory,
+        'creditScore': creditScore,
+        'imageLink': imageLink,
+      };
+
+  ProfileModel copyWith({
+    UserType? type,
+    int? age,
+    Gender? gender,
+    String? email,
+    String? contact,
+    List<String>? eventHistory,
+    int? creditScore,
+    String? imageLink,
+  }) {
+    return ProfileModel(
+        id: id,
+        type: type ?? this.type,
+        age: age ?? this.age,
+        gender: gender ?? this.gender,
+        email: email ?? this.email,
+        contact: contact ?? this.contact,
+        eventHistory: eventHistory ?? this.eventHistory ?? [],
+        creditScore: creditScore ?? this.creditScore,
+        imageLink: imageLink ?? this.imageLink);
+  }
 }

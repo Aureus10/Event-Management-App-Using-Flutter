@@ -1,4 +1,3 @@
-import 'package:assignment/models/base_model.dart';
 import 'package:assignment/models/profile_model.dart';
 
 enum EventType {
@@ -25,7 +24,8 @@ enum EventStatus {
   postponed,
 }
 
-class EventModel implements BaseModel {
+class EventModel {
+  final String? id;
   final ProfileModel organizer;
   final String title;
   final String description;
@@ -38,10 +38,11 @@ class EventModel implements BaseModel {
   final String imageLink;
   final bool isAnonymous;
   final EventStatus status;
-  List<String>? materials;
-  List<ProfileModel>? participants;
+  final List<String>? materials;
+  final List<String>? participants;
 
   EventModel({
+    required this.id,
     required this.organizer,
     required this.title,
     required this.description,
@@ -58,8 +59,8 @@ class EventModel implements BaseModel {
     this.participants,
   });
 
-  @override
-  factory EventModel.fromMap(Map<String, dynamic> map) => EventModel(
+  factory EventModel.fromMap(String id, Map<String, dynamic> map) => EventModel(
+        id: id,
         organizer: map['organizer'],
         title: map['title'],
         description: map['description'],
@@ -73,11 +74,9 @@ class EventModel implements BaseModel {
         isAnonymous: map['isAnonymous'],
         status: EventStatus.values[map['status']],
         materials: List<String>.from(map['materials']),
-        participants: List<ProfileModel>.from(
-            map['participants'].map((item) => ProfileModel.fromMap(item))),
+        participants: List<String>.from(map['participants']),
       );
 
-  @override
   Map<String, dynamic> toMap() => {
         'organizer': organizer,
         'title': title,
@@ -94,4 +93,39 @@ class EventModel implements BaseModel {
         'materials': materials,
         'participants': participants,
       };
+
+  EventModel copyWith({
+    ProfileModel? organizer,
+    String? title,
+    String? description,
+    String? venue,
+    double? fees,
+    String? contact,
+    EventType? type,
+    List<DateTime>? datetime,
+    String? capacity,
+    String? imageLink,
+    bool? isAnonymous,
+    EventStatus? status,
+    List<String>? materials,
+    List<String>? participants,
+  }) {
+    return EventModel(
+        id: id,
+        organizer: organizer ?? this.organizer,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        venue: venue ?? this.venue,
+        fees: fees ?? this.fees,
+        contact: contact ?? this.contact,
+        type: type ?? this.type,
+        datetime: datetime ?? this.datetime,
+        capacity: capacity ?? this.capacity,
+        imageLink: imageLink ?? this.imageLink,
+        isAnonymous: isAnonymous ?? this.isAnonymous,
+        status: status ?? this.status,
+        materials: materials ?? this.materials ?? [],
+        participants: participants ?? this.participants ?? [],
+        );
+  }
 }
