@@ -15,6 +15,5 @@ void main() async {
     print("Error initializing Firebase: $e");
   }
 
-  
   runApp(const MainApp());
 }

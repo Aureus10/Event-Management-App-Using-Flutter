@@ -2,6 +2,8 @@ enum UserType { user, organizer, administrator }
 
 enum Gender { male, female }
 
+enum AccountStatus { active, inactive, banned }
+
 class ProfileModel {
   final int id;
   final UserType type;
@@ -12,6 +14,7 @@ class ProfileModel {
   final List<String>? eventHistory;
   final int creditScore;
   final String imageLink;
+  final AccountStatus status;
 
   const ProfileModel({
     required this.id,
@@ -22,6 +25,7 @@ class ProfileModel {
     required this.contact,
     required this.creditScore,
     required this.imageLink,
+    required this.status,
     this.eventHistory,
   });
 
@@ -36,6 +40,7 @@ class ProfileModel {
         eventHistory: List<String>.from(map['eventHistory']),
         creditScore: map['creditScore'],
         imageLink: map['imageLink'],
+        status: map['status'],
       );
 
   Map<String, dynamic> toMap() => {
@@ -48,6 +53,7 @@ class ProfileModel {
         'eventHistory': eventHistory,
         'creditScore': creditScore,
         'imageLink': imageLink,
+        'status': status,
       };
 
   ProfileModel copyWith({
@@ -59,6 +65,7 @@ class ProfileModel {
     List<String>? eventHistory,
     int? creditScore,
     String? imageLink,
+    AccountStatus? status,
   }) {
     return ProfileModel(
         id: id,
@@ -69,6 +76,7 @@ class ProfileModel {
         contact: contact ?? this.contact,
         eventHistory: eventHistory ?? this.eventHistory ?? [],
         creditScore: creditScore ?? this.creditScore,
-        imageLink: imageLink ?? this.imageLink);
+        imageLink: imageLink ?? this.imageLink,
+        status: status ?? this.status);
   }
 }

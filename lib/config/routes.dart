@@ -8,6 +8,6 @@ final Map<String, WidgetBuilder> routesConfig = {
   '/': (context) => const SplashArt(),
   '/auth': (context) => const AuthStateWidget(),
   '/login': (context) => const LoginScreen(),
-  '/home': (context) => const HomeScreen(),
+  '/home': (context) => HomeScreen(),
 
 };

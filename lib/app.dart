@@ -1,30 +1,26 @@
+import 'package:assignment/config/poviders.dart';
 import 'package:assignment/services/auth.dart';
-import 'package:assignment/routes/routes.dart';
+import 'package:assignment/config/routes.dart';
 import 'package:assignment/screens/home_screen.dart';
 import 'package:assignment/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
-  // void initState() {
-  //   Navigator.of(context).pushNamed('/splash');
-  //   Future.delayed(const Duration(seconds: 2), () {
-  //     Navigator.of(context).pop();
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // Navigator.of(context).pushNamed('/splash');
-    // Future.delayed(const Duration(seconds: 2), () {
-    //   Navigator.of(context).pop();
-    // });
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(fontFamily: 'Fredoka'),
-      initialRoute: '/',
-      routes: routesConfig,
+    return MultiProvider(
+      providers: providerConfig,
+      child:
+        MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(fontFamily: 'Fredoka'),
+          initialRoute: '/',
+          routes: routesConfig,
+        ),
+        
     );
   }
 }
@@ -41,7 +37,7 @@ class AuthStateWidget extends StatelessWidget {
           return const SizedBox.shrink();
         }
         if (snapshot.hasData) {
-          return const HomeScreen();
+          return HomeScreen();
         }
         return const LoginScreen();
       }),
