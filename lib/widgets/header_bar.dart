@@ -1,39 +1,40 @@
-import 'package:assignment/theme/colors.dart';
+import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:flutter/material.dart';
 
-class HeaderBar extends AppBar {
-  final String headerTitle;
-  HeaderBar({
+class HeaderBar extends StatelessWidget implements PreferredSizeWidget {
+  const HeaderBar({
     super.key,
     required this.headerTitle,
-  }) : super(
-            title: Text(
-              headerTitle,
-              style: const TextStyle(
-                color: CustomizedColors.fontColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 32,
-              ),
+  });
+
+  final String headerTitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+        title: Text(
+          headerTitle,
+        ),
+        // leading: GestureDetector(
+        //   onTap: () {},
+        //   child: Container(
+        //     margin: const EdgeInsets.all(10.0),
+        //     alignment: Alignment.center,
+        //     child: const Text('back'),
+        //   ),
+        // ),
+        actions: [
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+              alignment: Alignment.center,
+              child: const MenuIconButton(),
             ),
-            backgroundColor: CustomizedColors.backgroundColor,
-            shadowColor: CustomizedColors.fontColor,
-            elevation: 30,
-            leading: GestureDetector(
-              onTap: () {},
-              child: Container(
-                margin: const EdgeInsets.all(10.0),
-                alignment: Alignment.center,
-                child: Text('back'),
-              ),
-            ),
-            actions: [
-              GestureDetector(
-                onTap: () {},
-                child: Container(
-                  margin: const EdgeInsets.all(10.0),
-                  alignment: Alignment.center,
-                  child: Text('Menu'),
-                ),
-              ),
-            ]);
+          ),
+        ]);
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(66);
 }

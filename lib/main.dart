@@ -12,7 +12,7 @@ void main() async {
       );
     }
   } catch (e) {
-    print("Error initializing Firebase: $e");
+    debugPrint("Error initializing Firebase: $e");
   }
 
   runApp(const MainApp());

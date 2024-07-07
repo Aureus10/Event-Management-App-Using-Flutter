@@ -3,6 +3,7 @@ import 'package:assignment/services/auth.dart';
 import 'package:assignment/config/routes.dart';
 import 'package:assignment/screens/home_screen.dart';
 import 'package:assignment/screens/login_screen.dart';
+import 'package:assignment/theme/theme_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,7 @@ class MainApp extends StatelessWidget {
       child:
         MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(fontFamily: 'Fredoka'),
+          theme: customTheme,
           initialRoute: '/',
           routes: routesConfig,
         ),

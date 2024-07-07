@@ -1,6 +1,5 @@
 import 'package:assignment/services/auth.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
-import 'package:assignment/widgets/components/custom_text.dart';
 import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:assignment/theme/fonts.dart';
@@ -30,12 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _password,
       );
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message ?? 'Authentication failed.'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? 'Authentication failed.'),
+          ),
+        );
+      }
       // print(e.message);
     }
   }
@@ -62,7 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 20,
             ),
-            const HeaderText(text: 'Login'),
+            // const HeaderText(text: 'Login'),
+
             Form(
               key: _formKey,
               child: Column(
@@ -93,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const Text(
                     'Password',
-                    style: CustomizedFontStyle.h2TextStyle,
+                    style: mediumTextStyle,
                   ),
                   PasswordField(
                     email: _password,
@@ -157,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Text(
                   'or login with',
-                  style: CustomizedFontStyle.h3TextStyle,
+                  style: mediumTextStyle,
                 ),
                 Divider(
                   thickness: 2,

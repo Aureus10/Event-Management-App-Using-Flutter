@@ -1,4 +1,3 @@
-import 'package:assignment/models/profile_model.dart';
 
 enum EventType {
   exhibition,
@@ -26,7 +25,7 @@ enum EventStatus {
 
 class EventModel {
   final String? id;
-  final ProfileModel organizer;
+  final String organizerEmail;
   final String title;
   final String description;
   final String venue;
@@ -43,7 +42,7 @@ class EventModel {
 
   EventModel({
     required this.id,
-    required this.organizer,
+    required this.organizerEmail,
     required this.title,
     required this.description,
     required this.venue,
@@ -61,7 +60,7 @@ class EventModel {
 
   factory EventModel.fromMap(String id, Map<String, dynamic> map) => EventModel(
         id: id,
-        organizer: map['organizer'],
+        organizerEmail: map['organizerEmail'],
         title: map['title'],
         description: map['description'],
         venue: map['venue'],
@@ -78,7 +77,7 @@ class EventModel {
       );
 
   Map<String, dynamic> toMap() => {
-        'organizer': organizer,
+        'organizer': organizerEmail,
         'title': title,
         'description': description,
         'venue': venue,
@@ -95,7 +94,7 @@ class EventModel {
       };
 
   EventModel copyWith({
-    ProfileModel? organizer,
+    String? organizerEmail,
     String? title,
     String? description,
     String? venue,
@@ -112,7 +111,7 @@ class EventModel {
   }) {
     return EventModel(
         id: id,
-        organizer: organizer ?? this.organizer,
+        organizerEmail: organizerEmail ?? this.organizerEmail,
         title: title ?? this.title,
         description: description ?? this.description,
         venue: venue ?? this.venue,

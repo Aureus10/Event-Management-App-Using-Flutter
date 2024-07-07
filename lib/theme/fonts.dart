@@ -1,33 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:assignment/theme/colors.dart';
 
+const TextStyle titleTextStyle = TextStyle(
+  fontSize: 32,
+  color: Colors.black,
+  fontFamily: 'Fredoka',
+  fontWeight: FontWeight.w600,
+);
 
-class CustomizedFontStyle {
-  static const headerTextStyle = TextStyle(
-    fontSize: 32,
-    fontWeight: FontWeight.w600,
-  );
-  static const h2TextStyle = TextStyle(
-    fontSize: 28,
-    fontWeight: FontWeight.w600,
-  );
-  static const h3TextStyle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-  );
-  static const linkTextStyle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-    color: CustomizedColors.linkColor,
-    decoration: TextDecoration.underline,
-    decorationColor: CustomizedColors.linkColor,
-  );
-}
+const TextStyle headerTextStyle = TextStyle(
+  fontSize: 28,
+  color: Colors.black,
+  fontFamily: 'Fredoka',
+  fontWeight: FontWeight.w600,
+);
 
-class CustomizedFont {
-  final String text;
+const TextStyle largeTextStyle = TextStyle(
+  fontSize: 24,
+  color: Colors.black,
+  fontFamily: 'Fredoka',
+  fontWeight: FontWeight.w600,
+);
 
-  CustomizedFont({
-    required this.text,
-  });
-}
+const TextStyle mediumTextStyle = TextStyle(
+  fontSize: 20,
+  color: Colors.black,
+  fontFamily: 'Fredoka',
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle smallTextStyle = TextStyle(
+  fontSize: 16,
+  color: Colors.black,
+  fontFamily: 'Fredoka',
+  fontWeight: FontWeight.w500,
+);
+
+const TextStyle linkTextStyle = TextStyle(
+  fontSize: 16,
+  fontFamily: 'Fredoka',
+  color: Color(0xFF27A1FF),
+  fontWeight: FontWeight.w500,
+  decoration: TextDecoration.underline,
+  decorationColor: Color(0xFF27A1FF),
+);
