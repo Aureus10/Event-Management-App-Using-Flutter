@@ -5,9 +5,10 @@ enum Gender { male, female }
 enum AccountStatus { active, inactive, banned }
 
 class ProfileModel {
-  final int id;
+  final String id;
   final UserType type;
   final int age;
+  final String username;
   final Gender gender;
   final String email;
   final String contact;
@@ -20,6 +21,7 @@ class ProfileModel {
     required this.id,
     required this.type,
     required this.age,
+    required this.username,
     required this.gender,
     required this.email,
     required this.contact,
@@ -34,6 +36,7 @@ class ProfileModel {
         id: map['id'],
         type: UserType.values[map['type']],
         age: map['age'],
+        username: map['username'],
         gender: Gender.values[map['gender']],
         email: map['email'],
         contact: map['contact'],
@@ -59,6 +62,7 @@ class ProfileModel {
   ProfileModel copyWith({
     UserType? type,
     int? age,
+    String? username,
     Gender? gender,
     String? email,
     String? contact,
@@ -71,6 +75,7 @@ class ProfileModel {
         id: id,
         type: type ?? this.type,
         age: age ?? this.age,
+        username: username ?? this.username,
         gender: gender ?? this.gender,
         email: email ?? this.email,
         contact: contact ?? this.contact,

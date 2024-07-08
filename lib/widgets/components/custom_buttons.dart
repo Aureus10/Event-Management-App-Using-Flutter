@@ -80,7 +80,7 @@ class CustomActionButton extends StatelessWidget {
               RoundedRectangleBorder(
                   side: const BorderSide(
                       color: CustomizedColors.selectedColor, width: 2),
-                  borderRadius: BorderRadius.circular(18))),
+                  borderRadius: BorderRadius.circular(15))),
         ),
         child: Text(
           displayText,
@@ -99,7 +99,7 @@ class MenuIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {},
-      icon: Icon(Icons.menu),
+      icon: const Icon(Icons.menu),
       color: Colors.black,
       iconSize: 36,
     );

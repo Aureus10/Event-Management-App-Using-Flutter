@@ -5,9 +5,13 @@ class HeaderBar extends StatelessWidget implements PreferredSizeWidget {
   const HeaderBar({
     super.key,
     required this.headerTitle,
+    required this.menuRequired,
+    this. textStyle,
   });
 
   final String headerTitle;
+  final bool menuRequired;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +19,7 @@ class HeaderBar extends StatelessWidget implements PreferredSizeWidget {
         title: Text(
           headerTitle,
         ),
-        // leading: GestureDetector(
-        //   onTap: () {},
-        //   child: Container(
-        //     margin: const EdgeInsets.all(10.0),
-        //     alignment: Alignment.center,
-        //     child: const Text('back'),
-        //   ),
-        // ),
-        actions: [
+        actions: menuRequired ? [
           GestureDetector(
             onTap: () {},
             child: Container(
@@ -32,7 +28,7 @@ class HeaderBar extends StatelessWidget implements PreferredSizeWidget {
               child: const MenuIconButton(),
             ),
           ),
-        ]);
+        ] : null);
   }
 
   @override

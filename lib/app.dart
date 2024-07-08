@@ -38,7 +38,7 @@ class AuthStateWidget extends StatelessWidget {
           return const SizedBox.shrink();
         }
         if (snapshot.hasData) {
-          return HomeScreen();
+          return const HomeScreen();
         }
         return const LoginScreen();
       }),

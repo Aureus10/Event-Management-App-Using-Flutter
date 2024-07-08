@@ -1,4 +1,5 @@
 import 'package:assignment/models/event_model.dart';
+import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/screens/event_calendar_screen.dart';
 import 'package:assignment/screens/profile_screen.dart';
 import 'package:assignment/theme/colors.dart';
@@ -31,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const HeaderBar(headerTitle: 'GesT EMS'),
+        appBar: const HeaderBar(headerTitle: 'GesT EMS', menuRequired: true,),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -62,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: _onSelected,
         ),
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
           child: _widgetList[_selectedIndex],
         ));
   }
@@ -70,60 +71,102 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class HomeBody extends StatelessWidget {
   HomeBody({super.key});
-  final List<EventModel> eventList = sampleEvents;
+  final UserType userType = UserType.administrator;
+
+  
+  final List<EventModel> _eventList = sampleEvents;
   @override
   Widget build(BuildContext context) {
     Widget eventsPreview;
-    if (eventList.isNotEmpty) {
+    if (_eventList.isNotEmpty) {
       eventsPreview = ListView.builder(
-          itemCount: eventList.length,
-          itemBuilder: (ctx, index) => EventPreview(event: eventList[index]));
+          itemCount: _eventList.length,
+          itemBuilder: (ctx, index) => EventPreview(event: _eventList[index]));
     } else {
       eventsPreview = const Text("No events found");
     }
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         IntrinsicHeight(
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Text(
-                  "title",
-                  style: titleTextStyle,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    const Text(
+                      "title",
+                      style: titleTextStyle,
+                    ),
+                    const Text(
+                      "header text",
+                      style: headerTextStyle,
+                    ),
+                    const Text(
+                      "large text",
+                      style: largeTextStyle,
+                    ),
+                    // const Text(
+                    //   "medium text",
+                    //   style: mediumTextStyle,
+                    // ),
+                    // const Text(
+                    //   "small text",
+                    //   style: smallTextStyle,
+                    // ),
+                    // const Text(
+                    //   "link text",
+                    //   style: linkTextStyle,
+                    // ),
+                    CustomActionButton(
+                        displayText: "Testing",
+                        actionOnPressed: () {
+                          Navigator.of(context).pushNamed('/');
+                        })
+                    // Flexible(child: CustomLogoutButtonText()),
+                    // Flexible(child: CustomLogoutButton()),
+                  ],
                 ),
-                Text(
-                  "header text",
-                  style: headerTextStyle,
-                ),
-                Text(
-                  "large text",
-                  style: largeTextStyle,
-                ),
-                Text(
-                  "medium text",
-                  style: mediumTextStyle,
-                ),
-                Text(
-                  "small text",
-                  style: smallTextStyle,
-                ),
-                Text(
-                  "link text",
-                  style: linkTextStyle,
-                ),
-                CustomActionButton(displayText: "Testing", actionOnPressed: () {
-                  Navigator.of(context).pushNamed('/');
-                })
-                // Flexible(child: CustomLogoutButtonText()),
-                // Flexible(child: CustomLogoutButton()),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-        Flexible(child: eventsPreview),
+        Flexible(
+            child: userType == UserType.organizer ? HomeBodyDisplay(eventsPreview: eventsPreview) : eventsPreview),
       ],
     );
+  }
+}
+
+class HomeBodyDisplay extends StatelessWidget {
+  const HomeBodyDisplay({super.key, required this.eventsPreview});
+
+  final Widget eventsPreview;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+          children: [
+            eventsPreview,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ColoredBox(
+                color:
+                    const Color.fromARGB(255, 216, 216, 216).withOpacity(0.6),
+                child: SizedBox(
+                  height: 90,
+                  width: MediaQuery.of(context).size.width,
+                ),
+              ),
+            ),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15),
+                  child: CustomActionButton(
+                      displayText: 'Organize Events', actionOnPressed: () {}),
+                ))
+          ],
+        );
   }
 }

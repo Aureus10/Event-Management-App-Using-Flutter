@@ -1,8 +1,3 @@
-import 'package:assignment/screens/event_calendar_screen.dart';
-import 'package:assignment/screens/home_screen.dart';
-import 'package:assignment/screens/profile_screen.dart';
-import 'package:assignment/theme/colors.dart';
-import 'package:flutter/material.dart';
 
 // class BottomMenu extends StatefulWidget {
 //   const BottomMenu({super.key});

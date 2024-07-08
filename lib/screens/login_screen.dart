@@ -1,10 +1,10 @@
 import 'package:assignment/services/auth.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/password_field.dart';
-import 'package:assignment/theme/colors.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: HeaderBar(headerTitle: 'Login'),
         body: SafeArea(
             child: Center(
       child: SingleChildScrollView(
@@ -70,10 +71,17 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // const Text(
-                  //   'Email Address',
-                  //   style: h2TextStyle,
-                  // ),
+                  const Text(
+                    'Login',
+                    style: titleTextStyle,
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  const Text(
+                    'Email*',
+                    style: mediumTextStyle,
+                  ),
                   TextFormField(
                     onChanged: (value) {
                       _email = value;
@@ -81,24 +89,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: const InputDecoration(
                       // icon: Icon(Icons.email),
                       hintText: 'example@gmail.com',
-                      labelText: 'Email*',
+                      // labelText: 'Email*',
                     ),
-                    validator: (value) {
-                      if (!value!.isValidEmail) {
-                        return "Invalid Email";
-                      }
-                      return null;
-                    },
+                    validator: emailValidator(),
                   ),
                   const SizedBox(
                     height: 12,
                   ),
-                  const Text(
-                    'Password',
-                    style: mediumTextStyle,
-                  ),
                   PasswordField(
-                    email: _password,
+                    text: 'Password*',
                     onChanged: (value) {
                       _password = value;
                     },
@@ -112,7 +111,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       actionOnPressed: () {},
                     ),
                   ]),
-
                   const SizedBox(
                     height: 6,
                   ),
@@ -122,28 +120,39 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 10,
             ),
-            ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content:
-                            Text('Login Successful $_email and $_password')));
-                    signInWithEmailAndPassword();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w600,
-                      color: CustomizedColors.buttonFontColor,
-                    ),
-                    backgroundColor: CustomizedColors.buttonColor),
-                child: const Text(
-                  "Login",
-                  // style: TextStyle(
-                  //   color: CustomizedColors.buttonFontColor,
-                  // ),
-                )),
+            CustomActionButton(
+              displayText: 'Login',
+              actionOnPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content:
+                          Text('Login Successful $_email and $_password')));
+                  signInWithEmailAndPassword();
+                }
+              },
+            ),
+            // ElevatedButton(
+            //     onPressed: () {
+            //       if (_formKey.currentState!.validate()) {
+            //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //             content:
+            //                 Text('Login Successful $_email and $_password')));
+            //         signInWithEmailAndPassword();
+            //       }
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //         textStyle: const TextStyle(
+            //           fontSize: 28,
+            //           fontWeight: FontWeight.w600,
+            //           color: CustomizedColors.buttonFontColor,
+            //         ),
+            //         backgroundColor: CustomizedColors.buttonColor),
+            //     child: const Text(
+            //       "Login",
+            //       // style: TextStyle(
+            //       //   color: CustomizedColors.buttonFontColor,
+            //       // ),
+            //     )),
             const SizedBox(
               height: 15,
             ),
@@ -157,18 +166,30 @@ class _LoginScreenState extends State<LoginScreen> {
                   endIndent: 0,
                   color: Colors.black,
                 ),
-                Text(
-                  'or login with',
-                  style: mediumTextStyle,
-                ),
-                Divider(
-                  thickness: 2,
-                ),
+                // Text(
+                //   'or login with',
+                //   style: mediumTextStyle,
+                // ),
               ],
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            RichText(
+                text: TextSpan(
+                    children: <TextSpan>[
+                      const TextSpan(
+                        text: 'New to GesT? Register ',
+                        style: smallTextStyle,
+                      ),
+                  TextSpan(
+                    text: 'here',
+                    style: linkTextStyle,
+                    recognizer: TapGestureRecognizer()..onTap = () {
+                      Navigator.of(context).pushNamed('/signup');
+                    }
+                  )
+                ])),
+            // const SizedBox(
+            //   height: 15,
+            // ),
           ],
         ),
       ),

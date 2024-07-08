@@ -6,11 +6,11 @@ class EventPreview extends StatelessWidget {
 
   final EventModel event;
   static const Map<EventStatus, Color> displayColor = {
-    EventStatus.cancelled: Color.fromARGB(255, 247, 181, 176),
+    EventStatus.cancelled: Color.fromARGB(255, 255, 66, 66),
     EventStatus.completed: Color.fromARGB(255, 199, 194, 194),
-    EventStatus.ongoing: Color.fromARGB(255, 204, 255, 206),
-    EventStatus.postponed: Color.fromARGB(255, 253, 246, 185),
-    EventStatus.scheduled: Color.fromARGB(255, 176, 219, 255)
+    EventStatus.ongoing: Color.fromARGB(255, 120, 255, 125),
+    EventStatus.postponed: Color.fromARGB(255, 255, 238, 86),
+    EventStatus.scheduled: Color.fromARGB(255, 113, 191, 255)
   };
 
   @override
