@@ -5,12 +5,11 @@ enum Gender { male, female }
 enum AccountStatus { active, inactive, banned }
 
 class ProfileModel {
-  final String id;
+  final String email;
   final UserType type;
   final int age;
   final String username;
   final Gender gender;
-  final String email;
   final String contact;
   final List<String>? eventHistory;
   final int creditScore;
@@ -18,12 +17,11 @@ class ProfileModel {
   final AccountStatus status;
 
   const ProfileModel({
-    required this.id,
+    required this.email,
     required this.type,
     required this.age,
     required this.username,
     required this.gender,
-    required this.email,
     required this.contact,
     required this.creditScore,
     required this.imageLink,
@@ -33,12 +31,11 @@ class ProfileModel {
 
   @override
   factory ProfileModel.fromMap(Map<String, dynamic> map) => ProfileModel(
-        id: map['id'],
+        email: map['email'],
         type: UserType.values[map['type']],
         age: map['age'],
         username: map['username'],
         gender: Gender.values[map['gender']],
-        email: map['email'],
         contact: map['contact'],
         eventHistory: List<String>.from(map['eventHistory']),
         creditScore: map['creditScore'],
@@ -47,24 +44,23 @@ class ProfileModel {
       );
 
   Map<String, dynamic> toMap() => {
-        'id': id,
-        'type': type,
-        'age': age,
-        'gender': gender,
         'email': email,
+        'type': type.toString().split('.').last,
+        'age': age,
+        'gender': gender.toString().split('.').last,
         'contact': contact,
         'eventHistory': eventHistory,
         'creditScore': creditScore,
         'imageLink': imageLink,
-        'status': status,
+        'status': status.toString().split('.').last,
       };
 
   ProfileModel copyWith({
+    String? email,
     UserType? type,
     int? age,
     String? username,
     Gender? gender,
-    String? email,
     String? contact,
     List<String>? eventHistory,
     int? creditScore,
@@ -72,7 +68,6 @@ class ProfileModel {
     AccountStatus? status,
   }) {
     return ProfileModel(
-        id: id,
         type: type ?? this.type,
         age: age ?? this.age,
         username: username ?? this.username,

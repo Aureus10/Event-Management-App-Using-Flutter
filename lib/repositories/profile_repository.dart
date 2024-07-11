@@ -2,22 +2,23 @@ import 'package:assignment/models/profile_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileRepository {
-  static final _profileRepository =
-      FirebaseFirestore.instance.collection('users');
+  final _profileRepository = FirebaseFirestore.instance.collection('users');
 
-  static Future<ProfileModel> getProfile(String email) async =>
+  Future<ProfileModel> getProfile(String email) async =>
       _profileRepository.doc(email).get().then((DocumentSnapshot doc) =>
           ProfileModel.fromMap(doc.data() as Map<String, dynamic>));
 
-  static Future<bool> setProfile(ProfileModel profile) async =>
-      _profileRepository
-          .doc(profile.email)
-          .set(profile.toMap())
-          .then((_) => true)
-          .catchError((_) => false);
+  Future<bool> addProfile(ProfileModel profile) async => _profileRepository
+      .doc(profile.email)
+      .set(profile.toMap())
+      .then((_) => true)
+      .catchError((_) => false);
 
-  static Future<bool> addProfile(ProfileModel profile) async =>
-      setProfile(profile);
+  Future<bool> updateProfile(ProfileModel profile) async => _profileRepository
+      .doc(profile.email)
+      .update(profile.toMap())
+      .then((_) => true)
+      .catchError((_) => false);
 
   // static Future<bool> deleteProfile(String email) => _profileRepository
   //     .doc(email)

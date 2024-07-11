@@ -1,4 +1,5 @@
 import 'package:assignment/models/event_model.dart';
+import 'package:assignment/theme/fonts.dart';
 import 'package:flutter/material.dart';
 
 class EventPreview extends StatelessWidget {
@@ -16,24 +17,61 @@ class EventPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Card(
-        clipBehavior: Clip.hardEdge,
-        color: displayColor[event.status]!.withAlpha(180),
-        child: InkWell(
-          onTap: () {},
-          splashColor: displayColor[event.status],
-          child: const Column(
-            children: [
-              ListTile(
-                leading: Image(
+      child: Container(
+        height: 150,
+        padding: EdgeInsets.all(5),
+        child: Card(
+          clipBehavior: Clip.hardEdge,
+          shadowColor: Colors.black,
+          elevation: 5,
+          shape: BeveledRectangleBorder(
+            side: BorderSide(color: displayColor[event.status]!, width: 2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          // color: displayColor[event.status],
+          // surfaceTintColor: displayColor[event.status],
+          // surfaceTintColor: Colors.transparent,
+          child: InkWell(
+            onTap: () {},
+            splashColor: displayColor[event.status],
+            child: Row(
+              children: [
+                const Image(
                   image: AssetImage('assets/images/logo.png'),
-                  width: 288,
-                  height: 288,
+                  width: 100,
+                  height: 100,
                 ),
-                title: Text("testing123"),
-                subtitle: Text("texting234"),
-              )
-            ],
+                SingleChildScrollView(
+                    // child: RichText(
+                    //   text: TextSpan(
+                    //     children: [
+                    //       TextSpan(text: event.title, style: mediumTextStyle),
+                    //       TextSpan(text: event.description, style: smallTextStyle)
+                    //     ]
+                    //   )
+                    // ),
+                    child: Column(
+                  children: [
+                    Wrap(
+                      children: [
+                        Text(
+                          event.title,
+                          style: mediumTextStyle,
+                        ),
+                      ],
+                    ),
+                    Wrap(
+                      children: [
+                        Text(
+                          event.description,
+                          style: smallTextStyle,
+                        ),
+                      ],
+                    ),
+                  ],
+                ))
+              ],
+            ),
           ),
         ),
       ),

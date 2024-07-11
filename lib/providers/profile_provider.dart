@@ -3,23 +3,26 @@ import 'package:assignment/repositories/profile_repository.dart';
 import 'package:flutter/material.dart';
 
 class ProfileProvider extends ChangeNotifier {
-  late ProfileModel profile;
+  
+  final ProfileRepository _profileRepository = ProfileRepository();
 
-  ProfileModel get userProfile => profile;
+  ProfileModel? _profile;
+
+  ProfileModel? get userProfile => _profile;
 
   Future<void> initializeProfile(String email) async {
-    profile = await ProfileRepository.getProfile(email);
+    _profile = await _profileRepository.getProfile(email);
     notifyListeners();
   }
 
   Future<void> getOthersProfile(String email) =>
-      ProfileRepository.getProfile(email);
+      _profileRepository.getProfile(email);
 
   Future<bool> addProfile(ProfileModel profile) async {
     try {
-      bool status = await ProfileRepository.addProfile(profile);
+      bool status = await _profileRepository.addProfile(profile);
       if (status) {
-        this.profile = profile;
+        _profile = profile;
         notifyListeners();
       }
       return true;
@@ -28,11 +31,11 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> setProfile(ProfileModel profile) async {
+  Future<bool> updateProfile(ProfileModel profile) async {
     try {
-      bool status = await ProfileRepository.setProfile(profile);
+      bool status = await _profileRepository.updateProfile(profile);
       if (status) {
-        this.profile = profile;
+        _profile = profile;
         notifyListeners();
       }
       return true;
@@ -44,5 +47,4 @@ class ProfileProvider extends ChangeNotifier {
   // Future<bool> deleteProfile(String email) {
   //   return
   // }
-  
 }

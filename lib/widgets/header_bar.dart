@@ -6,12 +6,14 @@ class HeaderBar extends StatelessWidget implements PreferredSizeWidget {
     super.key,
     required this.headerTitle,
     required this.menuRequired,
-    this. textStyle,
+    this.textStyle,
+    this.customAction,
   });
 
   final String headerTitle;
   final bool menuRequired;
   final TextStyle? textStyle;
+  final VoidCallback? customAction;
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +21,12 @@ class HeaderBar extends StatelessWidget implements PreferredSizeWidget {
         title: Text(
           headerTitle,
         ),
+        leading: customAction != null
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: customAction,
+              )
+            : null,
         actions: menuRequired ? [
           GestureDetector(
             onTap: () {},

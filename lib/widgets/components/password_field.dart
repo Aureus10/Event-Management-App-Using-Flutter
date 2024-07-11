@@ -4,9 +4,11 @@ import 'package:assignment/utils/form_vadidator.dart';
 
 class PasswordField extends StatefulWidget {
   final String text;
-  final ValueChanged<String> onChanged;
+  final String? initialValue;
+  final ValueChanged<String>? onChanged;
+  final String? Function(String?)? customValidator;
 
-  const PasswordField({super.key, required this.text, required this.onChanged});
+  const PasswordField({super.key, required this.text, this.initialValue, this.onChanged, this.customValidator,});
 
   @override
   State<PasswordField> createState() => PasswordFieldState();
@@ -25,14 +27,15 @@ class PasswordFieldState extends State<PasswordField> {
           style: mediumTextStyle,
         ),
         TextFormField(
+          initialValue: widget.initialValue,
           onChanged: widget.onChanged,
           obscureText: _isHidden,
           decoration: InputDecoration(
             // icon: Icon(Icons.password),
-            hintText: 'examplePassword',
+            hintText: 'sample123!Pass',
             // labelText: 'Passowrd*',
             suffixIcon: IconButton(
-              icon: Icon(_isHidden ? Icons.visibility : Icons.visibility_off),
+              icon: Icon(_isHidden ? Icons.visibility_off : Icons.visibility),
               onPressed: () {
                 setState(
                   () {
@@ -42,12 +45,7 @@ class PasswordFieldState extends State<PasswordField> {
               },
             ),
           ),
-          validator: (value) {
-            if (!value!.isValidPassword) {
-              return "Invalid Password";
-            }
-            return null;
-          },
+          validator: widget.customValidator ?? passwordValidator(),
         )
       ],
     );

@@ -1,5 +1,6 @@
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/theme/fonts.dart';
+import 'package:assignment/utils/form_vadidator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,11 +8,13 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField(
       {super.key,
       required this.text,
+      this.initialValue,
       required this.validator,
       required this.actionOnChanged,
       this.hintText});
 
   final String text;
+  final String? initialValue;
   final String? Function(String?)? validator;
   final Function(String) actionOnChanged;
   final String? hintText;
@@ -26,6 +29,7 @@ class CustomTextFormField extends StatelessWidget {
           style: mediumTextStyle,
         ),
         TextFormField(
+          initialValue: initialValue,
           onChanged: actionOnChanged,
           decoration: InputDecoration(hintText: hintText ?? ''),
           validator: validator,
@@ -39,11 +43,13 @@ class CustomNumericalTextFormField extends StatelessWidget {
   const CustomNumericalTextFormField(
       {super.key,
       required this.text,
+      this.initialValue,
       required this.validator,
       required this.actionOnChanged,
       this.hintText});
 
   final String text;
+  final int? initialValue;
   final String? Function(String?)? validator;
   final Function(String) actionOnChanged;
   final String? hintText;
@@ -58,6 +64,7 @@ class CustomNumericalTextFormField extends StatelessWidget {
           style: mediumTextStyle,
         ),
         TextFormField(
+          initialValue: initialValue?.toString(),
           onChanged: actionOnChanged,
           decoration: InputDecoration(hintText: hintText ?? ''),
           validator: validator,
@@ -72,9 +79,11 @@ class CustomNumericalTextFormField extends StatelessWidget {
 }
 
 class CustomGenderTextFormField extends StatefulWidget {
-  const CustomGenderTextFormField({super.key, required this.actionOnChanged});
-
+  final Gender initialValue;
   final void Function(Gender) actionOnChanged;
+
+  const CustomGenderTextFormField({super.key, required this.initialValue, required this.actionOnChanged});
+
 
   @override
   State<CustomGenderTextFormField> createState() =>
@@ -82,17 +91,28 @@ class CustomGenderTextFormField extends StatefulWidget {
 }
 
 class _CustomGenderTextFormFieldState extends State<CustomGenderTextFormField> {
-  Gender? selectedGender;
+  late Gender selectedGender;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedGender = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Gender*',
           style: mediumTextStyle,
         ),
-        DropdownButton(
+        DropdownButtonFormField(
+          validator: emptyEnumValidator(),
+          hint: const Text(
+            'Select your gender',
+          ),
           items: Gender.values.map((Gender gender) {
             return DropdownMenuItem<Gender>(
               value: gender,
@@ -101,13 +121,13 @@ class _CustomGenderTextFormFieldState extends State<CustomGenderTextFormField> {
           }).toList(),
           onChanged: (Gender? gender) {
             setState(() {
-              selectedGender = gender;
+              selectedGender = gender!;
             });
-            if (selectedGender != null) {
-              widget.actionOnChanged(selectedGender!);
-            }
+            widget.actionOnChanged(selectedGender);
           },
           value: selectedGender,
+          // decoration: const InputDecoration(border: OutlineInputBorder()),
+          iconSize: 28,
         )
       ],
     );

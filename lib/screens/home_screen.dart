@@ -1,5 +1,8 @@
 import 'package:assignment/models/event_model.dart';
 import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/providers/event_provider.dart';
+import 'package:assignment/providers/profile_provider.dart';
+import 'package:assignment/repositories/profile_repository.dart';
 import 'package:assignment/screens/event_calendar_screen.dart';
 import 'package:assignment/screens/profile_screen.dart';
 import 'package:assignment/theme/colors.dart';
@@ -7,8 +10,10 @@ import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/event_preview.dart';
 import 'package:assignment/widgets/header_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment/data/event_sample.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   final List<Widget> _widgetList = <Widget>[
-    HomeBody(),
+    const HomeBody(),
     const EventCalendarScreen(),
     const ProfileScreen()
   ];
@@ -32,7 +37,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const HeaderBar(headerTitle: 'GesT EMS', menuRequired: true,),
+        appBar: const HeaderBar(
+          headerTitle: 'GesT EMS',
+          menuRequired: true,
+        ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -63,25 +71,53 @@ class _HomeScreenState extends State<HomeScreen> {
           onTap: _onSelected,
         ),
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
           child: _widgetList[_selectedIndex],
         ));
   }
 }
 
-class HomeBody extends StatelessWidget {
-  HomeBody({super.key});
+class HomeBody extends StatefulWidget {
+  const HomeBody({super.key});
+
+  @override
+  State<HomeBody> createState() => _HomeBodyState();
+}
+
+class _HomeBodyState extends State<HomeBody> {
   final UserType userType = UserType.administrator;
 
-  
-  final List<EventModel> _eventList = sampleEvents;
+  // late EventProvider _eventProvider;
+
+  List<EventModel> _searchResults = sampleEvents;
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _eventProvider = Provider.of<EventProvider>(context);
+  // }
+
+  void onQueryChanged(String query) {
+    setState(() {
+      // searchResults = eventProvider.events.where((item) {
+      _searchResults = sampleEvents.where((item) {
+        bool matchesTitle =
+            item.title.toLowerCase().contains(query.toLowerCase());
+        bool matchesDescription =
+            item.description.toLowerCase().contains(query.toLowerCase());
+        return matchesTitle || matchesDescription;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget eventsPreview;
-    if (_eventList.isNotEmpty) {
+    if (_searchResults.isNotEmpty) {
       eventsPreview = ListView.builder(
-          itemCount: _eventList.length,
-          itemBuilder: (ctx, index) => EventPreview(event: _eventList[index]));
+          itemCount: _searchResults.length,
+          itemBuilder: (ctx, index) =>
+              EventPreview(event: _searchResults[index]));
     } else {
       eventsPreview = const Text("No events found");
     }
@@ -90,41 +126,32 @@ class HomeBody extends StatelessWidget {
         IntrinsicHeight(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(10),
+              Container(
+                padding: const EdgeInsets.fromLTRB(10, 28, 10, 18),
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 234, 234, 234),
+                  border: Border(bottom: BorderSide(width: 2)),
+                ),
                 child: Column(
                   children: [
-                    const Text(
-                      "title",
-                      style: titleTextStyle,
+                    Container(
+                      // color: Colors.white,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0xFF444CB4), width: 2),
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white,
+                      ),
+                      child: TextField(
+                        onChanged: onQueryChanged,
+                        decoration: const InputDecoration(
+                          labelText: 'Search',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.search),
+                        ),
+                      ),
                     ),
-                    const Text(
-                      "header text",
-                      style: headerTextStyle,
-                    ),
-                    const Text(
-                      "large text",
-                      style: largeTextStyle,
-                    ),
-                    // const Text(
-                    //   "medium text",
-                    //   style: mediumTextStyle,
-                    // ),
-                    // const Text(
-                    //   "small text",
-                    //   style: smallTextStyle,
-                    // ),
-                    // const Text(
-                    //   "link text",
-                    //   style: linkTextStyle,
-                    // ),
-                    CustomActionButton(
-                        displayText: "Testing",
-                        actionOnPressed: () {
-                          Navigator.of(context).pushNamed('/');
-                        })
-                    // Flexible(child: CustomLogoutButtonText()),
-                    // Flexible(child: CustomLogoutButton()),
                   ],
                 ),
               ),
@@ -132,7 +159,9 @@ class HomeBody extends StatelessWidget {
           ),
         ),
         Flexible(
-            child: userType == UserType.organizer ? HomeBodyDisplay(eventsPreview: eventsPreview) : eventsPreview),
+            child: userType == UserType.organizer
+                ? HomeBodyDisplay(eventsPreview: eventsPreview)
+                : eventsPreview),
       ],
     );
   }
@@ -146,27 +175,72 @@ class HomeBodyDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-          children: [
-            eventsPreview,
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ColoredBox(
-                color:
-                    const Color.fromARGB(255, 216, 216, 216).withOpacity(0.6),
-                child: SizedBox(
-                  height: 90,
-                  width: MediaQuery.of(context).size.width,
-                ),
-              ),
+      children: [
+        eventsPreview,
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: ColoredBox(
+            color: const Color.fromARGB(255, 216, 216, 216).withOpacity(0.6),
+            child: SizedBox(
+              height: 90,
+              width: MediaQuery.of(context).size.width,
             ),
-            Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15),
-                  child: CustomActionButton(
-                      displayText: 'Organize Events', actionOnPressed: () {}),
-                ))
-          ],
-        );
+          ),
+        ),
+        Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: CustomActionButton(
+                  displayText: 'Organize Events', actionOnPressed: () {}),
+            ))
+      ],
+    );
   }
 }
+
+// class SearchEvent extends StatefulWidget {
+//   const SearchEvent({super.key});
+
+//   @override
+//   State<SearchEvent> createState() => _SearchEventState();
+// }
+
+// class _SearchEventState extends State<SearchEvent> {
+//   late EventProvider eventProvider;
+
+//   List<EventModel> searchResults = [];
+
+//   @override
+//   void didChangeDependencies() {
+//     super.didChangeDependencies();
+//     eventProvider = Provider.of<EventProvider>(context);
+//   }
+
+//   void onQueryChanged(String query) {
+//     setState(() {
+//       // searchResults = eventProvider.events.where((item) {
+//       searchResults = sampleEvents.where((item) {
+//         bool matchesTitle =
+//             item.title.toLowerCase().contains(query.toLowerCase());
+//         bool matchesDescription =
+//             item.description.toLowerCase().contains(query.toLowerCase());
+//         return matchesTitle || matchesDescription;
+//       }).toList();
+//     });
+//   }
+
+
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Row(
+//           children: [],
+//         ),
+//         EventPreview(event: )
+//       ],
+//     );
+//   }
+// }

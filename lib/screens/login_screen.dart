@@ -1,4 +1,4 @@
-import 'package:assignment/services/auth.dart';
+import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/theme/fonts.dart';
@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> signInWithEmailAndPassword() async {
     try {
-      await Auth().signInWithEmailAndPassword(
+      await AuthService().signInWithEmailAndPassword(
         email: _email,
         password: _password,
       );
@@ -37,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       }
-      // print(e.message);
     }
   }
 
