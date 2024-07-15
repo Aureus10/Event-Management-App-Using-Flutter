@@ -3,6 +3,7 @@ import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField(
@@ -11,13 +12,16 @@ class CustomTextFormField extends StatelessWidget {
       this.initialValue,
       required this.validator,
       required this.actionOnChanged,
-      this.hintText});
+      this.hintText,
+      this.controller,
+      });
 
   final String text;
   final String? initialValue;
   final String? Function(String?)? validator;
   final Function(String) actionOnChanged;
   final String? hintText;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +37,7 @@ class CustomTextFormField extends StatelessWidget {
           onChanged: actionOnChanged,
           decoration: InputDecoration(hintText: hintText ?? ''),
           validator: validator,
+          controller: controller,
         )
       ],
     );

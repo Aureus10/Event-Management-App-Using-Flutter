@@ -20,6 +20,8 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   List<DateTime> _eventDateTime = [];
   List<int> _testing123 = [];
 
+  LatLng? _location;
+
   // Future<void> _onMapCreated(GoogleMapController controller) {
   //   final currentLocation
   // }
@@ -31,8 +33,8 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
         'Step 1: Event Info',
         style: largeTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
-      VerticalEmptySpace(),
-      Text(
+      const VerticalEmptySpace(),
+      const Text(
         'Event Type',
         style: mediumTextStyle,
       ),
@@ -41,11 +43,11 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
 
       Row(
         children: [
-          Text(
+          const Text(
             'Venue :',
             style: mediumTextStyle,
           ),
-          IconButton(onPressed: () {}, icon: Icon(Icons.map)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.map)),
         ],
       ),
       // Container(
@@ -125,7 +127,10 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                 35,
                 MediaQuery.of(context).size.width * 0.1,
                 0),
-            child: const MapTesting(),
+            child: MapTesting(
+              setLocation: (LatLng val) {
+              LatLng loc = val;
+            }),
             // child: Column(
             //   crossAxisAlignment: CrossAxisAlignment.start,
             //   mainAxisSize: MainAxisSize.min,

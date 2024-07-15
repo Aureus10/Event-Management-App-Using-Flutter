@@ -21,6 +21,11 @@ extension FormValidator on String {
     final contactReg = RegExp(r'^\d{10}$');
     return contactReg.hasMatch(this);
   }
+
+  bool get isValidLocation {
+    final locationReg = RegExp(r'^(-?\d{1,2}(?:\.\d*)?),\s*(-?\d{1,3}(?:\.\d*)?)$');
+    return locationReg.hasMatch(this);
+  }
 }
 
 String? Function(dynamic)? emptyValidator() => (dynamic value) {
@@ -93,3 +98,13 @@ String? Function(String?)? contactValidator() => (String? value) {
       }
       return null;
     };
+
+String? Function(String?)? locationValidator() => (String? value) {
+  if (value == null || value.isEmpty) {
+    return "Please select location";
+  }
+  if (!value.isValidLocation) {
+    return "Invalid Coordinate Format! (Format: latitude, longtidue)";
+  }
+  return null;
+};
