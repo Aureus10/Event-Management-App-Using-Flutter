@@ -17,7 +17,7 @@ class OrganizeEventScreen extends StatefulWidget {
 
 class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   bool _isFirstPage = true;
-  List<DateTime> _eventDateTime = [];
+  List<List<DateTime>> _eventDateTime = [[], []];
   List<int> _testing123 = [];
 
   LatLng? _location;
@@ -127,10 +127,10 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                 35,
                 MediaQuery.of(context).size.width * 0.1,
                 0),
-            child: MapTesting(
-              setLocation: (LatLng val) {
-              LatLng loc = val;
-            }),
+            // child: MapTesting(
+            //   setLocation: (LatLng val) {
+            //   LatLng loc = val;
+            // }),
             // child: Column(
             //   crossAxisAlignment: CrossAxisAlignment.start,
             //   mainAxisSize: MainAxisSize.min,
