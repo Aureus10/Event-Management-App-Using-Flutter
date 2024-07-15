@@ -49,28 +49,20 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
         style: mediumTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
       Container(
-        height: 200,
-        child: 
-        Column(
-          children: [
-        ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
+        height: _testing123.length * 50,
+        child: ListView.builder(
             itemCount: _testing123.length,
             itemBuilder: (context, index) {
               return Text(
                 _testing123[index].toString(),
               );
             }),
-
-CustomLink(displayText: 'Add one more day', actionOnPressed: () {
+      ),
+      CustomLink(displayText: 'Add one more day', actionOnPressed: () {
         setState(() {
           _testing123.add(1);
         });
       }),
-          ]
-        ),
-      ),
-      
       // Row(
       //   children: [
       //     IconButton(onPressed: () {}, icon: Icon(Icons.add)),
