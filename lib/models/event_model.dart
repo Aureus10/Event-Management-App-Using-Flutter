@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 enum EventType {
@@ -41,7 +42,7 @@ class EventModel {
   final double fees;
   final String contact;
   final EventType type;
-  final List<DateTime> datetime;
+  final List<Map<DateTime, DateTime>> datetime;
   final String capacity;
   final String imageLink;
   final bool isAnonymous;
@@ -76,7 +77,9 @@ class EventModel {
         fees: map['fees'],
         contact: map['contact'],
         type: EventType.values[map['type']],
-        datetime: List<DateTime>.from(map['datetime']),
+        datetime: (map['Datetime'] as Map<String, dynamic>).entries.map((entry) {
+    return {DateTime.parse(entry.key): (entry.value as Timestamp).toDate()};
+  }).toList(),
         capacity: map['capacity'],
         imageLink: map['imageLink'],
         isAnonymous: map['isAnonymous'],
@@ -93,7 +96,7 @@ class EventModel {
         'fees': fees,
         'contact': contact,
         'type': type,
-        'datetime': datetime,
+        'datetime': {for (var entry in datetime) entry.keys.first.toIso8601String(): Timestamp.fromDate(entry.values.first)},
         'capacity': capacity,
         'imageLink': imageLink,
         'isAnonymous': isAnonymous,
@@ -110,7 +113,7 @@ class EventModel {
     double? fees,
     String? contact,
     EventType? type,
-    List<DateTime>? datetime,
+    List<Map<DateTime, DateTime>>? datetime,
     String? capacity,
     String? imageLink,
     bool? isAnonymous,

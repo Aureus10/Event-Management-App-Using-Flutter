@@ -11,9 +11,7 @@ List<EventModel> sampleEvents = [
     contact: '123-456-7890',
     type: EventType.conference,
     datetime: [
-      DateTime(2024, 9, 10, 9, 0),
-      DateTime(2024, 9, 11, 9, 0),
-      DateTime(2024, 9, 12, 9, 0),
+      
     ],
     capacity: '500',
     imageLink: 'https://example.com/conference.jpg',
@@ -32,9 +30,6 @@ List<EventModel> sampleEvents = [
     contact: '987-654-3210',
     type: EventType.festival,
     datetime: [
-      DateTime(2024, 8, 5, 14, 0),
-      DateTime(2024, 8, 6, 14, 0),
-      DateTime(2024, 8, 7, 14, 0),
     ],
     capacity: '2000',
     imageLink: 'https://example.com/festival.jpg',
@@ -53,9 +48,6 @@ List<EventModel> sampleEvents = [
     contact: '555-555-5555',
     type: EventType.hackathon,
     datetime: [
-      DateTime(2024, 7, 20, 10, 0),
-      DateTime(2024, 7, 21, 10, 0),
-      DateTime(2024, 7, 22, 10, 0),
     ],
     capacity: '300',
     imageLink: 'https://example.com/hackathon.jpg',
@@ -74,9 +66,6 @@ List<EventModel> sampleEvents = [
     contact: '234-567-8901',
     type: EventType.exhibition,
     datetime: [
-      DateTime(2024, 10, 1, 10, 0),
-      DateTime(2024, 10, 2, 10, 0),
-      DateTime(2024, 10, 3, 10, 0),
     ],
     capacity: '300',
     imageLink: 'https://example.com/exhibition.jpg',
@@ -95,9 +84,6 @@ List<EventModel> sampleEvents = [
     contact: '876-543-2109',
     type: EventType.workshops,
     datetime: [
-      DateTime(2024, 11, 12, 9, 0),
-      DateTime(2024, 11, 13, 9, 0),
-      DateTime(2024, 11, 14, 9, 0),
     ],
     capacity: '100',
     imageLink: 'https://example.com/bootcamp.jpg',
@@ -116,9 +102,6 @@ List<EventModel> sampleEvents = [
     contact: '654-321-0987',
     type: EventType.competition,
     datetime: [
-      DateTime(2024, 12, 15, 10, 0),
-      DateTime(2024, 12, 16, 10, 0),
-      DateTime(2024, 12, 17, 10, 0),
     ],
     capacity: '200',
     imageLink: 'https://example.com/competition.jpg',
@@ -137,9 +120,6 @@ List<EventModel> sampleEvents = [
     contact: '345-678-9012',
     type: EventType.workshops,
     datetime: [
-      DateTime(2024, 9, 20, 9, 0),
-      DateTime(2024, 9, 21, 9, 0),
-      DateTime(2024, 9, 22, 9, 0),
     ],
     capacity: '150',
     imageLink: 'https://example.com/vrworkshop.jpg',
@@ -158,9 +138,6 @@ List<EventModel> sampleEvents = [
     contact: '789-012-3456',
     type: EventType.webinar,
     datetime: [
-      DateTime(2024, 7, 25, 14, 0),
-      DateTime(2024, 7, 26, 14, 0),
-      DateTime(2024, 7, 27, 14, 0),
     ],
     capacity: 'Unlimited',
     imageLink: 'https://example.com/webinar.jpg',
