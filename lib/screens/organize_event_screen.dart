@@ -1,3 +1,4 @@
+import 'package:assignment/screens/testing.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
@@ -47,13 +48,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           IconButton(onPressed: () {}, icon: Icon(Icons.map)),
         ],
       ),
-      Container(
-          child: GoogleMap(
-        // onMapCreated: _onMapCreated,
-        initialCameraPosition:
-            const CameraPosition(target: LatLng(0, 0), zoom: 8),
-        // markers: _markers.values.toSet(),
-      )),
+      // Container(
+      //     child: GoogleMap(
+      //   // onMapCreated: _onMapCreated,
+      //   initialCameraPosition:
+      //       const CameraPosition(target: LatLng(0, 0), zoom: 8),
+      //   // markers: _markers.values.toSet(),
+      // )),
 
       const VerticalEmptySpace(),
       Text(
@@ -124,11 +125,12 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                 35,
                 MediaQuery.of(context).size.width * 0.1,
                 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: _isFirstPage ? firstPage : secondPage,
-            ),
+            child: const MapTesting(),
+            // child: Column(
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   mainAxisSize: MainAxisSize.min,
+            //   children: _isFirstPage ? firstPage : secondPage,
+            // ),
           ),
         ));
   }
