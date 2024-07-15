@@ -5,6 +5,7 @@ import 'package:assignment/widgets/components/custom_input_fields.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class OrganizeEventScreen extends StatefulWidget {
   const OrganizeEventScreen({super.key});
@@ -17,6 +18,10 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   bool _isFirstPage = true;
   List<DateTime> _eventDateTime = [];
   List<int> _testing123 = [];
+
+  // Future<void> _onMapCreated(GoogleMapController controller) {
+  //   final currentLocation
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +47,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           IconButton(onPressed: () {}, icon: Icon(Icons.map)),
         ],
       ),
+      Container(
+          child: GoogleMap(
+        // onMapCreated: _onMapCreated,
+        initialCameraPosition:
+            const CameraPosition(target: LatLng(0, 0), zoom: 8),
+        // markers: _markers.values.toSet(),
+      )),
 
       const VerticalEmptySpace(),
       Text(
@@ -58,11 +70,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               );
             }),
       ),
-      CustomLink(displayText: 'Add one more day', actionOnPressed: () {
-        setState(() {
-          _testing123.add(1);
-        });
-      }),
+      CustomLink(
+          displayText: 'Add one more day',
+          actionOnPressed: () {
+            setState(() {
+              _testing123.add(1);
+            });
+          }),
       // Row(
       //   children: [
       //     IconButton(onPressed: () {}, icon: Icon(Icons.add)),
