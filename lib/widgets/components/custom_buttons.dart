@@ -61,8 +61,10 @@ class CustomLogoutButtonText extends StatelessWidget {
 class CustomActionButton extends StatelessWidget {
   ///A button with white color font
   ///blue background & blue violet outline
+  final double? width;
+  final double? height;
   const CustomActionButton(
-      {super.key, required this.displayText, required this.actionOnPressed});
+      {super.key, required this.displayText, required this.actionOnPressed, this.width, this.height});
 
   final String displayText;
   final VoidCallback actionOnPressed;
@@ -75,12 +77,12 @@ class CustomActionButton extends StatelessWidget {
           backgroundColor:
               WidgetStateProperty.all<Color>(CustomizedColors.buttonColor),
           minimumSize: WidgetStateProperty.all<Size>(
-              Size(MediaQuery.of(context).size.width * 0.8, 60)),
+          Size(width ?? MediaQuery.of(context).size.width * 0.8, height ?? 60)),
           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                   side: const BorderSide(
                       color: CustomizedColors.selectedColor, width: 2),
-                  borderRadius: BorderRadius.circular(15))),
+                  borderRadius: BorderRadius.circular((height ?? 60) / 5))),
         ),
         child: Text(
           displayText,

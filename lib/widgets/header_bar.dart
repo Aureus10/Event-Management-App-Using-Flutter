@@ -27,16 +27,17 @@ class HeaderBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed: customAction,
               )
             : null,
-        actions: menuRequired ? [
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-              alignment: Alignment.center,
-              child: const MenuIconButton(),
-            ),
-          ),
-        ] : null);
+        // actions: menuRequired ? [
+        //   GestureDetector(
+        //     onTap: () {},
+        //     child: Container(
+        //       margin: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+        //       alignment: Alignment.center,
+        //       child: const MenuIconButton(),
+        //     ),
+        //   ),
+        // ] : null
+        );
   }
 
   @override

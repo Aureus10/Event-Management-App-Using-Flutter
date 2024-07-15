@@ -8,9 +8,10 @@ import 'package:assignment/screens/profile_screen.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
+import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/event_preview.dart';
 import 'package:assignment/widgets/header_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:assignment/widgets/side_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:assignment/data/event_sample.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: const HeaderBar(
           headerTitle: 'GesT EMS',
           menuRequired: true,
+        ),
+        endDrawer: const CustomSideBar(
+          accountName: 'temporary name',
+          accountEmail: 'temporary@gmail.com',
+          imageUrl:
+              'https://firebasestorage.googleapis.com/v0/b/this-is-newpr.appspot.com/o/user_images%2FpGbjgndQhNRUSNnIOGxeq7DdUFw1.jpg?alt=media&token=f669406b-df83-4761-aafe-09f0939ff3c1',
+          userType: UserType.user,
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -85,21 +93,23 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
-  final UserType userType = UserType.administrator;
+  final UserType userType = UserType.organizer;
 
-  // late EventProvider _eventProvider;
+  late EventProvider _eventProvider;
 
   List<EventModel> _searchResults = sampleEvents;
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-  //   _eventProvider = Provider.of<EventProvider>(context);
-  // }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _eventProvider = Provider.of<EventProvider>(context);
+    _eventProvider.getEvents();
+    // _searchResults = _eventProvider.events;
+  }
 
   void onQueryChanged(String query) {
     setState(() {
-      // searchResults = eventProvider.events.where((item) {
+      // _searchResults = _eventProvider.events.where((item) {
       _searchResults = sampleEvents.where((item) {
         bool matchesTitle =
             item.title.toLowerCase().contains(query.toLowerCase());
@@ -114,10 +124,24 @@ class _HomeBodyState extends State<HomeBody> {
   Widget build(BuildContext context) {
     Widget eventsPreview;
     if (_searchResults.isNotEmpty) {
-      eventsPreview = ListView.builder(
-          itemCount: _searchResults.length,
-          itemBuilder: (ctx, index) =>
-              EventPreview(event: _searchResults[index]));
+      if (userType == UserType.organizer) {
+        eventsPreview = ListView.builder(
+            itemCount: _searchResults.length + 1,
+            itemBuilder: (ctx, index) {
+              if (index == _searchResults.length) {
+                return const VerticalEmptySpace(
+                  height: 100,
+                );
+              }
+              return EventPreview(event: _searchResults[index]);
+            });
+      } else {
+        eventsPreview = ListView.builder(
+            itemCount: _searchResults.length,
+            itemBuilder: (ctx, index) {
+              return EventPreview(event: _searchResults[index]);
+            });
+      }
     } else {
       eventsPreview = const Text("No events found");
     }
@@ -130,28 +154,93 @@ class _HomeBodyState extends State<HomeBody> {
                 padding: const EdgeInsets.fromLTRB(10, 28, 10, 18),
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                 decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 234, 234, 234),
+                  // color: Color.fromARGB(255, 234, 234, 234),
                   border: Border(bottom: BorderSide(width: 2)),
                 ),
                 child: Column(
                   children: [
-                    Container(
-                      // color: Colors.white,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFF444CB4), width: 2),
-                        borderRadius: const BorderRadius.all(Radius.circular(8)),
-                        color: Colors.white,
-                      ),
-                      child: TextField(
-                        onChanged: onQueryChanged,
-                        decoration: const InputDecoration(
-                          labelText: 'Search',
-                          border: OutlineInputBorder(),
-                          prefixIcon: Icon(Icons.search),
-                        ),
-                      ),
+                    SearchBar(
+                      padding: WidgetStateProperty.all(
+                          const EdgeInsets.symmetric(
+                              vertical: 4.0, horizontal: 16.0)),
+                      textStyle: WidgetStateProperty.all(mediumTextStyle),
+                      leading: const Icon(Icons.search),
+                      backgroundColor: WidgetStateProperty.all(Colors.white),
+                      onChanged: onQueryChanged,
                     ),
+                    Container(
+                        margin: const EdgeInsets.only(top: 12),
+                        height: 50,
+                        // width: 400,
+                        child: GridView.count(
+                          childAspectRatio: 5,
+                          crossAxisCount: 3,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: [
+                            Row(
+                              children: [
+                                Checkbox(value: true, onChanged: (val) {},
+                                  fillColor: WidgetStateProperty.all(
+                                      eventStatusColor[EventStatus.scheduled]),),
+                                Text(
+                                  'Scheduled',
+                                  style: smallTextStyle.copyWith(
+                                      color: eventStatusColor[
+                                          EventStatus.scheduled]),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: true,
+                                  onChanged: (val) {},
+                                  fillColor: WidgetStateProperty.all(
+                                      eventStatusColor[EventStatus.ongoing]),
+                                ),
+                                Text('Ongoing',
+                                    style: smallTextStyle.copyWith(
+                                      color: eventStatusColor[EventStatus.ongoing],
+                                    )),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(value: true, onChanged: (val) {},
+                                  fillColor: WidgetStateProperty.all(
+                                      eventStatusColor[EventStatus.completed]),),
+                                Text('Completed',
+                                    style: smallTextStyle.copyWith(
+                                      color: eventStatusColor[EventStatus.completed],
+                                    )),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(value: true, onChanged: (val) {},
+                                  fillColor: WidgetStateProperty.all(
+                                      eventStatusColor[EventStatus.cancelled]),),
+                                Text(
+                                  'Cancelled',
+                                  style: smallTextStyle.copyWith(
+                                      color: eventStatusColor[EventStatus.cancelled]),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Checkbox(value: true, onChanged: (val) {},
+                                  fillColor: WidgetStateProperty.all(
+                                      eventStatusColor[EventStatus.postponed]),),
+                                Text(
+                                  'Postponed',
+                                  style: smallTextStyle.copyWith(
+                                      color: eventStatusColor[EventStatus.postponed]),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ))
                   ],
                 ),
               ),
@@ -159,6 +248,7 @@ class _HomeBodyState extends State<HomeBody> {
           ),
         ),
         Flexible(
+            // child: eventsPreview,
             child: userType == UserType.organizer
                 ? HomeBodyDisplay(eventsPreview: eventsPreview)
                 : eventsPreview),
@@ -192,10 +282,26 @@ class HomeBodyDisplay extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 15),
               child: CustomActionButton(
-                  displayText: 'Organize Events', actionOnPressed: () {}),
+                  displayText: 'Organize Events', actionOnPressed: () {
+                    Navigator.of(context).pushNamed('/organize');
+                  }),
             ))
       ],
     );
+  }
+}
+
+class CustomSearchBar extends StatefulWidget {
+  const CustomSearchBar({super.key});
+
+  @override
+  State<CustomSearchBar> createState() => _CustomSearchBarState();
+}
+
+class _CustomSearchBarState extends State<CustomSearchBar> {
+  @override
+  Widget build(BuildContext context) {
+    return const SearchBar();
   }
 }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 
 enum EventType {
   exhibition,
@@ -22,6 +23,14 @@ enum EventStatus {
   cancelled,
   postponed,
 }
+
+const Map<EventStatus, Color> eventStatusColor = {
+  EventStatus.cancelled: Color.fromARGB(255, 255, 66, 66),
+  EventStatus.completed: Color.fromARGB(255, 199, 194, 194),
+  EventStatus.ongoing: Color.fromARGB(255, 120, 255, 125),
+  EventStatus.postponed: Colors.amber,
+  EventStatus.scheduled: Color.fromARGB(255, 113, 191, 255)
+};
 
 class EventModel {
   final String? id;
@@ -110,21 +119,21 @@ class EventModel {
     List<String>? participants,
   }) {
     return EventModel(
-        id: id,
-        organizerEmail: organizerEmail ?? this.organizerEmail,
-        title: title ?? this.title,
-        description: description ?? this.description,
-        venue: venue ?? this.venue,
-        fees: fees ?? this.fees,
-        contact: contact ?? this.contact,
-        type: type ?? this.type,
-        datetime: datetime ?? this.datetime,
-        capacity: capacity ?? this.capacity,
-        imageLink: imageLink ?? this.imageLink,
-        isAnonymous: isAnonymous ?? this.isAnonymous,
-        status: status ?? this.status,
-        materials: materials ?? this.materials ?? [],
-        participants: participants ?? this.participants ?? [],
-        );
+      id: id,
+      organizerEmail: organizerEmail ?? this.organizerEmail,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      venue: venue ?? this.venue,
+      fees: fees ?? this.fees,
+      contact: contact ?? this.contact,
+      type: type ?? this.type,
+      datetime: datetime ?? this.datetime,
+      capacity: capacity ?? this.capacity,
+      imageLink: imageLink ?? this.imageLink,
+      isAnonymous: isAnonymous ?? this.isAnonymous,
+      status: status ?? this.status,
+      materials: materials ?? this.materials ?? [],
+      participants: participants ?? this.participants ?? [],
+    );
   }
 }

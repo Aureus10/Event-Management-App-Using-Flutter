@@ -24,7 +24,7 @@ ThemeData customTheme = ThemeData(
     backgroundColor: Colors.white,
     surfaceTintColor: Colors.white,
     shadowColor: Colors.black,
-    elevation: 30,
+    elevation: 18,
     titleTextStyle: titleTextStyle,
   ),
   bottomAppBarTheme: const BottomAppBarTheme(
