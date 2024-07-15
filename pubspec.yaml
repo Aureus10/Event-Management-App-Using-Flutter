@@ -13,6 +13,7 @@ dependencies:
   firebase_storage: ^12.1.0
   flutter:
     sdk: flutter
+  google_maps_flutter: ^2.7.0
   image_picker: ^1.1.2
   provider: ^6.1.2
 
