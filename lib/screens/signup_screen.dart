@@ -10,9 +10,9 @@ import 'package:assignment/widgets/components/custom_input_fields.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/widgets/header_bar.dart';
+import 'package:assignment/widgets/pickers/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -153,7 +153,7 @@ class _SignupScreenState extends State<SignupScreen> {
       const VerticalEmptySpace(
         height: 20,
       ),
-      SelectImageField(actionOnPressed: (image) {
+      CustomImagePicker(actionOnPressed: (image) {
         setState(() {
           _image = image;
         });
@@ -238,46 +238,4 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 }
 
-class SelectImageField extends StatefulWidget {
-  const SelectImageField({super.key, required this.actionOnPressed, this.text});
 
-  final Function(File?) actionOnPressed;
-  final String? text;
-
-  @override
-  State<SelectImageField> createState() => _SelectImageFieldState();
-}
-
-class _SelectImageFieldState extends State<SelectImageField> {
-  File? _selectedImage;
-
-  Future _pickImageFromGallery() async {
-    final returnedImage =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    if (returnedImage == null) return;
-    setState(() {
-      _selectedImage = File(returnedImage.path);
-    });
-    widget.actionOnPressed(_selectedImage);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          widget.text ?? 'Pick an Image',
-          style: mediumTextStyle,
-        ),
-        IconButton(
-            onPressed: _pickImageFromGallery,
-            icon: const Icon(
-              Icons.drive_folder_upload,
-              size: 40,
-            ))
-      ],
-    );
-  }
-}

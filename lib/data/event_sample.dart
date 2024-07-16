@@ -13,7 +13,7 @@ List<EventModel> sampleEvents = [
     datetime: [
       
     ],
-    capacity: '500',
+    capacity: 500,
     imageLink: 'https://example.com/conference.jpg',
     isAnonymous: false,
     status: EventStatus.scheduled,
@@ -31,7 +31,7 @@ List<EventModel> sampleEvents = [
     type: EventType.festival,
     datetime: [
     ],
-    capacity: '2000',
+    capacity: 2000,
     imageLink: 'https://example.com/festival.jpg',
     isAnonymous: true,
     status: EventStatus.ongoing,
@@ -49,7 +49,7 @@ List<EventModel> sampleEvents = [
     type: EventType.hackathon,
     datetime: [
     ],
-    capacity: '300',
+    capacity: 300,
     imageLink: 'https://example.com/hackathon.jpg',
     isAnonymous: false,
     status: EventStatus.completed,
@@ -67,7 +67,7 @@ List<EventModel> sampleEvents = [
     type: EventType.exhibition,
     datetime: [
     ],
-    capacity: '300',
+    capacity: 300,
     imageLink: 'https://example.com/exhibition.jpg',
     isAnonymous: false,
     status: EventStatus.scheduled,
@@ -85,7 +85,7 @@ List<EventModel> sampleEvents = [
     type: EventType.workshops,
     datetime: [
     ],
-    capacity: '100',
+    capacity: 100,
     imageLink: 'https://example.com/bootcamp.jpg',
     isAnonymous: false,
     status: EventStatus.ongoing,
@@ -103,7 +103,7 @@ List<EventModel> sampleEvents = [
     type: EventType.competition,
     datetime: [
     ],
-    capacity: '200',
+    capacity: 200,
     imageLink: 'https://example.com/competition.jpg',
     isAnonymous: false,
     status: EventStatus.scheduled,
@@ -121,7 +121,7 @@ List<EventModel> sampleEvents = [
     type: EventType.workshops,
     datetime: [
     ],
-    capacity: '150',
+    capacity: 150,
     imageLink: 'https://example.com/vrworkshop.jpg',
     isAnonymous: false,
     status: EventStatus.ongoing,
@@ -139,7 +139,7 @@ List<EventModel> sampleEvents = [
     type: EventType.webinar,
     datetime: [
     ],
-    capacity: 'Unlimited',
+    capacity: 0,
     imageLink: 'https://example.com/webinar.jpg',
     isAnonymous: true,
     status: EventStatus.scheduled,

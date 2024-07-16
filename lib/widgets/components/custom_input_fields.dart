@@ -1,9 +1,9 @@
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
+import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 
 class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField(
@@ -38,6 +38,42 @@ class CustomTextFormField extends StatelessWidget {
           decoration: InputDecoration(hintText: hintText ?? ''),
           validator: validator,
           controller: controller,
+        )
+      ],
+    );
+  }
+}
+
+class CustomTextArea extends StatelessWidget {
+  const CustomTextArea(
+      {super.key,
+      required this.text,
+      this.initialValue,
+      required this.validator,
+      required this.actionOnChanged,
+      });
+
+  final String text;
+  final String? initialValue;
+  final String? Function(String?)? validator;
+  final Function(String) actionOnChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          text,
+          style: mediumTextStyle,
+        ),
+        const VerticalEmptySpace(height: 5,),
+        TextFormField(
+          initialValue: initialValue,
+          onChanged: actionOnChanged,
+          decoration: InputDecoration(border: OutlineInputBorder()),
+          validator: validator,
+          maxLines: 8,
         )
       ],
     );

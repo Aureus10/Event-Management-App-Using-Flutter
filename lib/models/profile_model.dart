@@ -33,14 +33,14 @@ class ProfileModel {
   factory ProfileModel.fromMap(Map<String, dynamic> map) => ProfileModel(
         email: map['email'],
         type: UserType.values[map['type']],
-        age: map['age'],
+        age: int.parse(map['age']),
         username: map['username'],
         gender: Gender.values[map['gender']],
         contact: map['contact'],
         eventHistory: List<String>.from(map['eventHistory']),
-        creditScore: map['creditScore'],
+        creditScore: int.parse(map['creditScore']),
         imageLink: map['imageLink'],
-        status: map['status'],
+        status: AccountStatus.values[map['status']],
       );
 
   Map<String, dynamic> toMap() => {

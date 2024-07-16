@@ -31,9 +31,8 @@ class AuthService {
     required BuildContext context,
   }) async {
     if(!await Provider.of<ProfileProvider>(context, listen: false).addProfile(newProfile)) {
-      debugPrint("FAILURE");
       return;
-    };
+    }
     await createUserWithEmailAndPassword(email: newProfile.email, password: password);
   }
 

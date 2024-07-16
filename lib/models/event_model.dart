@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +45,7 @@ class EventModel {
   final String contact;
   final EventType type;
   final List<Map<DateTime, DateTime>> datetime;
-  final String capacity;
+  final int capacity;
   final String imageLink;
   final bool isAnonymous;
   final EventStatus status;
@@ -74,15 +76,15 @@ class EventModel {
         title: map['title'],
         description: map['description'],
         venue: map['venue'],
-        fees: map['fees'],
+        fees: double.parse(map['fees']),
         contact: map['contact'],
         type: EventType.values[map['type']],
         datetime: (map['Datetime'] as Map<String, dynamic>).entries.map((entry) {
     return {DateTime.parse(entry.key): (entry.value as Timestamp).toDate()};
   }).toList(),
-        capacity: map['capacity'],
+        capacity: int.parse(map['capacity']),
         imageLink: map['imageLink'],
-        isAnonymous: map['isAnonymous'],
+        isAnonymous: bool.parse(map['isAnonymous']),
         status: EventStatus.values[map['status']],
         materials: List<String>.from(map['materials']),
         participants: List<String>.from(map['participants']),
@@ -114,7 +116,7 @@ class EventModel {
     String? contact,
     EventType? type,
     List<Map<DateTime, DateTime>>? datetime,
-    String? capacity,
+    int? capacity,
     String? imageLink,
     bool? isAnonymous,
     EventStatus? status,

@@ -5,18 +5,25 @@ import 'package:assignment/theme/colors.dart';
 
 class CustomLink extends StatelessWidget {
   const CustomLink(
-      {super.key, required this.displayText, required this.actionOnPressed});
+      {super.key, required this.displayText, required this.actionOnPressed, this.color, this.fontSize});
 
   final String displayText;
   final VoidCallback actionOnPressed;
+  final Color? color;
+  final double? fontSize;
 
   @override
   Widget build(BuildContext context) {
     return TextButton(
         onPressed: actionOnPressed,
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap
+        ),
         child: Text(
           displayText,
-          style: linkTextStyle,
+          style: linkTextStyle.copyWith(color: color, decorationColor: color, fontSize: fontSize),
         ));
   }
 }

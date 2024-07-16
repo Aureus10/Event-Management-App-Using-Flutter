@@ -9,7 +9,8 @@ extension FormValidator on String {
 
   // one uppercase letter, one lowercase letter, one number, one special character, and a minimum length of 8 characters:
   bool get isValidPassword {
-    final passwordReg = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;"<>?,./\\\-])[A-Za-z\d!@#$%^&*()_+{}\[\]:;"<>?,./\\\-]{8,}$');
+    final passwordReg = RegExp(
+        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;"<>?,./\\\-])[A-Za-z\d!@#$%^&*()_+{}\[\]:;"<>?,./\\\-]{8,}$');
     return passwordReg.hasMatch(this);
   }
 
@@ -23,8 +24,14 @@ extension FormValidator on String {
   }
 
   bool get isValidLocation {
-    final locationReg = RegExp(r'^(-?\d{1,2}(?:\.\d*)?),\s*(-?\d{1,3}(?:\.\d*)?)$');
+    final locationReg =
+        RegExp(r'^(-?\d{1,2}(?:\.\d*)?),\s*(-?\d{1,3}(?:\.\d*)?)$');
     return locationReg.hasMatch(this);
+  }
+
+  bool get isValidDatetime {
+    final datetimeReg = RegExp(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$');
+    return datetimeReg.hasMatch(this);
   }
 }
 
@@ -100,11 +107,26 @@ String? Function(String?)? contactValidator() => (String? value) {
     };
 
 String? Function(String?)? locationValidator() => (String? value) {
-  if (value == null || value.isEmpty) {
-    return "Please select location";
-  }
-  if (!value.isValidLocation) {
-    return "Invalid Coordinate Format! (Format: latitude, longtidue)";
-  }
-  return null;
-};
+      if (value == null || value.isEmpty) {
+        return "Please select location";
+      }
+      if (!value.isValidLocation) {
+        return "Invalid Coordinate Format! (Format: latitude, longtidue)";
+      }
+      return null;
+    };
+
+String? Function(String?)? dateTimeValidator() => (String? value) {
+      if (value == null || value.isEmpty) {
+        return "Please select location";
+      }
+      if (!value.isValidDatetime) {
+        return "Invalid Datetime Format! (Format: yyyy-MM-dd HH:mm:ss";
+      }
+      // try {
+      //   DateTime.parse(value.replaceFirst(' ', 'T'));
+      // } catch (e) {
+      //   return "Invalid datetime";
+      // }
+      return null;
+    };
