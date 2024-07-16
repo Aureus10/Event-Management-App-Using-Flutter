@@ -55,7 +55,7 @@ class _CustomDateTimePickerState extends State<CustomDateTimePicker> {
       //   }
       // },
     );
-    if (dateTimeList![0].isBefore(dateTimeList[1])) {
+    if (dateTimeList![0].isBefore(dateTimeList[1]) && dateTimeList[0].isAfter(DateTime.now())) {
       widget.setDatetime(
           formatDateTime(dateTimeList[0]), formatDateTime(dateTimeList[1]));
     }

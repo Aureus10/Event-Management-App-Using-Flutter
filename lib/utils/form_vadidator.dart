@@ -29,6 +29,13 @@ extension FormValidator on String {
     return locationReg.hasMatch(this);
   }
 
+  bool get isValidDate {
+    final dateReg = RegExp(
+      r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$'
+    );
+    return dateReg.hasMatch(this);
+  }
+
   bool get isValidDatetime {
     final datetimeReg = RegExp(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$');
     return datetimeReg.hasMatch(this);
@@ -115,6 +122,16 @@ String? Function(String?)? locationValidator() => (String? value) {
       }
       return null;
     };
+
+String? Function(String?)? dateValidator() => (String? value) {
+  if (value == null || value.isEmpty) {
+    return "Please fill in the date of birth";
+  }
+  if (!value.isValidDate) {
+    return "Invalid date format (YYYY-MM-DD)";
+  }
+  return null;
+};
 
 String? Function(String?)? dateTimeValidator() => (String? value) {
       if (value == null || value.isEmpty) {

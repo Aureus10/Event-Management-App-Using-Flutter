@@ -45,6 +45,7 @@ class ProfileModel {
 
   Map<String, dynamic> toMap() => {
         'email': email,
+        'username': username,
         'type': type.toString().split('.').last,
         'dateOfBirth': dateOfBirth,
         'gender': gender.toString().split('.').last,

@@ -32,7 +32,7 @@ class PasswordFieldState extends State<PasswordField> {
           obscureText: _isHidden,
           decoration: InputDecoration(
             // icon: Icon(Icons.password),
-            hintText: 'sample123!Pass',
+            // hintText: 'sample123!Pass',
             // labelText: 'Passowrd*',
             suffixIcon: IconButton(
               icon: Icon(_isHidden ? Icons.visibility_off : Icons.visibility),

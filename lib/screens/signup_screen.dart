@@ -10,6 +10,7 @@ import 'package:assignment/widgets/components/custom_input_fields.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/widgets/header_bar.dart';
+import 'package:assignment/widgets/loading.dart';
 import 'package:assignment/widgets/pickers/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,8 @@ class _SignupScreenState extends State<SignupScreen> {
 
   void signUp(BuildContext ctx) {
     try {
-      late ProfileModel newProfile;
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) => (const CustomLoading(loadingText: 'Signing up...'))));
       final FileProvider fileProvider =
           Provider.of<FileProvider>(ctx, listen: false);
       fileProvider
@@ -68,7 +70,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     password: _password!,
                     context: ctx)
               })
-          .then((_) => {Navigator.of(ctx).pushReplacementNamed('/home')});
+          .then((_) => {
+                Navigator.of(ctx).pushNamedAndRemoveUntil(
+                    '/home', (Route<dynamic> route) => false)
+              });
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(ctx).clearSnackBars();
       ScaffoldMessenger.of(ctx).showSnackBar(
@@ -165,32 +170,35 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Image.file(_image!, height: 200, width: 200),
           // clipBehavior: Clip.none,
         ),
-      Wrap(
-        // mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.3,
-            child: CustomTextFormField(
-                text: 'Age*',
+      // Wrap(
+      //   // mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //     SizedBox(
+      //       width: MediaQuery.of(context).size.width * 0.3,
+      //       child: 
+            CustomTextFormField(
+                text: 'Date of birth',
                 initialValue: _dateOfBirth,
-                validator: emptyValidator(),
+                validator: dateValidator(),
                 actionOnChanged: (value) {
                   _dateOfBirth = value;
                 }),
-          ),
-          const HorizontalEmptySpace(),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * 0.45,
-            child: CustomGenderTextFormField(
+          // ),
+          // const HorizontalEmptySpace(),
+          // SizedBox(
+          //   width: MediaQuery.of(context).size.width * 0.45,
+          //   child: 
+          const VerticalEmptySpace(),
+            CustomGenderTextFormField(
                 initialValue: _gender,
                 actionOnChanged: (value) {
                   setState(() {
                     _gender = value;
                   });
                 }),
-          ),
-        ],
-      ),
+      //     ),
+      //   ],
+      // ),
       const VerticalEmptySpace(
         height: 40,
       ),
