@@ -30,10 +30,9 @@ class AuthService {
     required String password,
     required BuildContext context,
   }) async {
-    if(!await Provider.of<ProfileProvider>(context, listen: false).addProfile(newProfile)) {
-      return;
+    if(await Provider.of<ProfileProvider>(context, listen: false).addProfile(newProfile)) {
+      await createUserWithEmailAndPassword(email: newProfile.email, password: password);
     }
-    await createUserWithEmailAndPassword(email: newProfile.email, password: password);
   }
 
   Future<void> signOut() async {

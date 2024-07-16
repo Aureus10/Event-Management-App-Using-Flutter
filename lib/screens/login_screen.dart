@@ -123,9 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
               displayText: 'Login',
               actionOnPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text('Login Successful $_email and $_password')));
                   signInWithEmailAndPassword();
                 }
               },

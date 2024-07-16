@@ -41,7 +41,7 @@ class _SignupScreenState extends State<SignupScreen> {
   String? _username;
   String _email = '';
   String? _password;
-  int? _age;
+  String? _dateOfBirth;
   Gender _gender = Gender.female;
   String? _contact;
   File? _image;
@@ -53,21 +53,20 @@ class _SignupScreenState extends State<SignupScreen> {
           Provider.of<FileProvider>(ctx, listen: false);
       fileProvider
           .uploadImage(_image!, _email)
-          .then((_) => {
-                newProfile = ProfileModel(
-                    type: UserType.user,
-                    age: _age!,
-                    username: _username!,
-                    gender: _gender,
-                    email: _email,
-                    contact: _contact!,
-                    creditScore: 100,
-                    imageLink: fileProvider.imageUrl!,
-                    status: AccountStatus.active)
-              })
-          .then((_) => {
+          .then((imageUrl) => {
                 AuthService().createNewUser(
-                    newProfile: newProfile, password: _password!, context: ctx)
+                    newProfile: ProfileModel(
+                        type: UserType.user,
+                        dateOfBirth: _dateOfBirth!,
+                        username: _username!,
+                        gender: _gender,
+                        email: _email,
+                        contact: _contact!,
+                        creditScore: 100,
+                        imageLink: imageUrl!,
+                        status: AccountStatus.active),
+                    password: _password!,
+                    context: ctx)
               })
           .then((_) => {Navigator.of(ctx).pushReplacementNamed('/home')});
     } on FirebaseAuthException catch (e) {
@@ -171,12 +170,12 @@ class _SignupScreenState extends State<SignupScreen> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.3,
-            child: CustomNumericalTextFormField(
+            child: CustomTextFormField(
                 text: 'Age*',
-                initialValue: _age,
+                initialValue: _dateOfBirth,
                 validator: emptyValidator(),
                 actionOnChanged: (value) {
-                  _age = int.parse(value);
+                  _dateOfBirth = value;
                 }),
           ),
           const HorizontalEmptySpace(),
@@ -237,5 +236,3 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
-
-

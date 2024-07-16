@@ -1,6 +1,7 @@
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CustomSideBar extends StatelessWidget {
@@ -50,7 +51,10 @@ class CustomSideBar extends StatelessWidget {
         MenuItems(
           icon: Icons.logout,
           text: 'Logout',
-          actionOnTap: () {},
+          actionOnTap: () {
+            FirebaseAuth.instance.signOut();
+            Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+          },
           color: Colors.red,
         ),
       ];
@@ -80,7 +84,10 @@ class CustomSideBar extends StatelessWidget {
         MenuItems(
           icon: Icons.logout,
           text: 'Logout',
-          actionOnTap: () {},
+          actionOnTap: () {
+            FirebaseAuth.instance.signOut();
+            Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+          },
           color: Colors.red,
         ),
       ];
@@ -105,7 +112,10 @@ class CustomSideBar extends StatelessWidget {
         MenuItems(
           icon: Icons.logout,
           text: 'Logout',
-          actionOnTap: () {},
+          actionOnTap: () {
+            FirebaseAuth.instance.signOut();
+            Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+          },
           color: Colors.red,
         ),
       ];

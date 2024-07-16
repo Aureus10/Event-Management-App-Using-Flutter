@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:assignment/models/event_model.dart';
+import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/pickers/datetime_picker.dart';
 import 'package:assignment/widgets/pickers/location_picker.dart';
@@ -11,6 +14,7 @@ import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class OrganizeEventScreen extends StatefulWidget {
   const OrganizeEventScreen({super.key});
@@ -25,7 +29,17 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   final _formKey = GlobalKey<FormState>();
   final List<Map<DateTime, DateTime>> _eventDateTime = [{}];
   TextEditingController _locationController = TextEditingController();
+  late ProfileProvider provider;
 
+  // late String name;
+
+  // @override
+  // void initState() {
+
+  //   name = Provider.of<ProfileProvider>(context, listen: false).userProfile!.username;
+  //   super.initState();
+  // }
+  EventType _eventType = EventType.exhibition;
   String? _eventTitle;
   String? _eventDesc;
   String? _contact;
@@ -41,20 +55,6 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   // final EventStatus status;
   // final List<String>? materials;
   // final List<String>? participants;
-
-  // @override
-  // void initState() {
-  //   _locationController = TextEditingController()
-  //     ..addListener(() {
-  //       String text = _locationController.text.trim();
-  //       if (!text.isValidLocation) {
-  //         text = formatLocationToString(_location);
-  //       } else {
-  //         _location = formatStringToLocation(text);
-  //       }
-  //     });
-  //   super.initState();
-  // }
 
   Future<void> _pickLocation() async {
     await Navigator.of(context).push(
@@ -86,20 +86,64 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
         style: largeTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
       const VerticalEmptySpace(),
-      const Text(
-        'Event Type',
+      Text(
+        'Event Type: ${_eventType.toString().split('.').last}',
         style: mediumTextStyle,
+      ),
+      const VerticalEmptySpace(),
+      // SingleChildScrollView(
+      //   scrollDirection: Axis.horizontal,
+      //   child: 
+      // ),
+      Container(
+        height: 200,
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(),
+          borderRadius: BorderRadius.circular(10)
+        ),
+        child: GridView.builder(
+          scrollDirection: Axis.horizontal,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 4/10
+          ),
+          itemCount: EventType.values.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                setState(() {
+                  _eventType = EventType.values[index];
+                });
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: _eventType == EventType.values[index] ? Colors.green : Colors.blueAccent,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  EventType.values[index].toString().split('.').last,
+                  style: mediumTextStyle,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          },
+        ),
       ),
       const VerticalEmptySpace(),
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'Location: ',
             style: mediumTextStyle,
           ),
           _location == null
-              ? Text(
+              ? const Text(
                   'N/A',
                   style: mediumTextStyle,
                 )
@@ -111,8 +155,8 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           IconButton(
               onPressed: _pickLocation,
               padding: EdgeInsets.zero,
-              constraints: BoxConstraints(),
-              icon: Icon(
+              constraints: const BoxConstraints(),
+              icon: const Icon(
                 Icons.map,
                 size: 28,
                 color: Colors.blue,
@@ -202,9 +246,8 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               } else {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        'Please select datetime for all day 1 to ${_eventDateTime.length}'),
+                  const SnackBar(
+                    content: Text('Please select datetime for all sessions'),
                   ),
                 );
               }
@@ -297,7 +340,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
             activeColor: Colors.amber,
             activeTrackColor: const Color.fromARGB(255, 255, 239, 192),
           ),
-          Text(
+          const Text(
             'Keep Participants Anonymous',
             style: smallTextStyle,
           )
@@ -305,13 +348,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       ),
       Row(
         children: [
-          Text(
+          const Text(
             'Event Image:',
             style: mediumTextStyle,
           ),
           IconButton(
               onPressed: () {},
-              icon: Icon(
+              icon: const Icon(
                 Icons.upload_file,
                 size: 36,
               )),
@@ -319,13 +362,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       ),
       const VerticalEmptySpace(),
       Row(children: [
-        Text(
+        const Text(
           'Event Materials:',
           style: mediumTextStyle,
         ),
         IconButton(
             onPressed: () {},
-            icon: Icon(
+            icon: const Icon(
               Icons.upload_file,
               size: 36,
             )),

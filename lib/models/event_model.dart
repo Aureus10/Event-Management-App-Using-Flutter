@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -97,12 +95,12 @@ class EventModel {
         'venue': venue,
         'fees': fees,
         'contact': contact,
-        'type': type,
+        'type': type.toString().split('.').last,
         'datetime': {for (var entry in datetime) entry.keys.first.toIso8601String(): Timestamp.fromDate(entry.values.first)},
         'capacity': capacity,
         'imageLink': imageLink,
         'isAnonymous': isAnonymous,
-        'status': status,
+        'status': status.toString().split('.').last,
         'materials': materials,
         'participants': participants,
       };

@@ -7,7 +7,7 @@ enum AccountStatus { active, inactive, banned }
 class ProfileModel {
   final String email;
   final UserType type;
-  final int age;
+  final String dateOfBirth;
   final String username;
   final Gender gender;
   final String contact;
@@ -19,7 +19,7 @@ class ProfileModel {
   const ProfileModel({
     required this.email,
     required this.type,
-    required this.age,
+    required this.dateOfBirth,
     required this.username,
     required this.gender,
     required this.contact,
@@ -33,7 +33,7 @@ class ProfileModel {
   factory ProfileModel.fromMap(Map<String, dynamic> map) => ProfileModel(
         email: map['email'],
         type: UserType.values[map['type']],
-        age: int.parse(map['age']),
+        dateOfBirth: map['dateOfBirth'],
         username: map['username'],
         gender: Gender.values[map['gender']],
         contact: map['contact'],
@@ -46,7 +46,7 @@ class ProfileModel {
   Map<String, dynamic> toMap() => {
         'email': email,
         'type': type.toString().split('.').last,
-        'age': age,
+        'dateOfBirth': dateOfBirth,
         'gender': gender.toString().split('.').last,
         'contact': contact,
         'eventHistory': eventHistory,
@@ -58,7 +58,7 @@ class ProfileModel {
   ProfileModel copyWith({
     String? email,
     UserType? type,
-    int? age,
+    String? dateOfBirth,
     String? username,
     Gender? gender,
     String? contact,
@@ -69,7 +69,7 @@ class ProfileModel {
   }) {
     return ProfileModel(
         type: type ?? this.type,
-        age: age ?? this.age,
+        dateOfBirth: dateOfBirth ?? this.dateOfBirth,
         username: username ?? this.username,
         gender: gender ?? this.gender,
         email: email ?? this.email,
