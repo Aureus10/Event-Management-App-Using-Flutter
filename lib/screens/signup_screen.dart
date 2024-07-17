@@ -192,8 +192,16 @@ class _SignupScreenState extends State<SignupScreen> {
           displayText: 'Sign Up',
           actionOnPressed: () {
             if (_formKey.currentState!.validate()) {
-              // debugPrint("hello");
-              signUp(context);
+              if (_image == null) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please select an image.'),
+                  ),
+                );
+              } else {
+                signUp(context);
+              }
             }
           }),
     ];
