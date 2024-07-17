@@ -1,4 +1,5 @@
 import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,12 +9,10 @@ class CustomSideBar extends StatelessWidget {
   const CustomSideBar(
       {super.key,
       required this.accountName,
-      required this.accountEmail,
       required this.imageUrl,
       required this.userType});
 
   final String accountName;
-  final String accountEmail;
   final String imageUrl;
   final UserType userType;
 
@@ -52,8 +51,8 @@ class CustomSideBar extends StatelessWidget {
           icon: Icons.logout,
           text: 'Logout',
           actionOnTap: () {
-            FirebaseAuth.instance.signOut();
-            Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+            AuthService().signOut();
+            // Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
           },
           color: Colors.red,
         ),
@@ -85,8 +84,9 @@ class CustomSideBar extends StatelessWidget {
           icon: Icons.logout,
           text: 'Logout',
           actionOnTap: () {
-            FirebaseAuth.instance.signOut();
-            Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+            AuthService().signOut();
+            // FirebaseAuth.instance.signOut();
+            // Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
           },
           color: Colors.red,
         ),
@@ -113,8 +113,9 @@ class CustomSideBar extends StatelessWidget {
           icon: Icons.logout,
           text: 'Logout',
           actionOnTap: () {
-            FirebaseAuth.instance.signOut();
-            Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+            AuthService().signOut();
+            // FirebaseAuth.instance.signOut();
+            // Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
           },
           color: Colors.red,
         ),

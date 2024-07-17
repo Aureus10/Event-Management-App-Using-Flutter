@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 enum UserType { user, organizer, administrator }
 
 enum Gender { male, female }
@@ -32,15 +34,15 @@ class ProfileModel {
   @override
   factory ProfileModel.fromMap(Map<String, dynamic> map) => ProfileModel(
         email: map['email'],
-        type: UserType.values[map['type']],
+        type: UserType.values.firstWhere((e) => e.toString() == 'UserType.${map['type']}'),
         dateOfBirth: map['dateOfBirth'],
         username: map['username'],
-        gender: Gender.values[map['gender']],
+        gender: Gender.values.firstWhere((e) => e.toString() == 'Gender.${map['gender']}'),
         contact: map['contact'],
         eventHistory: List<String>.from(map['eventHistory']),
-        creditScore: int.parse(map['creditScore']),
+        creditScore: map['creditScore'],
         imageLink: map['imageLink'],
-        status: AccountStatus.values[map['status']],
+        status: AccountStatus.values.firstWhere((e) => e.toString() == 'AccountStatus.${map['status']}'),
       );
 
   Map<String, dynamic> toMap() => {
@@ -50,7 +52,7 @@ class ProfileModel {
         'dateOfBirth': dateOfBirth,
         'gender': gender.toString().split('.').last,
         'contact': contact,
-        'eventHistory': eventHistory,
+        'eventHistory': eventHistory ?? [],
         'creditScore': creditScore,
         'imageLink': imageLink,
         'status': status.toString().split('.').last,

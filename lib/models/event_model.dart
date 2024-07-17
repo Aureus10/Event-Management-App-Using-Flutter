@@ -74,16 +74,16 @@ class EventModel {
         title: map['title'],
         description: map['description'],
         venue: map['venue'],
-        fees: double.parse(map['fees']),
+        fees: map['fees'],
         contact: map['contact'],
-        type: EventType.values[map['type']],
+        type: EventType.values.firstWhere((e) => e.toString() == 'EventType.${map['type']}'),
         datetime: (map['Datetime'] as Map<String, dynamic>).entries.map((entry) {
     return {DateTime.parse(entry.key): (entry.value as Timestamp).toDate()};
   }).toList(),
-        capacity: int.parse(map['capacity']),
+        capacity: map['capacity'],
         imageLink: map['imageLink'],
-        isAnonymous: bool.parse(map['isAnonymous']),
-        status: EventStatus.values[map['status']],
+        isAnonymous: map['isAnonymous'],
+        status: EventStatus.values.firstWhere((e) => e.toString() == 'EventStatus.${map['status']}'),
         materials: List<String>.from(map['materials']),
         participants: List<String>.from(map['participants']),
       );
@@ -101,8 +101,8 @@ class EventModel {
         'imageLink': imageLink,
         'isAnonymous': isAnonymous,
         'status': status.toString().split('.').last,
-        'materials': materials,
-        'participants': participants,
+        'materials': materials ?? [],
+        'participants': participants ?? [],
       };
 
   EventModel copyWith({

@@ -5,6 +5,7 @@ import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/repositories/profile_repository.dart';
 import 'package:assignment/screens/event_calendar_screen.dart';
 import 'package:assignment/screens/profile_screen.dart';
+import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
@@ -35,6 +36,25 @@ class _HomeScreenState extends State<HomeScreen> {
         _selectedIndex = index;
       });
 
+  ProfileModel? _userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() async {
+    ProfileProvider profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
+    // await profileProvider.initializeProfile('New1234@gmail.com');
+    // _userProfile = profileProvider.userProfile;
+    setState(() {
+      _userProfile = profileProvider.userProfile;
+    });
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,12 +62,14 @@ class _HomeScreenState extends State<HomeScreen> {
           headerTitle: 'GesT EMS',
           menuRequired: true,
         ),
-        endDrawer: const CustomSideBar(
-          accountName: 'temporary name',
-          accountEmail: 'temporary@gmail.com',
-          imageUrl:
-              'https://firebasestorage.googleapis.com/v0/b/this-is-newpr.appspot.com/o/user_images%2FpGbjgndQhNRUSNnIOGxeq7DdUFw1.jpg?alt=media&token=f669406b-df83-4761-aafe-09f0939ff3c1',
+        endDrawer: CustomSideBar(
+          accountName: _userProfile?.username ?? '',
+          imageUrl: _userProfile?.username ?? '',
           userType: UserType.user,
+          // accountName: _userProfile.username,
+          // accountEmail: _userProfile.email,
+          // imageUrl: _userProfile.imageLink,
+          // userType: _userProfile.type,
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
@@ -179,9 +201,12 @@ class _HomeBodyState extends State<HomeBody> {
                           children: [
                             Row(
                               children: [
-                                Checkbox(value: true, onChanged: (val) {},
+                                Checkbox(
+                                  value: true,
+                                  onChanged: (val) {},
                                   fillColor: WidgetStateProperty.all(
-                                      eventStatusColor[EventStatus.scheduled]),),
+                                      eventStatusColor[EventStatus.scheduled]),
+                                ),
                                 Text(
                                   'Scheduled',
                                   style: smallTextStyle.copyWith(
@@ -200,42 +225,55 @@ class _HomeBodyState extends State<HomeBody> {
                                 ),
                                 Text('Ongoing',
                                     style: smallTextStyle.copyWith(
-                                      color: eventStatusColor[EventStatus.ongoing],
+                                      color:
+                                          eventStatusColor[EventStatus.ongoing],
                                     )),
                               ],
                             ),
                             Row(
                               children: [
-                                Checkbox(value: true, onChanged: (val) {},
+                                Checkbox(
+                                  value: true,
+                                  onChanged: (val) {},
                                   fillColor: WidgetStateProperty.all(
-                                      eventStatusColor[EventStatus.completed]),),
+                                      eventStatusColor[EventStatus.completed]),
+                                ),
                                 Text('Completed',
                                     style: smallTextStyle.copyWith(
-                                      color: eventStatusColor[EventStatus.completed],
+                                      color: eventStatusColor[
+                                          EventStatus.completed],
                                     )),
                               ],
                             ),
                             Row(
                               children: [
-                                Checkbox(value: true, onChanged: (val) {},
+                                Checkbox(
+                                  value: true,
+                                  onChanged: (val) {},
                                   fillColor: WidgetStateProperty.all(
-                                      eventStatusColor[EventStatus.cancelled]),),
+                                      eventStatusColor[EventStatus.cancelled]),
+                                ),
                                 Text(
                                   'Cancelled',
                                   style: smallTextStyle.copyWith(
-                                      color: eventStatusColor[EventStatus.cancelled]),
+                                      color: eventStatusColor[
+                                          EventStatus.cancelled]),
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                Checkbox(value: true, onChanged: (val) {},
+                                Checkbox(
+                                  value: true,
+                                  onChanged: (val) {},
                                   fillColor: WidgetStateProperty.all(
-                                      eventStatusColor[EventStatus.postponed]),),
+                                      eventStatusColor[EventStatus.postponed]),
+                                ),
                                 Text(
                                   'Postponed',
                                   style: smallTextStyle.copyWith(
-                                      color: eventStatusColor[EventStatus.postponed]),
+                                      color: eventStatusColor[
+                                          EventStatus.postponed]),
                                 ),
                               ],
                             ),
@@ -282,7 +320,8 @@ class HomeBodyDisplay extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 15),
               child: CustomActionButton(
-                  displayText: 'Organize Events', actionOnPressed: () {
+                  displayText: 'Organize Events',
+                  actionOnPressed: () {
                     Navigator.of(context).pushNamed('/organize');
                   }),
             ))

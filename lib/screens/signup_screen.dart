@@ -62,7 +62,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         dateOfBirth: _dateOfBirth!,
                         username: _username!,
                         gender: _gender,
-                        email: _email,
+                        email: _email.toLowerCase(),
                         contact: _contact!,
                         creditScore: 100,
                         imageLink: imageUrl!,

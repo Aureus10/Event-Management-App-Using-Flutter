@@ -1,5 +1,6 @@
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/repositories/profile_repository.dart';
+import 'package:assignment/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class ProfileProvider extends ChangeNotifier {
@@ -11,6 +12,7 @@ class ProfileProvider extends ChangeNotifier {
   ProfileModel? get userProfile => _profile;
 
   Future<void> initializeProfile(String email) async {
+    // await _profileRepository.getProfile(email);
     _profile = await _profileRepository.getProfile(email);
     notifyListeners();
   }

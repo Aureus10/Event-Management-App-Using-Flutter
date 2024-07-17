@@ -4,7 +4,6 @@ import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
 import 'package:assignment/widgets/loading.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (ctx) => (const CustomLoading(loadingText: 'Logging in...'))));
     String message = await AuthService()
         .signInWithEmailAndPassword(
-      email: _email,
+      email: _email.toLowerCase(),
       password: _password,
     )
         .then((message) {
