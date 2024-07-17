@@ -58,52 +58,50 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const HeaderBar(
-          headerTitle: 'GesT EMS',
-          menuRequired: true,
-        ),
-        endDrawer: CustomSideBar(
-          accountName: _userProfile?.username ?? '',
-          imageUrl: _userProfile?.username ?? '',
-          userType: UserType.user,
-          // accountName: _userProfile.username,
-          // accountEmail: _userProfile.email,
-          // imageUrl: _userProfile.imageLink,
-          // userType: _userProfile.type,
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                size: 28,
-              ),
-              label: 'Home',
+      appBar: const HeaderBar(
+        headerTitle: 'GesT EMS',
+        menuRequired: true,
+      ),
+      endDrawer: CustomSideBar(
+        accountName: _userProfile?.username ?? '',
+        imageUrl: _userProfile?.username ?? '',
+        userType: UserType.user,
+        // accountName: _userProfile.username,
+        // accountEmail: _userProfile.email,
+        // imageUrl: _userProfile.imageLink,
+        // userType: _userProfile.type,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home,
+              size: 28,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.calendar_month,
-                size: 28,
-              ),
-              label: 'Event Calendar',
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.calendar_month,
+              size: 28,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.account_circle,
-                size: 28,
-              ),
-              label: 'Profile',
+            label: 'Event Calendar',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.account_circle,
+              size: 28,
             ),
-          ],
-          currentIndex: _selectedIndex,
-          selectedItemColor: CustomizedColors.selectedColor,
-          unselectedItemColor: CustomizedColors.unselectedColor,
-          onTap: _onSelected,
-        ),
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          child: _widgetList[_selectedIndex],
-        ));
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: CustomizedColors.selectedColor,
+        unselectedItemColor: CustomizedColors.unselectedColor,
+        onTap: _onSelected,
+      ),
+      body: _widgetList[_selectedIndex],
+    );
   }
 }
 

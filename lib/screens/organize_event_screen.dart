@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:assignment/models/event_model.dart';
-import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/pickers/datetime_picker.dart';
