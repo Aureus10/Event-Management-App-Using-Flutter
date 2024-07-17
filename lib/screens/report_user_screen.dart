@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -113,9 +115,6 @@ class ReportUserScreen extends StatelessWidget {
     if (result != null) {
       PlatformFile file = result.files.first;
 
-      // Here you can implement your upload logic
-      // For example, using dio to upload the file
-
       try {
         Dio dio = Dio();
         String fileName = path.basename(file.path!);
@@ -124,7 +123,7 @@ class ReportUserScreen extends StatelessWidget {
         });
 
         Response response = await dio.post(
-          "https://example.com/upload", // Replace with your API endpoint
+          "https://example.com/upload", // Oi replace ur path here ah
           data: formData,
         );
 
@@ -148,7 +147,7 @@ class ReportUserScreen extends StatelessWidget {
     } else {
       // User canceled the picker
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No file selected')),
+        const SnackBar(content: Text('No file selected')),
       );
     }
   }
