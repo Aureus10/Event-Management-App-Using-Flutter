@@ -50,7 +50,8 @@ class _SignupScreenState extends State<SignupScreen> {
   void signUp(BuildContext ctx) {
     try {
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (ctx) => (const CustomLoading(loadingText: 'Signing up...'))));
+          builder: (ctx) =>
+              (const CustomLoading(loadingText: 'Signing up...'))));
       final FileProvider fileProvider =
           Provider.of<FileProvider>(ctx, listen: false);
       fileProvider
@@ -143,7 +144,6 @@ class _SignupScreenState extends State<SignupScreen> {
           actionOnPressed: () {
             if (_formKey.currentState!.validate()) {
               setState(() {
-                //add
                 isFirstPage = false;
               });
             }
@@ -168,37 +168,23 @@ class _SignupScreenState extends State<SignupScreen> {
           width: 100,
           height: 100,
           child: Image.file(_image!, height: 200, width: 200),
-          // clipBehavior: Clip.none,
         ),
-      // Wrap(
-      //   // mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     SizedBox(
-      //       width: MediaQuery.of(context).size.width * 0.3,
-      //       child: 
-            CustomTextFormField(
-                text: 'Date of birth',
-                initialValue: _dateOfBirth,
-                validator: dateValidator(),
-                actionOnChanged: (value) {
-                  _dateOfBirth = value;
-                }),
-          // ),
-          // const HorizontalEmptySpace(),
-          // SizedBox(
-          //   width: MediaQuery.of(context).size.width * 0.45,
-          //   child: 
-          const VerticalEmptySpace(),
-            CustomGenderTextFormField(
-                initialValue: _gender,
-                actionOnChanged: (value) {
-                  setState(() {
-                    _gender = value;
-                  });
-                }),
-      //     ),
-      //   ],
-      // ),
+      const VerticalEmptySpace(),
+      CustomTextFormField(
+          text: 'Date of birth',
+          initialValue: _dateOfBirth,
+          validator: dateValidator(),
+          actionOnChanged: (value) {
+            _dateOfBirth = value;
+          }),
+      const VerticalEmptySpace(),
+      CustomGenderTextFormField(
+          initialValue: _gender,
+          actionOnChanged: (value) {
+            setState(() {
+              _gender = value;
+            });
+          }),
       const VerticalEmptySpace(
         height: 40,
       ),

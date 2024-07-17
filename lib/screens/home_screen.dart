@@ -2,7 +2,6 @@ import 'package:assignment/models/event_model.dart';
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/event_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
-import 'package:assignment/repositories/profile_repository.dart';
 import 'package:assignment/screens/event_calendar_screen.dart';
 import 'package:assignment/screens/profile_screen.dart';
 import 'package:assignment/services/auth_service.dart';
@@ -47,7 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() async {
     ProfileProvider profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
-    // await profileProvider.initializeProfile('New1234@gmail.com');
+    if (profileProvider.userProfile == null) {
+      await profileProvider
+          .initializeProfile(AuthService().currentUser!.email!);
+    }
     // _userProfile = profileProvider.userProfile;
     setState(() {
       _userProfile = profileProvider.userProfile;

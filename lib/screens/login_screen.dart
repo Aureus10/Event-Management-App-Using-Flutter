@@ -34,8 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pop();
       return message;
     });
-
-    debugPrint(message);
     if (mounted) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -116,7 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     CustomLink(
                       displayText: "Forgot Password?",
-                      actionOnPressed: () {},
+                      actionOnPressed: () {
+                        Navigator.of(context).pushNamed('/forgotPassword');
+                      },
                     ),
                   ]),
                   const SizedBox(
@@ -136,28 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               },
             ),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       if (_formKey.currentState!.validate()) {
-            //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //             content:
-            //                 Text('Login Successful $_email and $_password')));
-            //         signInWithEmailAndPassword();
-            //       }
-            //     },
-            //     style: ElevatedButton.styleFrom(
-            //         textStyle: const TextStyle(
-            //           fontSize: 28,
-            //           fontWeight: FontWeight.w600,
-            //           color: CustomizedColors.buttonFontColor,
-            //         ),
-            //         backgroundColor: CustomizedColors.buttonColor),
-            //     child: const Text(
-            //       "Login",
-            //       // style: TextStyle(
-            //       //   color: CustomizedColors.buttonFontColor,
-            //       // ),
-            //     )),
             const SizedBox(
               height: 15,
             ),
