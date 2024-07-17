@@ -93,15 +93,15 @@ String? Function(String?)? confirmPasswordValidator(String? password) =>
       return null;
     };
 
-String? Function(String?)? ageValidator() => (String? value) {
-      if (value == null || value.isEmpty) {
-        return "Age is required";
-      }
-      if (!value.isValidAge) {
-        return "Invalid Age";
-      }
-      return null;
-    };
+// String? Function(String?)? ageValidator() => (String? value) {
+//       if (value == null || value.isEmpty) {
+//         return "Age is required";
+//       }
+//       if (!value.isValidAge) {
+//         return "Invalid Age";
+//       }
+//       return null;
+//     };
 
 String? Function(String?)? contactValidator() => (String? value) {
       if (value == null || value.isEmpty) {

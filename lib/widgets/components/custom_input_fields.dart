@@ -71,7 +71,7 @@ class CustomTextArea extends StatelessWidget {
         TextFormField(
           initialValue: initialValue,
           onChanged: actionOnChanged,
-          decoration: InputDecoration(border: OutlineInputBorder()),
+          decoration: const InputDecoration(border: OutlineInputBorder()),
           validator: validator,
           maxLines: 8,
         )
@@ -87,16 +87,20 @@ class CustomNumericalTextFormField extends StatelessWidget {
       this.initialValue,
       required this.validator,
       required this.actionOnChanged,
-      this.hintText});
+      this.hintText,
+      this.allowDecimal
+      });
 
   final String text;
   final int? initialValue;
   final String? Function(String?)? validator;
   final Function(String) actionOnChanged;
   final String? hintText;
+  final bool? allowDecimal;
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -109,9 +113,9 @@ class CustomNumericalTextFormField extends StatelessWidget {
           onChanged: actionOnChanged,
           decoration: InputDecoration(hintText: hintText ?? ''),
           validator: validator,
-          keyboardType: TextInputType.number,
+          keyboardType: allowDecimal == true ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.number,
           inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
+            allowDecimal == true ? FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')) : FilteringTextInputFormatter.digitsOnly
           ],
         )
       ],

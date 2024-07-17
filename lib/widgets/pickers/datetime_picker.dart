@@ -46,18 +46,27 @@ class _CustomDateTimePickerState extends State<CustomDateTimePicker> {
       },
       transitionDuration: const Duration(milliseconds: 200),
       barrierDismissible: true,
-      // endSelectableDayPredicate: (dateTime) {
-      //   // Disable 25th Feb 2023
-      //   if (dateTime == DateTime(2023, 2, 25)) {
-      //     return false;
-      //   } else {
-      //     return true;
-      //   }
-      // },
+      startSelectableDayPredicate: (dateTime) {
+        if (dateTime.isBefore(DateTime.now())) {
+          return false;
+        } else {
+          return true;
+        }
+      },
+      endSelectableDayPredicate: (dateTime) {
+        if (dateTime.isBefore(DateTime.now())) {
+          return false;
+        } else {
+          return true;
+        }
+      },
     );
-    if (dateTimeList![0].isBefore(dateTimeList[1]) && dateTimeList[0].isAfter(DateTime.now())) {
-      widget.setDatetime(
-          formatDateTime(dateTimeList[0]), formatDateTime(dateTimeList[1]));
+    if (dateTimeList != null) {
+      if (dateTimeList[0].isBefore(dateTimeList[1]) &&
+          dateTimeList[0].isAfter(DateTime.now())) {
+        widget.setDatetime(
+            formatDateTime(dateTimeList[0]), formatDateTime(dateTimeList[1]));
+      }
     }
   }
 

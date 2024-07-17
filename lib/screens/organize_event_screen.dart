@@ -25,20 +25,14 @@ class OrganizeEventScreen extends StatefulWidget {
 
 class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   LatLng? _location;
-  bool _isFirstPage = true;
+  int _currentPage = 0;
   final _formKey = GlobalKey<FormState>();
   final List<Map<DateTime, DateTime>> _eventDateTime = [{}];
-  TextEditingController _locationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
   late ProfileProvider provider;
 
-  // late String name;
+  final ScrollController _scrollController = ScrollController();
 
-  // @override
-  // void initState() {
-
-  //   name = Provider.of<ProfileProvider>(context, listen: false).userProfile!.username;
-  //   super.initState();
-  // }
   EventType _eventType = EventType.exhibition;
   String? _eventTitle;
   String? _eventDesc;
@@ -47,6 +41,27 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   int? _capacity;
   bool _isAnonymous = false;
   List<File> _eventMaterials = [];
+
+  @override
+  void initState() {
+    _locationController.addListener(() {
+      final text = _locationController.text.trim();
+      if (!text.isValidLocation) {
+        _locationController.value = 
+        TextEditingValue(
+          text: _location != null ? formatLocationToString(_location!) : ''
+        );
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _locationController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   // final EventType type;
   // final String capacity;
@@ -73,13 +88,8 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   }
 
   @override
-  void dispose() {
-    _locationController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    //-------------------------------------First Page-----------------------------------------//
     List<Widget> firstPage = [
       Text(
         'Step 1: Event Info',
@@ -87,61 +97,62 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       ),
       const VerticalEmptySpace(),
       Text(
-        'Event Type: ${_eventType.toString().split('.').last}',
-        style: mediumTextStyle,
+        'Event Type',
+        style: mediumTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
       const VerticalEmptySpace(),
-      // SingleChildScrollView(
-      //   scrollDirection: Axis.horizontal,
-      //   child: 
-      // ),
-      Container(
-        height: 200,
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: BorderRadius.circular(10)
-        ),
-        child: GridView.builder(
-          scrollDirection: Axis.horizontal,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            mainAxisSpacing: 10,
-            crossAxisSpacing: 10,
-            childAspectRatio: 4/10
+      Scrollbar(
+        controller: _scrollController,
+        thumbVisibility: true,
+        trackVisibility: true,
+        child: Container(
+          height: 250,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              border: Border.all(), borderRadius: BorderRadius.circular(10)),
+          child: GridView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 4 / 10),
+            itemCount: EventType.values.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _eventType = EventType.values[index];
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: _eventType == EventType.values[index]
+                        ? Colors.amber
+                        : const Color.fromARGB(255, 182, 182, 182),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    EventType.values[index].toString().split('.').last,
+                    style: mediumTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
           ),
-          itemCount: EventType.values.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  _eventType = EventType.values[index];
-                });
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: _eventType == EventType.values[index] ? Colors.green : Colors.blueAccent,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  EventType.values[index].toString().split('.').last,
-                  style: mediumTextStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          },
         ),
       ),
       const VerticalEmptySpace(),
+      Text(
+        'Location',
+        style: mediumTextStyle.copyWith(decoration: TextDecoration.underline),
+      ),
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            'Location: ',
-            style: mediumTextStyle,
-          ),
           _location == null
               ? const Text(
                   'N/A',
@@ -179,7 +190,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                   Row(
                     children: [
                       Text(
-                        'Day ${index + 1}',
+                        'Session ${index + 1}',
                         style: mediumTextStyle,
                       ),
                       CustomDateTimePicker(
@@ -264,16 +275,24 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Please select datetime for all sessions 1'),
+                    content: Text('Please select datetime for all sessions.'),
                   ),
                 );
-              } else if (_formKey.currentState!.validate()) {
-                _isFirstPage = !_isFirstPage;
+              } else if (_location == null) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please select the location.'),
+                  ),
+                );
+              } else {
+                _currentPage++;
               }
             });
           }),
       const VerticalEmptySpace(),
     ];
+    //-------------------------------------Second Page-----------------------------------------//
     List<Widget> secondPage = [
       Text(
         'Step 2: Event Info',
@@ -301,11 +320,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           SizedBox(
             width: MediaQuery.of(context).size.width * 0.35,
             child: CustomNumericalTextFormField(
-                text: 'Fees',
-                validator: emptyValidator(),
-                actionOnChanged: (value) {
-                  _eventFees = double.parse(value);
-                }),
+              text: 'Fees (RM)',
+              validator: emptyValidator(),
+              actionOnChanged: (value) {
+                _eventFees = double.parse(value);
+              },
+              allowDecimal: true,
+            ),
           ),
           SizedBox(
               width: MediaQuery.of(context).size.width * 0.35,
@@ -375,22 +396,31 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       ]),
       const VerticalEmptySpace(),
       CustomActionButton(
-          displayText: 'Organize',
+          displayText: 'Continue',
           actionOnPressed: () {
-            Navigator.pop(context);
-            // Navigator.of(context).push();
+            setState(() {
+              _currentPage++;
+            });
           }),
       const VerticalEmptySpace(),
     ];
+    List<Widget> thirdPage = [
+      CustomActionButton(
+          displayText: 'Organize',
+          actionOnPressed: () {
+            Navigator.pop(context);
+          }),
+    ];
+    List<List<Widget>> _pages = [firstPage, secondPage, thirdPage];
     return Scaffold(
         appBar: HeaderBar(
           headerTitle: 'Organize Event',
           menuRequired: false,
-          customAction: _isFirstPage
+          customAction: _currentPage == 0
               ? null
               : () {
                   setState(() {
-                    _isFirstPage = !_isFirstPage;
+                    _currentPage--;
                   });
                 },
         ),
@@ -411,7 +441,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: _isFirstPage ? firstPage : secondPage,
+                children: _pages[_currentPage],
               ),
             ),
           ),

@@ -44,7 +44,16 @@ class _CustomLocationPickerState extends State<CustomLocationPicker> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _mapController.future.then((controller) {
+      controller.dispose();
+    });
+    super.dispose();
+  }
+
   Future<void> getLocationUpdates() async {
+
     bool serviceEnabled;
     PermissionStatus permissionGranted;
 
@@ -70,6 +79,10 @@ class _CustomLocationPickerState extends State<CustomLocationPicker> {
           _currentLocation =
               LatLng(currentLocation.latitude!, currentLocation.longitude!);
           _cameraToPosition(_currentLocation);
+          widget.controller.value = TextEditingValue(
+              text:
+                  '${_currentLocation.latitude.toStringAsFixed(6)}, ${_currentLocation.longitude.toStringAsFixed(6)}');
+          widget.setLocation(_currentLocation);
         });
       }
     }
