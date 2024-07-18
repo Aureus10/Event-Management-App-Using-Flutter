@@ -14,7 +14,6 @@ import 'package:assignment/widgets/loading.dart';
 import 'package:assignment/widgets/pickers/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -52,9 +51,7 @@ class _SignupScreenState extends State<SignupScreen> {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (ctx) =>
               (const CustomLoading(loadingText: 'Signing up...'))));
-      final FileProvider fileProvider =
-          Provider.of<FileProvider>(ctx, listen: false);
-      fileProvider
+      FileProvider
           .uploadProfileImage(_image!, _email)
           .then((imageUrl) => {
                 AuthService().createNewUser(

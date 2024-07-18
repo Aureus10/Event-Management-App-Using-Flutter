@@ -108,7 +108,7 @@ String? Function(String?)? contactValidator() => (String? value) {
         return "Contact Number is required";
       }
       if (!value.isValidContact) {
-        return "Invalid Format (Numbers only)";
+        return "Invalid Format (numbers only with lenght of 10)";
       }
       return null;
     };

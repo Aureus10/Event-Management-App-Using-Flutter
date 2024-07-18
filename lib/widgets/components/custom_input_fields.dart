@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField(
-      {super.key,
-      required this.text,
-      this.initialValue,
-      required this.validator,
-      required this.actionOnChanged,
-      this.hintText,
-      this.controller,
-      });
+  const CustomTextFormField({
+    super.key,
+    required this.text,
+    this.initialValue,
+    required this.validator,
+    required this.actionOnChanged,
+    this.hintText,
+    this.controller,
+  });
 
   final String text;
   final String? initialValue;
@@ -45,13 +45,13 @@ class CustomTextFormField extends StatelessWidget {
 }
 
 class CustomTextArea extends StatelessWidget {
-  const CustomTextArea(
-      {super.key,
-      required this.text,
-      this.initialValue,
-      required this.validator,
-      required this.actionOnChanged,
-      });
+  const CustomTextArea({
+    super.key,
+    required this.text,
+    this.initialValue,
+    required this.validator,
+    required this.actionOnChanged,
+  });
 
   final String text;
   final String? initialValue;
@@ -67,11 +67,15 @@ class CustomTextArea extends StatelessWidget {
           text,
           style: mediumTextStyle,
         ),
-        const VerticalEmptySpace(height: 5,),
+        const VerticalEmptySpace(
+          height: 5,
+        ),
         TextFormField(
           initialValue: initialValue,
           onChanged: actionOnChanged,
-          decoration: const InputDecoration(border: OutlineInputBorder()),
+          decoration: InputDecoration(
+            labelText: text,
+            border: const OutlineInputBorder()),
           validator: validator,
           maxLines: 8,
         )
@@ -88,8 +92,7 @@ class CustomNumericalTextFormField extends StatelessWidget {
       required this.validator,
       required this.actionOnChanged,
       this.hintText,
-      this.allowDecimal
-      });
+      this.allowDecimal});
 
   final String text;
   final int? initialValue;
@@ -100,7 +103,6 @@ class CustomNumericalTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -113,9 +115,13 @@ class CustomNumericalTextFormField extends StatelessWidget {
           onChanged: actionOnChanged,
           decoration: InputDecoration(hintText: hintText ?? ''),
           validator: validator,
-          keyboardType: allowDecimal == true ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.number,
+          keyboardType: allowDecimal == true
+              ? const TextInputType.numberWithOptions(decimal: true)
+              : TextInputType.number,
           inputFormatters: <TextInputFormatter>[
-            allowDecimal == true ? FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')) : FilteringTextInputFormatter.digitsOnly
+            allowDecimal == true
+                ? FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))
+                : FilteringTextInputFormatter.digitsOnly
           ],
         )
       ],
@@ -127,8 +133,8 @@ class CustomGenderTextFormField extends StatefulWidget {
   final Gender initialValue;
   final void Function(Gender) actionOnChanged;
 
-  const CustomGenderTextFormField({super.key, required this.initialValue, required this.actionOnChanged});
-
+  const CustomGenderTextFormField(
+      {super.key, required this.initialValue, required this.actionOnChanged});
 
   @override
   State<CustomGenderTextFormField> createState() =>
