@@ -34,15 +34,18 @@ class ProfileModel {
   @override
   factory ProfileModel.fromMap(Map<String, dynamic> map) => ProfileModel(
         email: map['email'],
-        type: UserType.values.firstWhere((e) => e.toString() == 'UserType.${map['type']}'),
+        type: UserType.values
+            .firstWhere((e) => e.toString() == 'UserType.${map['type']}'),
         dateOfBirth: map['dateOfBirth'],
         username: map['username'],
-        gender: Gender.values.firstWhere((e) => e.toString() == 'Gender.${map['gender']}'),
+        gender: Gender.values
+            .firstWhere((e) => e.toString() == 'Gender.${map['gender']}'),
         contact: map['contact'],
         eventHistory: List<String>.from(map['eventHistory']),
         creditScore: map['creditScore'],
         imageLink: map['imageLink'],
-        status: AccountStatus.values.firstWhere((e) => e.toString() == 'AccountStatus.${map['status']}'),
+        status: AccountStatus.values.firstWhere(
+            (e) => e.toString() == 'AccountStatus.${map['status']}'),
       );
 
   Map<String, dynamic> toMap() => {
@@ -69,17 +72,16 @@ class ProfileModel {
     int? creditScore,
     String? imageLink,
     AccountStatus? status,
-  }) {
-    return ProfileModel(
-        type: type ?? this.type,
-        dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-        username: username ?? this.username,
-        gender: gender ?? this.gender,
-        email: email ?? this.email,
-        contact: contact ?? this.contact,
-        eventHistory: eventHistory ?? this.eventHistory ?? [],
-        creditScore: creditScore ?? this.creditScore,
-        imageLink: imageLink ?? this.imageLink,
-        status: status ?? this.status);
-  }
+  }) =>
+      ProfileModel(
+          type: type ?? this.type,
+          dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+          username: username ?? this.username,
+          gender: gender ?? this.gender,
+          email: email ?? this.email,
+          contact: contact ?? this.contact,
+          eventHistory: eventHistory ?? this.eventHistory ?? [],
+          creditScore: creditScore ?? this.creditScore,
+          imageLink: imageLink ?? this.imageLink,
+          status: status ?? this.status);
 }

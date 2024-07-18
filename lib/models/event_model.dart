@@ -120,8 +120,7 @@ class EventModel {
     EventStatus? status,
     List<String>? materials,
     List<String>? participants,
-  }) {
-    return EventModel(
+  }) => EventModel(
       id: id,
       organizerEmail: organizerEmail ?? this.organizerEmail,
       title: title ?? this.title,
@@ -138,5 +137,5 @@ class EventModel {
       materials: materials ?? this.materials ?? [],
       participants: participants ?? this.participants ?? [],
     );
-  }
+  
 }
