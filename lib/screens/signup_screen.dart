@@ -55,7 +55,7 @@ class _SignupScreenState extends State<SignupScreen> {
       final FileProvider fileProvider =
           Provider.of<FileProvider>(ctx, listen: false);
       fileProvider
-          .uploadImage(_image!, _email)
+          .uploadProfileImage(_image!, _email)
           .then((imageUrl) => {
                 AuthService().createNewUser(
                     newProfile: ProfileModel(

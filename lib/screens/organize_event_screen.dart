@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:assignment/models/event_model.dart';
+import 'package:assignment/providers/event_provider.dart';
+import 'package:assignment/providers/file_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/pickers/datetime_picker.dart';
+import 'package:assignment/widgets/pickers/image_picker.dart';
 import 'package:assignment/widgets/pickers/location_picker.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
@@ -39,17 +42,16 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   double? _eventFees;
   int? _capacity;
   bool _isAnonymous = false;
-  List<File> _eventMaterials = [];
+  File? _image;
+  List<File?> _eventMaterials = [];
 
   @override
   void initState() {
     _locationController.addListener(() {
       final text = _locationController.text.trim();
       if (!text.isValidLocation) {
-        _locationController.value = 
-        TextEditingValue(
-          text: _location != null ? formatLocationToString(_location!) : ''
-        );
+        _locationController.value = TextEditingValue(
+            text: _location != null ? formatLocationToString(_location!) : '');
       }
     });
     super.initState();
@@ -61,14 +63,6 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
     _scrollController.dispose();
     super.dispose();
   }
-
-  // final EventType type;
-  // final String capacity;
-  // final String imageLink;
-  // final bool isAnonymous;
-  // final EventStatus status;
-  // final List<String>? materials;
-  // final List<String>? participants;
 
   Future<void> _pickLocation() async {
     await Navigator.of(context).push(
@@ -84,6 +78,40 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
         )),
       ),
     );
+  }
+
+  Future<void> organizeEvent() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ));
+
+    EventProvider eventProvider =
+        Provider.of<EventProvider>(context, listen: false);
+    if (_eventMaterials.isNotEmpty) {
+      //upload files and fetch the url.
+    }
+    String email =
+        Provider.of<ProfileProvider>(context, listen: false).userProfile!.email;
+    eventProvider.organizeEvent(
+        EventModel(
+            id: '',
+            organizerEmail: email,
+            title: _eventTitle!,
+            description: _eventDesc!,
+            venue: formatLocationToString(_location!),
+            fees: _eventFees!,
+            contact: _contact!,
+            type: _eventType,
+            datetime: _eventDateTime,
+            capacity: _capacity!,
+            imageLink: '',
+            isAnonymous: _isAnonymous,
+            status: EventStatus.scheduled),
+        _image!,
+        _eventMaterials);
   }
 
   @override
@@ -348,9 +376,28 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
             _contact = value;
           }),
       const VerticalEmptySpace(),
+      const VerticalEmptySpace(),
+      CustomActionButton(
+          displayText: 'Continue',
+          actionOnPressed: () {
+            if (_formKey.currentState!.validate()) {
+              setState(() {
+                _currentPage++;
+              });
+            }
+          }),
+      const VerticalEmptySpace(),
+    ];
+    //-------------------------------Third Page------------------------------//
+    List<Widget> thirdPage = [
+      Text(
+        'Step 3: Event Info',
+        style: largeTextStyle.copyWith(decoration: TextDecoration.underline),
+      ),
+      const VerticalEmptySpace(),
       Row(
         children: [
-          Switch(
+          Checkbox(
             value: _isAnonymous,
             onChanged: (_) {
               setState(() {
@@ -358,28 +405,31 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               });
             },
             activeColor: Colors.amber,
-            activeTrackColor: const Color.fromARGB(255, 255, 239, 192),
+            checkColor: const Color.fromARGB(255, 255, 239, 192),
+            shape: const RoundedRectangleBorder(),
           ),
           const Text(
             'Keep Participants Anonymous',
-            style: smallTextStyle,
+            style: mediumTextStyle,
           )
         ],
       ),
-      Row(
-        children: [
-          const Text(
-            'Event Image:',
-            style: mediumTextStyle,
-          ),
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.upload_file,
-                size: 36,
-              )),
-        ],
+      const VerticalEmptySpace(),
+      CustomImagePicker(
+        actionOnPressed: (image) {
+          setState(() {
+            _image = image;
+          });
+        },
+        text: 'Event Image*',
       ),
+      if (_image != null)
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+          width: 100,
+          height: 100,
+          child: Image.file(_image!, height: 200, width: 200),
+        ),
       const VerticalEmptySpace(),
       Row(children: [
         const Text(
@@ -395,22 +445,14 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       ]),
       const VerticalEmptySpace(),
       CustomActionButton(
-          displayText: 'Continue',
-          actionOnPressed: () {
-            setState(() {
-              _currentPage++;
-            });
-          }),
-      const VerticalEmptySpace(),
-    ];
-    List<Widget> thirdPage = [
-      CustomActionButton(
           displayText: 'Organize',
           actionOnPressed: () {
-            Navigator.pop(context);
+            if (_image != null) {
+              Navigator.pop(context);
+            }
           }),
     ];
-    List<List<Widget>> _pages = [firstPage, secondPage, thirdPage];
+    List<List<Widget>> pages = [firstPage, secondPage, thirdPage];
     return Scaffold(
         appBar: HeaderBar(
           headerTitle: 'Organize Event',
@@ -425,22 +467,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-                MediaQuery.of(context).size.width * 0.1,
-                35,
-                MediaQuery.of(context).size.width * 0.1,
-                0),
-            // child: MapTesting(
-            //   setLocation: (LatLng val) {
-            //   LatLng loc = val;
-            // }),
-            // child: const CustomDateTimePicker(),
+            padding: const EdgeInsets.fromLTRB(25, 35, 25, 0),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: _pages[_currentPage],
+                children: pages[_currentPage],
               ),
             ),
           ),
