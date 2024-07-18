@@ -7,7 +7,7 @@ class FileProvider extends ChangeNotifier {
 
   static final FileRepository _fileRepository = FileRepository();
 
-  Future<String?> uploadProfileImage(File image, String email) async {
+  static Future<String?> uploadProfileImage(File image, String email) async {
     return await _fileRepository.uploadFile(image, 'images/profile/$email');
   }
 
