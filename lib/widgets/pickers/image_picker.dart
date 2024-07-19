@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CustomImagePicker extends StatefulWidget {
-  const CustomImagePicker({super.key, required this.actionOnPressed, this.text});
+  const CustomImagePicker(
+      {super.key, required this.actionOnPressed, this.text});
 
   final Function(File?) actionOnPressed;
   final String? text;
@@ -18,6 +19,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
   File? _selectedImage;
 
   Future _pickImageFromGallery() async {
+    
     final returnedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
@@ -26,6 +28,7 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
       _selectedImage = File(returnedImage.path);
     });
     widget.actionOnPressed(_selectedImage);
+
   }
 
   @override
@@ -42,7 +45,8 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
             icon: const Icon(
               Icons.drive_folder_upload,
               size: 40,
-            ))
+            )),
+            Text(_selectedImage != null ? _selectedImage.toString() : '')
       ],
     );
   }
