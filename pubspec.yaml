@@ -18,6 +18,8 @@ dependencies:
   location: ^7.0.0
   omni_datetime_picker: ^2.0.3
   provider: ^6.1.2
+  file_picker: ^5.2.2
+  table_calendar: ^3.0.7
 
 dev_dependencies:
   flutter_test:
