@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 enum UserType { user, organizer, administrator }
 
 enum Gender { male, female }
@@ -7,7 +9,7 @@ enum AccountStatus { active, inactive, banned }
 class ProfileModel {
   final String email;
   final UserType type;
-  final int age;
+  final String dateOfBirth;
   final String username;
   final Gender gender;
   final String contact;
@@ -19,7 +21,7 @@ class ProfileModel {
   const ProfileModel({
     required this.email,
     required this.type,
-    required this.age,
+    required this.dateOfBirth,
     required this.username,
     required this.gender,
     required this.contact,
@@ -32,24 +34,25 @@ class ProfileModel {
   @override
   factory ProfileModel.fromMap(Map<String, dynamic> map) => ProfileModel(
         email: map['email'],
-        type: UserType.values[map['type']],
-        age: map['age'],
+        type: UserType.values.firstWhere((e) => e.toString() == 'UserType.${map['type']}'),
+        dateOfBirth: map['dateOfBirth'],
         username: map['username'],
-        gender: Gender.values[map['gender']],
+        gender: Gender.values.firstWhere((e) => e.toString() == 'Gender.${map['gender']}'),
         contact: map['contact'],
         eventHistory: List<String>.from(map['eventHistory']),
         creditScore: map['creditScore'],
         imageLink: map['imageLink'],
-        status: map['status'],
+        status: AccountStatus.values.firstWhere((e) => e.toString() == 'AccountStatus.${map['status']}'),
       );
 
   Map<String, dynamic> toMap() => {
         'email': email,
+        'username': username,
         'type': type.toString().split('.').last,
-        'age': age,
+        'dateOfBirth': dateOfBirth,
         'gender': gender.toString().split('.').last,
         'contact': contact,
-        'eventHistory': eventHistory,
+        'eventHistory': eventHistory ?? [],
         'creditScore': creditScore,
         'imageLink': imageLink,
         'status': status.toString().split('.').last,
@@ -58,7 +61,7 @@ class ProfileModel {
   ProfileModel copyWith({
     String? email,
     UserType? type,
-    int? age,
+    String? dateOfBirth,
     String? username,
     Gender? gender,
     String? contact,
@@ -69,7 +72,7 @@ class ProfileModel {
   }) {
     return ProfileModel(
         type: type ?? this.type,
-        age: age ?? this.age,
+        dateOfBirth: dateOfBirth ?? this.dateOfBirth,
         username: username ?? this.username,
         gender: gender ?? this.gender,
         email: email ?? this.email,

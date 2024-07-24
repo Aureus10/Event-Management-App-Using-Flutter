@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 enum EventType {
@@ -41,8 +42,8 @@ class EventModel {
   final double fees;
   final String contact;
   final EventType type;
-  final List<DateTime> datetime;
-  final String capacity;
+  final List<Map<DateTime, DateTime>> datetime;
+  final int capacity;
   final String imageLink;
   final bool isAnonymous;
   final EventStatus status;
@@ -75,12 +76,14 @@ class EventModel {
         venue: map['venue'],
         fees: map['fees'],
         contact: map['contact'],
-        type: EventType.values[map['type']],
-        datetime: List<DateTime>.from(map['datetime']),
+        type: EventType.values.firstWhere((e) => e.toString() == 'EventType.${map['type']}'),
+        datetime: (map['Datetime'] as Map<String, dynamic>).entries.map((entry) {
+    return {DateTime.parse(entry.key): (entry.value as Timestamp).toDate()};
+  }).toList(),
         capacity: map['capacity'],
         imageLink: map['imageLink'],
         isAnonymous: map['isAnonymous'],
-        status: EventStatus.values[map['status']],
+        status: EventStatus.values.firstWhere((e) => e.toString() == 'EventStatus.${map['status']}'),
         materials: List<String>.from(map['materials']),
         participants: List<String>.from(map['participants']),
       );
@@ -92,14 +95,14 @@ class EventModel {
         'venue': venue,
         'fees': fees,
         'contact': contact,
-        'type': type,
-        'datetime': datetime,
+        'type': type.toString().split('.').last,
+        'datetime': {for (var entry in datetime) entry.keys.first.toIso8601String(): Timestamp.fromDate(entry.values.first)},
         'capacity': capacity,
         'imageLink': imageLink,
         'isAnonymous': isAnonymous,
-        'status': status,
-        'materials': materials,
-        'participants': participants,
+        'status': status.toString().split('.').last,
+        'materials': materials ?? [],
+        'participants': participants ?? [],
       };
 
   EventModel copyWith({
@@ -110,8 +113,8 @@ class EventModel {
     double? fees,
     String? contact,
     EventType? type,
-    List<DateTime>? datetime,
-    String? capacity,
+    List<Map<DateTime, DateTime>>? datetime,
+    int? capacity,
     String? imageLink,
     bool? isAnonymous,
     EventStatus? status,

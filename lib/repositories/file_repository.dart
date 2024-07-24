@@ -6,11 +6,11 @@ class FileRepository {
 
   final FirebaseStorage _fileRepository = FirebaseStorage.instance;
 
-  Future<String?> uploadImage(File image, String path) async {
+  Future<String?> uploadFile(File file, String path) async {
 
     try{
       Reference ref = _fileRepository.ref().child(path);
-      TaskSnapshot taskSnapshot = await ref.putFile(image);
+      TaskSnapshot taskSnapshot = await ref.putFile(file);
       return await taskSnapshot.ref.getDownloadURL();
     } catch (e) {
       return null;

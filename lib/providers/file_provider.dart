@@ -5,17 +5,13 @@ import 'package:flutter/material.dart';
 
 class FileProvider extends ChangeNotifier {
 
-  final FileRepository _fileRepository = FileRepository();
+  static final FileRepository _fileRepository = FileRepository();
 
-  String? _imageUrl;
+  static Future<String?> uploadProfileImage(File image, String email) async {
+    return await _fileRepository.uploadFile(image, 'images/profile/$email');
+  }
 
-  String? get imageUrl => _imageUrl;
-
-  Future<void> uploadImage(File image, String email) async {
-    final url = await _fileRepository.uploadImage(image, 'images/$email');
-    if (url != null) {
-      _imageUrl = url;
-      notifyListeners();
-    }
+  static Future<String?> uploadEventImage(File image, String id) async {
+    return await _fileRepository.uploadFile(image, 'images/event/$id');
   }
 }

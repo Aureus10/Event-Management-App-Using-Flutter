@@ -3,7 +3,7 @@ import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:assignment/widgets/loading.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -23,19 +23,26 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   Future<void> signInWithEmailAndPassword() async {
-    try {
-      await AuthService().signInWithEmailAndPassword(
-        email: _email,
-        password: _password,
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => (const CustomLoading(loadingText: 'Logging in...'))));
+    String message = await AuthService()
+        .signInWithEmailAndPassword(
+      email: _email.toLowerCase(),
+      password: _password,
+    )
+        .then((message) {
+      Navigator.of(context).pop();
+      return message;
+    });
+    if (mounted) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+        ),
       );
-    } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.message ?? 'Authentication failed.'),
-          ),
-        );
+      if (message == 'Success') {
+        Navigator.of(context).pushReplacementNamed('/home');
       }
     }
   }
@@ -43,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: HeaderBar(headerTitle: 'Login'),
+        // appBar: HeaderBar(headerTitle: 'Login'),
         body: SafeArea(
             child: Center(
       child: SingleChildScrollView(
@@ -86,10 +93,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       _email = value;
                     },
                     decoration: const InputDecoration(
-                      // icon: Icon(Icons.email),
-                      hintText: 'example@gmail.com',
-                      // labelText: 'Email*',
-                    ),
+                        // icon: Icon(Icons.email),
+                        // hintText: 'example@gmail.com',
+                        // labelText: 'Email*',
+                        ),
                     validator: emailValidator(),
                   ),
                   const SizedBox(
@@ -107,7 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     CustomLink(
                       displayText: "Forgot Password?",
-                      actionOnPressed: () {},
+                      actionOnPressed: () {
+                        Navigator.of(context).pushNamed('/forgotPassword');
+                      },
                     ),
                   ]),
                   const SizedBox(
@@ -123,35 +132,10 @@ class _LoginScreenState extends State<LoginScreen> {
               displayText: 'Login',
               actionOnPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text('Login Successful $_email and $_password')));
                   signInWithEmailAndPassword();
                 }
               },
             ),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       if (_formKey.currentState!.validate()) {
-            //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //             content:
-            //                 Text('Login Successful $_email and $_password')));
-            //         signInWithEmailAndPassword();
-            //       }
-            //     },
-            //     style: ElevatedButton.styleFrom(
-            //         textStyle: const TextStyle(
-            //           fontSize: 28,
-            //           fontWeight: FontWeight.w600,
-            //           color: CustomizedColors.buttonFontColor,
-            //         ),
-            //         backgroundColor: CustomizedColors.buttonColor),
-            //     child: const Text(
-            //       "Login",
-            //       // style: TextStyle(
-            //       //   color: CustomizedColors.buttonFontColor,
-            //       // ),
-            //     )),
             const SizedBox(
               height: 15,
             ),
@@ -172,20 +156,19 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
             RichText(
-                text: TextSpan(
-                    children: <TextSpan>[
-                      const TextSpan(
-                        text: 'New to GesT? Register ',
-                        style: smallTextStyle,
-                      ),
-                  TextSpan(
-                    text: 'here',
-                    style: linkTextStyle,
-                    recognizer: TapGestureRecognizer()..onTap = () {
+                text: TextSpan(children: <TextSpan>[
+              const TextSpan(
+                text: 'New to GesT? Register ',
+                style: smallTextStyle,
+              ),
+              TextSpan(
+                  text: 'here',
+                  style: linkTextStyle,
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
                       Navigator.of(context).pushNamed('/signup');
-                    }
-                  )
-                ])),
+                    })
+            ])),
             // const SizedBox(
             //   height: 15,
             // ),

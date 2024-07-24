@@ -9,7 +9,8 @@ extension FormValidator on String {
 
   // one uppercase letter, one lowercase letter, one number, one special character, and a minimum length of 8 characters:
   bool get isValidPassword {
-    final passwordReg = RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;"<>?,./\\\-])[A-Za-z\d!@#$%^&*()_+{}\[\]:;"<>?,./\\\-]{8,}$');
+    final passwordReg = RegExp(
+        r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;"<>?,./\\\-])[A-Za-z\d!@#$%^&*()_+{}\[\]:;"<>?,./\\\-]{8,}$');
     return passwordReg.hasMatch(this);
   }
 
@@ -23,8 +24,21 @@ extension FormValidator on String {
   }
 
   bool get isValidLocation {
-    final locationReg = RegExp(r'^(-?\d{1,2}(?:\.\d*)?),\s*(-?\d{1,3}(?:\.\d*)?)$');
+    final locationReg =
+        RegExp(r'^(-?\d{1,2}(?:\.\d*)?),\s*(-?\d{1,3}(?:\.\d*)?)$');
     return locationReg.hasMatch(this);
+  }
+
+  bool get isValidDate {
+    final dateReg = RegExp(
+      r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$'
+    );
+    return dateReg.hasMatch(this);
+  }
+
+  bool get isValidDatetime {
+    final datetimeReg = RegExp(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$');
+    return datetimeReg.hasMatch(this);
   }
 }
 
@@ -79,15 +93,15 @@ String? Function(String?)? confirmPasswordValidator(String? password) =>
       return null;
     };
 
-String? Function(String?)? ageValidator() => (String? value) {
-      if (value == null || value.isEmpty) {
-        return "Age is required";
-      }
-      if (!value.isValidAge) {
-        return "Invalid Age";
-      }
-      return null;
-    };
+// String? Function(String?)? ageValidator() => (String? value) {
+//       if (value == null || value.isEmpty) {
+//         return "Age is required";
+//       }
+//       if (!value.isValidAge) {
+//         return "Invalid Age";
+//       }
+//       return null;
+//     };
 
 String? Function(String?)? contactValidator() => (String? value) {
       if (value == null || value.isEmpty) {
@@ -100,11 +114,36 @@ String? Function(String?)? contactValidator() => (String? value) {
     };
 
 String? Function(String?)? locationValidator() => (String? value) {
+      if (value == null || value.isEmpty) {
+        return "Please select location";
+      }
+      if (!value.isValidLocation) {
+        return "Invalid Coordinate Format! (Format: latitude, longtidue)";
+      }
+      return null;
+    };
+
+String? Function(String?)? dateValidator() => (String? value) {
   if (value == null || value.isEmpty) {
-    return "Please select location";
+    return "Please fill in the date of birth";
   }
-  if (!value.isValidLocation) {
-    return "Invalid Coordinate Format! (Format: latitude, longtidue)";
+  if (!value.isValidDate) {
+    return "Invalid date format (YYYY-MM-DD)";
   }
   return null;
 };
+
+String? Function(String?)? dateTimeValidator() => (String? value) {
+      if (value == null || value.isEmpty) {
+        return "Please select location";
+      }
+      if (!value.isValidDatetime) {
+        return "Invalid Datetime Format! (Format: yyyy-MM-dd HH:mm:ss";
+      }
+      // try {
+      //   DateTime.parse(value.replaceFirst(' ', 'T'));
+      // } catch (e) {
+      //   return "Invalid datetime";
+      // }
+      return null;
+    };

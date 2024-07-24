@@ -1,4 +1,13 @@
-import 'package:assignment/screens/testing.dart';
+import 'dart:io';
+
+import 'package:assignment/models/event_model.dart';
+import 'package:assignment/providers/event_provider.dart';
+import 'package:assignment/providers/file_provider.dart';
+import 'package:assignment/providers/profile_provider.dart';
+import 'package:assignment/utils/formatter.dart';
+import 'package:assignment/widgets/pickers/datetime_picker.dart';
+import 'package:assignment/widgets/pickers/image_picker.dart';
+import 'package:assignment/widgets/pickers/location_picker.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
@@ -7,6 +16,7 @@ import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class OrganizeEventScreen extends StatefulWidget {
   const OrganizeEventScreen({super.key});
@@ -16,60 +26,252 @@ class OrganizeEventScreen extends StatefulWidget {
 }
 
 class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
-  bool _isFirstPage = true;
-  List<DateTime> _eventDateTime = [];
-  List<int> _testing123 = [];
-
   LatLng? _location;
+  int _currentPage = 0;
+  final _formKey = GlobalKey<FormState>();
+  final List<Map<DateTime, DateTime>> _eventDateTime = [{}];
+  final TextEditingController _locationController = TextEditingController();
+  late ProfileProvider provider;
 
-  // Future<void> _onMapCreated(GoogleMapController controller) {
-  //   final currentLocation
-  // }
+  final ScrollController _scrollController = ScrollController();
+
+  EventType _eventType = EventType.exhibition;
+  String? _eventTitle;
+  String? _eventDesc;
+  String? _contact;
+  double? _eventFees;
+  int? _capacity;
+  bool _isAnonymous = false;
+  File? _image;
+  List<File?> _eventMaterials = [];
+
+  @override
+  void initState() {
+    _locationController.addListener(() {
+      final text = _locationController.text.trim();
+      if (!text.isValidLocation) {
+        _locationController.value = TextEditingValue(
+            text: _location != null ? formatLocationToString(_location!) : '');
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _locationController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _pickLocation() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => (CustomLocationPicker(
+          setLocation: (LatLng location) {
+            setState(() {
+              _location = location;
+            });
+          },
+          controller: _locationController,
+          initialValue: _location,
+        )),
+      ),
+    );
+  }
+
+  Future<void> organizeEvent() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ));
+
+    EventProvider eventProvider =
+        Provider.of<EventProvider>(context, listen: false);
+    if (_eventMaterials.isNotEmpty) {
+      //upload files and fetch the url.
+    }
+    String email =
+        Provider.of<ProfileProvider>(context, listen: false).userProfile!.email;
+    eventProvider.organizeEvent(
+        EventModel(
+            id: '',
+            organizerEmail: email,
+            title: _eventTitle!,
+            description: _eventDesc!,
+            venue: formatLocationToString(_location!),
+            fees: _eventFees!,
+            contact: _contact!,
+            type: _eventType,
+            datetime: _eventDateTime,
+            capacity: _capacity!,
+            imageLink: '',
+            isAnonymous: _isAnonymous,
+            status: EventStatus.scheduled),
+        _image!,
+        _eventMaterials);
+  }
 
   @override
   Widget build(BuildContext context) {
+    //-------------------------------------First Page-----------------------------------------//
     List<Widget> firstPage = [
       Text(
         'Step 1: Event Info',
         style: largeTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
       const VerticalEmptySpace(),
-      const Text(
+      Text(
         'Event Type',
-        style: mediumTextStyle,
+        style: mediumTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
-
       const VerticalEmptySpace(),
-
-      Row(
-        children: [
-          const Text(
-            'Venue :',
-            style: mediumTextStyle,
+      Scrollbar(
+        controller: _scrollController,
+        thumbVisibility: true,
+        trackVisibility: true,
+        child: Container(
+          height: 250,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+              border: Border.all(), borderRadius: BorderRadius.circular(10)),
+          child: GridView.builder(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 4 / 10),
+            itemCount: EventType.values.length,
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _eventType = EventType.values[index];
+                  });
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: _eventType == EventType.values[index]
+                        ? Colors.amber
+                        : const Color.fromARGB(255, 182, 182, 182),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    EventType.values[index].toString().split('.').last,
+                    style: mediumTextStyle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.map)),
+        ),
+      ),
+      const VerticalEmptySpace(),
+      Text(
+        'Location',
+        style: mediumTextStyle.copyWith(decoration: TextDecoration.underline),
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _location == null
+              ? const Text(
+                  'N/A',
+                  style: mediumTextStyle,
+                )
+              : CustomLink(
+                  displayText: formatLocationToString(_location!),
+                  actionOnPressed: _pickLocation,
+                  fontSize: 20,
+                ),
+          IconButton(
+              onPressed: _pickLocation,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              icon: const Icon(
+                Icons.map,
+                size: 28,
+                color: Colors.blue,
+              ))
         ],
       ),
-      // Container(
-      //     child: GoogleMap(
-      //   // onMapCreated: _onMapCreated,
-      //   initialCameraPosition:
-      //       const CameraPosition(target: LatLng(0, 0), zoom: 8),
-      //   // markers: _markers.values.toSet(),
-      // )),
-
       const VerticalEmptySpace(),
       Text(
         'Datetime',
         style: mediumTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
-      Container(
-        height: _testing123.length * 50,
+      SizedBox(
+        height: _eventDateTime.length * 110,
         child: ListView.builder(
-            itemCount: _testing123.length,
+            itemCount: _eventDateTime.length,
+            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return Text(
-                _testing123[index].toString(),
+              return Column(
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'Session ${index + 1}',
+                        style: mediumTextStyle,
+                      ),
+                      CustomDateTimePicker(
+                          setDatetime: (DateTime start, DateTime end) {
+                        setState(() {
+                          _eventDateTime[index] = {start: end};
+                        });
+                      }),
+                      Visibility(
+                        visible: _eventDateTime.length > 1,
+                        child: CustomLink(
+                          displayText: 'Remove',
+                          actionOnPressed: () {
+                            setState(() {
+                              _eventDateTime.removeAt(index);
+                            });
+                          },
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Row(children: [
+                    Expanded(
+                        child: Text(
+                      'End Datetime: ',
+                      style: smallTextStyle,
+                    )),
+                    Expanded(
+                        child: Text(
+                      'End Datetime:',
+                      style: smallTextStyle,
+                    ))
+                  ]),
+                  Row(children: [
+                    Expanded(
+                        child: Text(
+                      _eventDateTime[index].isNotEmpty
+                          ? formatDateTimeToString(
+                              _eventDateTime[index].keys.first)
+                          : 'N/A',
+                      style: smallTextStyle,
+                    )),
+                    Expanded(
+                        child: Text(
+                      _eventDateTime[index].isNotEmpty
+                          ? formatDateTimeToString(
+                              _eventDateTime[index].values.first)
+                          : 'N/A',
+                      style: smallTextStyle,
+                    ))
+                  ]),
+                  const Divider(),
+                ],
               );
             }),
       ),
@@ -77,65 +279,203 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           displayText: 'Add one more day',
           actionOnPressed: () {
             setState(() {
-              _testing123.add(1);
+              if (_eventDateTime.last.isNotEmpty) {
+                _eventDateTime.add({});
+              } else {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please select datetime for all sessions'),
+                  ),
+                );
+              }
             });
           }),
-      // Row(
-      //   children: [
-      //     IconButton(onPressed: () {}, icon: Icon(Icons.add)),
-
-      //   ],
-      // ),
-
+      const VerticalEmptySpace(
+        height: 16,
+      ),
       CustomActionButton(
           displayText: 'Continue',
           actionOnPressed: () {
             setState(() {
-              _isFirstPage = !_isFirstPage;
+              if (_eventDateTime.last.isEmpty) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please select datetime for all sessions.'),
+                  ),
+                );
+              } else if (_location == null) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please select the location.'),
+                  ),
+                );
+              } else {
+                _currentPage++;
+              }
             });
-          })
+          }),
+      const VerticalEmptySpace(),
     ];
+    //-------------------------------------Second Page-----------------------------------------//
     List<Widget> secondPage = [
       Text(
-        'Step 1: Event Info',
+        'Step 2: Event Info',
         style: largeTextStyle.copyWith(decoration: TextDecoration.underline),
       ),
+      const VerticalEmptySpace(),
+      CustomTextFormField(
+          text: 'Event Title',
+          validator: emptyValidator(),
+          actionOnChanged: (value) {
+            _eventTitle = value;
+          }),
+      const VerticalEmptySpace(),
+      CustomTextArea(
+        text: 'Event Description',
+        validator: emptyValidator(),
+        actionOnChanged: (value) {
+          _eventDesc = value;
+        },
+      ),
+      const VerticalEmptySpace(),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.35,
+            child: CustomNumericalTextFormField(
+              text: 'Fees (RM)',
+              validator: emptyValidator(),
+              actionOnChanged: (value) {
+                _eventFees = double.parse(value);
+              },
+              allowDecimal: true,
+            ),
+          ),
+          SizedBox(
+              width: MediaQuery.of(context).size.width * 0.35,
+              child: CustomNumericalTextFormField(
+                text: 'Capacity',
+                initialValue: _capacity,
+                validator: emptyValidator(),
+                actionOnChanged: (value) {
+                  _capacity = int.parse(value);
+                },
+                hintText: '0 for no limit',
+              )),
+        ],
+      ),
+      const VerticalEmptySpace(),
+      CustomNumericalTextFormField(
+          text: 'Event Contact',
+          validator: contactValidator(),
+          actionOnChanged: (value) {
+            _contact = value;
+          }),
+      const VerticalEmptySpace(),
+      const VerticalEmptySpace(),
+      CustomActionButton(
+          displayText: 'Continue',
+          actionOnPressed: () {
+            if (_formKey.currentState!.validate()) {
+              setState(() {
+                _currentPage++;
+              });
+            }
+          }),
+      const VerticalEmptySpace(),
+    ];
+    //-------------------------------Third Page------------------------------//
+    List<Widget> thirdPage = [
+      Text(
+        'Step 3: Event Info',
+        style: largeTextStyle.copyWith(decoration: TextDecoration.underline),
+      ),
+      const VerticalEmptySpace(),
+      Row(
+        children: [
+          Checkbox(
+            value: _isAnonymous,
+            onChanged: (_) {
+              setState(() {
+                _isAnonymous = !_isAnonymous;
+              });
+            },
+            activeColor: Colors.amber,
+            checkColor: const Color.fromARGB(255, 255, 239, 192),
+            shape: const RoundedRectangleBorder(),
+          ),
+          const Text(
+            'Keep Participants Anonymous',
+            style: mediumTextStyle,
+          )
+        ],
+      ),
+      const VerticalEmptySpace(),
+      CustomImagePicker(
+        actionOnPressed: (image) {
+          setState(() {
+            _image = image;
+          });
+        },
+        text: 'Event Image*',
+      ),
+      if (_image != null)
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+          width: 100,
+          height: 100,
+          child: Image.file(_image!, height: 200, width: 200),
+        ),
+      const VerticalEmptySpace(),
+      Row(children: [
+        const Text(
+          'Event Materials:',
+          style: mediumTextStyle,
+        ),
+        IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.upload_file,
+              size: 36,
+            )),
+      ]),
       const VerticalEmptySpace(),
       CustomActionButton(
           displayText: 'Organize',
           actionOnPressed: () {
-            Navigator.pop(context);
-            // Navigator.of(context).push();
-          })
+            if (_image != null) {
+              Navigator.pop(context);
+            }
+          }),
     ];
+    List<List<Widget>> pages = [firstPage, secondPage, thirdPage];
     return Scaffold(
         appBar: HeaderBar(
           headerTitle: 'Organize Event',
           menuRequired: false,
-          customAction: _isFirstPage
+          customAction: _currentPage == 0
               ? null
               : () {
                   setState(() {
-                    _isFirstPage = !_isFirstPage;
+                    _currentPage--;
                   });
                 },
         ),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.fromLTRB(
-                MediaQuery.of(context).size.width * 0.1,
-                35,
-                MediaQuery.of(context).size.width * 0.1,
-                0),
-            child: MapTesting(
-              setLocation: (LatLng val) {
-              LatLng loc = val;
-            }),
-            // child: Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   mainAxisSize: MainAxisSize.min,
-            //   children: _isFirstPage ? firstPage : secondPage,
-            // ),
+            padding: const EdgeInsets.fromLTRB(25, 35, 25, 0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: pages[_currentPage],
+              ),
+            ),
           ),
         ));
   }

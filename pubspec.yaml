@@ -16,6 +16,7 @@ dependencies:
   google_maps_flutter: ^2.7.0
   image_picker: ^1.1.2
   location: ^7.0.0
+  omni_datetime_picker: ^2.0.3
   provider: ^6.1.2
   file_picker: ^5.2.2
   dio: ^5.1.1
