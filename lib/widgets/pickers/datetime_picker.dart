@@ -76,7 +76,7 @@ class _CustomDateTimePickerState extends State<CustomDateTimePicker> {
       children: [
         IconButton(
             onPressed: showDatetimePicker,
-            icon: const Icon(Icons.calendar_month)),
+            icon: const Icon(Icons.calendar_month, color: Colors.blue,)),
       ],
     );
   }

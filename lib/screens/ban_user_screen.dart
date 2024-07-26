@@ -106,7 +106,7 @@ Widget build(BuildContext context) {
           minimumSize: const Size(double.infinity, 48),
         ),
         child: const Text(
-          'Submit',
+          'Ban',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

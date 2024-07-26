@@ -106,6 +106,7 @@ class EventModel {
       };
 
   EventModel copyWith({
+    String? id,
     String? organizerEmail,
     String? title,
     String? description,
@@ -120,9 +121,8 @@ class EventModel {
     EventStatus? status,
     List<String>? materials,
     List<String>? participants,
-  }) {
-    return EventModel(
-      id: id,
+  }) => EventModel(
+      id: id ?? this.id,
       organizerEmail: organizerEmail ?? this.organizerEmail,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -138,5 +138,5 @@ class EventModel {
       materials: materials ?? this.materials ?? [],
       participants: participants ?? this.participants ?? [],
     );
-  }
+  
 }

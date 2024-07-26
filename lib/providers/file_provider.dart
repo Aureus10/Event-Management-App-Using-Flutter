@@ -14,4 +14,5 @@ class FileProvider extends ChangeNotifier {
   static Future<String?> uploadEventImage(File image, String id) async {
     return await _fileRepository.uploadFile(image, 'images/event/$id');
   }
+
 }

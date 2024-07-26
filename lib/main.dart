@@ -18,7 +18,7 @@
 //   runApp(const MainApp());
 // }
 
-import 'package:assignment/screens/request_feedback.dart';
+import 'package:assignment/screens/view_request.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -31,7 +31,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: RequestFeedbackScreen(),
+      home: ViewRequestScreen(),
     );
   }
 }
