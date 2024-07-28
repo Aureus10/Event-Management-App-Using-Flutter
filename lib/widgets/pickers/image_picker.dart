@@ -18,7 +18,7 @@ class CustomImagePicker extends StatefulWidget {
 class _CustomImagePickerState extends State<CustomImagePicker> {
   File? _selectedImage;
 
-  Future _pickImageFromGallery() async {
+  Future<void> _pickImageFromGallery() async {
     
     final returnedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
