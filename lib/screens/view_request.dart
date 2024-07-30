@@ -36,8 +36,8 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
 
 void openFile(String url) async {
   try {
-    final Uri uri = Uri.parse(Uri.encodeFull(url));
-    print('Attempting to open URL: $url');
+    final Uri uri = Uri.parse(url);
+    print('Attempting to open URL: $uri');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
       print('URL successfully opened: $url');
