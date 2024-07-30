@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:assignment/models/event_model.dart';
 import 'package:assignment/providers/event_provider.dart';
-import 'package:assignment/providers/file_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/pickers/datetime_picker.dart';
+import 'package:assignment/widgets/pickers/file_picker.dart';
 import 'package:assignment/widgets/pickers/image_picker.dart';
 import 'package:assignment/widgets/pickers/location_picker.dart';
 import 'package:assignment/theme/fonts.dart';
@@ -14,6 +14,7 @@ import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/custom_input_fields.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   int? _capacity;
   bool _isAnonymous = false;
   File? _image;
-  List<File?> _eventMaterials = [];
+  Map<String, File> _eventMaterials = {};
 
   @override
   void initState() {
@@ -243,7 +244,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                   const Row(children: [
                     Expanded(
                         child: Text(
-                      'End Datetime: ',
+                      'Start Datetime: ',
                       style: smallTextStyle,
                     )),
                     Expanded(
@@ -292,31 +293,33 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
             });
           }),
       const VerticalEmptySpace(
-        height: 16,
+        height: 24,
       ),
-      CustomActionButton(
-          displayText: 'Continue',
-          actionOnPressed: () {
-            setState(() {
-              if (_eventDateTime.last.isEmpty) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please select datetime for all sessions.'),
-                  ),
-                );
-              } else if (_location == null) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please select the location.'),
-                  ),
-                );
-              } else {
-                _currentPage++;
-              }
-            });
-          }),
+      Center(
+        child: CustomActionButton(
+            displayText: 'Continue',
+            actionOnPressed: () {
+              setState(() {
+                if (_eventDateTime.last.isEmpty) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select datetime for all sessions.'),
+                    ),
+                  );
+                } else if (_location == null) {
+                  ScaffoldMessenger.of(context).clearSnackBars();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please select the location.'),
+                    ),
+                  );
+                } else {
+                  _currentPage++;
+                }
+              });
+            }),
+      ),
       const VerticalEmptySpace(),
     ];
     //-------------------------------------Second Page-----------------------------------------//
@@ -332,7 +335,9 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           actionOnChanged: (value) {
             _eventTitle = value;
           }),
-      const VerticalEmptySpace(),
+      const VerticalEmptySpace(
+        height: 18,
+      ),
       CustomTextArea(
         text: 'Event Description',
         validator: emptyValidator(),
@@ -375,17 +380,20 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           actionOnChanged: (value) {
             _contact = value;
           }),
-      const VerticalEmptySpace(),
-      const VerticalEmptySpace(),
-      CustomActionButton(
-          displayText: 'Continue',
-          actionOnPressed: () {
-            if (_formKey.currentState!.validate()) {
-              setState(() {
-                _currentPage++;
-              });
-            }
-          }),
+      const VerticalEmptySpace(
+        height: 24,
+      ),
+      Center(
+        child: CustomActionButton(
+            displayText: 'Continue',
+            actionOnPressed: () {
+              if (_formKey.currentState!.validate()) {
+                setState(() {
+                  _currentPage++;
+                });
+              }
+            }),
+      ),
       const VerticalEmptySpace(),
     ];
     //-------------------------------Third Page------------------------------//
@@ -431,26 +439,37 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           child: Image.file(_image!, height: 200, width: 200),
         ),
       const VerticalEmptySpace(),
-      Row(children: [
-        const Text(
-          'Event Materials:',
-          style: mediumTextStyle,
-        ),
-        IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.upload_file,
-              size: 36,
-            )),
-      ]),
-      const VerticalEmptySpace(),
-      CustomActionButton(
-          displayText: 'Organize',
-          actionOnPressed: () {
-            if (_image != null) {
-              Navigator.pop(context);
-            }
-          }),
+      // Row(children: [
+      //   const Text(
+      //     'Event Materials:',
+      //     style: mediumTextStyle,
+      //   ),
+      //   IconButton(
+      //       onPressed: () {},
+      //       icon: const Icon(
+      //         Icons.upload_file,
+      //         size: 36,
+      //       )),
+      // ]),
+      CustomFilePicker(actionOnPressed: (names, files) {
+        if (names.isNotEmpty && files.isNotEmpty) {
+          for (int i = 0; i < names.length; i++) {
+            _eventMaterials[names[i]!] = files[i]!;
+          }
+        }
+      }),
+      const VerticalEmptySpace(
+        height: 24,
+      ),
+      Center(
+        child: CustomActionButton(
+            displayText: 'Organize',
+            actionOnPressed: () {
+              if (_image != null) {
+                Navigator.pop(context);
+              }
+            }),
+      ),
     ];
     List<List<Widget>> pages = [firstPage, secondPage, thirdPage];
     return Scaffold(

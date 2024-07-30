@@ -47,7 +47,7 @@ class EventModel {
   final String imageLink;
   final bool isAnonymous;
   final EventStatus status;
-  final List<String>? materials;
+  final Map<String?, String?>? materials;
   final List<String>? participants;
 
   EventModel({
@@ -84,7 +84,7 @@ class EventModel {
         imageLink: map['imageLink'],
         isAnonymous: map['isAnonymous'],
         status: EventStatus.values.firstWhere((e) => e.toString() == 'EventStatus.${map['status']}'),
-        materials: List<String>.from(map['materials']),
+        materials: map['materials'],
         participants: List<String>.from(map['participants']),
       );
 
@@ -101,7 +101,7 @@ class EventModel {
         'imageLink': imageLink,
         'isAnonymous': isAnonymous,
         'status': status.toString().split('.').last,
-        'materials': materials ?? [],
+        'materials': materials ?? {},
         'participants': participants ?? [],
       };
 
@@ -119,7 +119,7 @@ class EventModel {
     String? imageLink,
     bool? isAnonymous,
     EventStatus? status,
-    List<String>? materials,
+    Map<String?, String?>? materials,
     List<String>? participants,
   }) => EventModel(
       id: id ?? this.id,
@@ -135,7 +135,7 @@ class EventModel {
       imageLink: imageLink ?? this.imageLink,
       isAnonymous: isAnonymous ?? this.isAnonymous,
       status: status ?? this.status,
-      materials: materials ?? this.materials ?? [],
+      materials: materials ?? this.materials ?? {},
       participants: participants ?? this.participants ?? [],
     );
   

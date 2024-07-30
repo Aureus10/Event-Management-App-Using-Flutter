@@ -17,7 +17,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/conference.jpg',
     isAnonymous: false,
     status: EventStatus.scheduled,
-    materials: ['https://example.com/material1.pdf', 'https://example.com/material2.pdf'],
+    materials: {},
     participants: ['participant1@example.com', 'participant2@example.com'],
   ),
   EventModel(
@@ -35,7 +35,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/festival.jpg',
     isAnonymous: true,
     status: EventStatus.ongoing,
-    materials: ['https://example.com/material3.pdf', 'https://example.com/material4.pdf'],
+    materials: {},
     participants: ['participant3@example.com', 'participant4@example.com'],
   ),
   EventModel(
@@ -53,7 +53,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/hackathon.jpg',
     isAnonymous: false,
     status: EventStatus.completed,
-    materials: ['https://example.com/material5.pdf', 'https://example.com/material6.pdf'],
+    materials: {},
     participants: ['participant5@example.com', 'participant6@example.com'],
   ),
   EventModel(
@@ -71,7 +71,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/exhibition.jpg',
     isAnonymous: false,
     status: EventStatus.scheduled,
-    materials: ['https://example.com/material7.pdf', 'https://example.com/material8.pdf'],
+    materials: {},
     participants: ['participant7@example.com', 'participant8@example.com'],
   ),
   EventModel(
@@ -89,7 +89,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/bootcamp.jpg',
     isAnonymous: false,
     status: EventStatus.ongoing,
-    materials: ['https://example.com/material9.pdf', 'https://example.com/material10.pdf'],
+    materials: {},
     participants: ['participant9@example.com', 'participant10@example.com'],
   ),
   EventModel(
@@ -107,7 +107,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/competition.jpg',
     isAnonymous: false,
     status: EventStatus.scheduled,
-    materials: ['https://example.com/material11.pdf', 'https://example.com/material12.pdf'],
+    materials: {},
     participants: ['participant11@example.com', 'participant12@example.com'],
   ),
   EventModel(
@@ -125,7 +125,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/vrworkshop.jpg',
     isAnonymous: false,
     status: EventStatus.ongoing,
-    materials: ['https://example.com/material13.pdf', 'https://example.com/material14.pdf'],
+    materials: {},
     participants: ['participant13@example.com', 'participant14@example.com'],
   ),
   EventModel(
@@ -143,7 +143,7 @@ List<EventModel> sampleEvents = [
     imageLink: 'https://example.com/webinar.jpg',
     isAnonymous: true,
     status: EventStatus.scheduled,
-    materials: ['https://example.com/material15.pdf', 'https://example.com/material16.pdf'],
+    materials: {},
     participants: ['participant15@example.com', 'participant16@example.com'],
   ),
 ];

@@ -22,16 +22,18 @@ class EventProvider extends ChangeNotifier {
   }
 
   Future<bool> organizeEvent(
-      EventModel event, File image, List<File?> materials) async {
+      EventModel event, File image, Map<String, File> materials) async {
     try {
       String id = await _eventRepository.addEvent(event);
       String? imageLink = await FileProvider.uploadEventImage(image, id);
 
-      List<String>? eventMaterials;
+      Map<String, String>? eventMaterials;
       if (materials.isNotEmpty) {
-        for (File? file in materials) {
-          if (file != null) {
+        for (String? fileName in materials.keys) {
+          if (fileName != null) {
             //upload file and get the link
+            String link = '';
+            eventMaterials?[fileName] = link;
           } else {
             break;
           }
