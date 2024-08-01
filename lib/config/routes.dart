@@ -14,6 +14,9 @@ import 'package:assignment/screens/faq.dart';
 import 'package:assignment/screens/request_feedback.dart';
 import 'package:assignment/screens/view_request.dart';
 import 'package:assignment/screens/past_request.dart';
+import 'package:assignment/screens/event_details_joined.dart';
+import 'package:assignment/screens/event_details_edit.dart';
+import 'package:assignment/screens/event_details_view.dart';
 import 'package:flutter/material.dart';
 
 
@@ -34,4 +37,7 @@ final Map<String, WidgetBuilder> routesConfig = {
   '/request_feedback':  (_) => const RequestFeedbackScreen(),
   '/view_request':  (_) => const ViewRequestScreen(),
   '/past_request':  (_) => const PastRequestScreen(),
+  '/event_details_joined':  (_) => const EventDetailsScreen(),
+  '/event_details_edited':  (_) => const EventDetailsEditScreen(),
+  '/event_details_view':  (_) => const EventDetailsViewScreen(),
 };

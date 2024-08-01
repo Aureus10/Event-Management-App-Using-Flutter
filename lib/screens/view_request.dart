@@ -19,8 +19,8 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
   String _requestType = 'Request for Organizer Role';
   String _requestDescription = 'Description...';
   List<Tuple2<String, String>> files = [
-    Tuple2('document1.pdf', 'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FScreenshot%202023-05-19%20031809.png?alt=media&token=48f860ff-6960-404e-84f1-373b27cfd029'),
-    Tuple2('image1.png', 'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FNew1234%40gmail.com?alt=media&token=75388f82-e280-4d43-8e79-30ff42c6107b'),
+    Tuple2('image1.png', 'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FScreenshot%202023-05-19%20031809.png?alt=media&token=48f860ff-6960-404e-84f1-373b27cfd029'),
+    Tuple2('document1.pdf', 'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FLab%2010%20-%20Queues.pdf?alt=media&token=98f856ae-d110-40dc-8a76-bfe78332ac59'),
   ];
 
   IconData getFileIcon(String fileName) {
