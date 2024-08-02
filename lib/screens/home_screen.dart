@@ -44,16 +44,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void didChangeDependencies() async {
-    ProfileProvider profileProvider =
-        Provider.of<ProfileProvider>(context, listen: false);
-    if (profileProvider.userProfile == null) {
-      await profileProvider
-          .initializeProfile(AuthService().currentUser!.email!);
-    }
-    // _userProfile = profileProvider.userProfile;
-    setState(() {
-      _userProfile = profileProvider.userProfile;
-    });
+    // ProfileProvider profileProvider =
+    //     Provider.of<ProfileProvider>(context, listen: false);
+    // if (profileProvider.userProfile == null) {
+    //   await profileProvider
+    //       .initializeProfile(AuthService().currentUser!.email!);
+    // }
+    // // _userProfile = profileProvider.userProfile;
+    // setState(() {
+    //   _userProfile = profileProvider.userProfile;
+    // });
     super.didChangeDependencies();
   }
 
@@ -119,25 +119,35 @@ class _HomeBodyState extends State<HomeBody> {
 
   late EventProvider _eventProvider;
 
-  List<EventModel> _searchResults = sampleEvents;
+  List<EventModel> _searchResults = [];
+  String _searchQuery = '';
+  final Map<EventStatus, bool> _eventStatusFilter = {
+    EventStatus.cancelled: true,
+    EventStatus.completed: true,
+    EventStatus.ongoing: true,
+    EventStatus.postponed: true,
+    EventStatus.scheduled: true,
+  };
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _eventProvider = Provider.of<EventProvider>(context);
     _eventProvider.getEvents();
-    // _searchResults = _eventProvider.events;
   }
 
   void onQueryChanged(String query) {
+    _searchQuery = query;
     setState(() {
-      // _searchResults = _eventProvider.events.where((item) {
-      _searchResults = sampleEvents.where((item) {
+      _searchResults = _eventProvider.events.where((item) {
+      // _searchResults = sampleEvents.where((item) {
         bool matchesTitle =
             item.title.toLowerCase().contains(query.toLowerCase());
         bool matchesDescription =
             item.description.toLowerCase().contains(query.toLowerCase());
-        return matchesTitle || matchesDescription;
+        bool matchesEventStatus = _eventStatusFilter[item.status] ?? false;
+        // return matchesTitle || matchesDescription;
+        return (matchesTitle || matchesDescription) && matchesEventStatus;
       }).toList();
     });
   }
@@ -166,6 +176,7 @@ class _HomeBodyState extends State<HomeBody> {
       }
     } else {
       eventsPreview = const Text("No events found");
+      onQueryChanged(_searchQuery);
     }
     return Column(
       children: [
@@ -202,8 +213,13 @@ class _HomeBodyState extends State<HomeBody> {
                             Row(
                               children: [
                                 Checkbox(
-                                  value: true,
-                                  onChanged: (val) {},
+                                  value:
+                                      _eventStatusFilter[EventStatus.scheduled],
+                                  onChanged: (val) {
+                                    _eventStatusFilter[EventStatus.scheduled] =
+                                        val!;
+                                        onQueryChanged(_searchQuery);
+                                  },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.scheduled]),
                                 ),
@@ -218,8 +234,13 @@ class _HomeBodyState extends State<HomeBody> {
                             Row(
                               children: [
                                 Checkbox(
-                                  value: true,
-                                  onChanged: (val) {},
+                                  value:
+                                      _eventStatusFilter[EventStatus.ongoing],
+                                  onChanged: (val) {
+                                    _eventStatusFilter[EventStatus.ongoing] =
+                                        val!;
+                                        onQueryChanged(_searchQuery);
+                                  },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.ongoing]),
                                 ),
@@ -233,8 +254,13 @@ class _HomeBodyState extends State<HomeBody> {
                             Row(
                               children: [
                                 Checkbox(
-                                  value: true,
-                                  onChanged: (val) {},
+                                  value:
+                                      _eventStatusFilter[EventStatus.completed],
+                                  onChanged: (val) {
+                                    _eventStatusFilter[EventStatus.completed] =
+                                        val!;
+                                        onQueryChanged(_searchQuery);
+                                  },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.completed]),
                                 ),
@@ -248,8 +274,13 @@ class _HomeBodyState extends State<HomeBody> {
                             Row(
                               children: [
                                 Checkbox(
-                                  value: true,
-                                  onChanged: (val) {},
+                                  value:
+                                      _eventStatusFilter[EventStatus.cancelled],
+                                  onChanged: (val) {
+                                    _eventStatusFilter[EventStatus.cancelled] =
+                                        val!;
+                                       onQueryChanged(_searchQuery);
+                                  },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.cancelled]),
                                 ),
@@ -264,8 +295,13 @@ class _HomeBodyState extends State<HomeBody> {
                             Row(
                               children: [
                                 Checkbox(
-                                  value: true,
-                                  onChanged: (val) {},
+                                  value:
+                                      _eventStatusFilter[EventStatus.postponed],
+                                  onChanged: (val) {
+                                    _eventStatusFilter[EventStatus.postponed] =
+                                        val!;
+                                        onQueryChanged(_searchQuery);
+                                  },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.postponed]),
                                 ),

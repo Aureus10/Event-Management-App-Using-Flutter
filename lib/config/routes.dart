@@ -5,6 +5,7 @@ import 'package:assignment/screens/login_screen.dart';
 import 'package:assignment/screens/organize_event_screen.dart';
 import 'package:assignment/screens/signup_screen.dart';
 import 'package:assignment/screens/splash_screen.dart';
+import 'package:assignment/screens/testing.dart';
 import 'package:flutter/material.dart';
 
 final Map<String, WidgetBuilder> routesConfig = {
@@ -15,5 +16,5 @@ final Map<String, WidgetBuilder> routesConfig = {
   '/home': (_) => const HomeScreen(),
   '/organize': (_) => const OrganizeEventScreen(),
   '/forgotPassword': (_) => const ForgotPasswordScreen(),
-
+  '/testing': (_) => const Testing(),
 };

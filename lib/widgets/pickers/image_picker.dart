@@ -33,21 +33,40 @@ class _CustomImagePickerState extends State<CustomImagePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return 
+    Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           widget.text ?? 'Pick an Image',
           style: mediumTextStyle,
         ),
-        IconButton(
-            onPressed: _pickImageFromGallery,
-            icon: const Icon(
-              Icons.drive_folder_upload,
-              size: 40,
-            )),
-            Text(_selectedImage != null ? _selectedImage.toString() : '')
+        GestureDetector(
+      onTap: _pickImageFromGallery,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: const Row(
+          children: [
+            Icon(Icons.drive_folder_upload, size: 40),
+            SizedBox(width: 16),
+            Text(
+              'Pick an Image',
+              style: mediumTextStyle,
+            ),
+          ],
+        ),
+      ),
+    ),
+        
+            // Text(_selectedImage != null ? _selectedImage.toString() : '')
       ],
     );
+    
+    
+    
   }
 }

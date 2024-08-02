@@ -47,11 +47,11 @@ class EventModel {
   final String imageLink;
   final bool isAnonymous;
   final EventStatus status;
-  final Map<String?, String?>? materials;
+  final Map<String, String>? materials;
   final List<String>? participants;
 
   EventModel({
-    required this.id,
+    this.id,
     required this.organizerEmail,
     required this.title,
     required this.description,
@@ -76,27 +76,37 @@ class EventModel {
         venue: map['venue'],
         fees: map['fees'],
         contact: map['contact'],
-        type: EventType.values.firstWhere((e) => e.toString() == 'EventType.${map['type']}'),
-        datetime: (map['Datetime'] as Map<String, dynamic>).entries.map((entry) {
-    return {DateTime.parse(entry.key): (entry.value as Timestamp).toDate()};
-  }).toList(),
+        type: EventType.values
+            .firstWhere((e) => e.toString() == 'EventType.${map['type']}'),
+        datetime:
+            (map['datetime'] as Map<String, dynamic>).entries.map((entry) {
+          return {
+            DateTime.parse(entry.key): (entry.value as Timestamp).toDate()
+          };
+        }).toList(),
         capacity: map['capacity'],
         imageLink: map['imageLink'],
         isAnonymous: map['isAnonymous'],
-        status: EventStatus.values.firstWhere((e) => e.toString() == 'EventStatus.${map['status']}'),
-        materials: map['materials'],
+        status: EventStatus.values
+            .firstWhere((e) => e.toString() == 'EventStatus.${map['status']}'),
+        materials: Map<String, String>.from(map['materials']),
+        // materials: {},
         participants: List<String>.from(map['participants']),
       );
 
   Map<String, dynamic> toMap() => {
-        'organizer': organizerEmail,
+        'organizerEmail': organizerEmail,
         'title': title,
         'description': description,
         'venue': venue,
         'fees': fees,
         'contact': contact,
         'type': type.toString().split('.').last,
-        'datetime': {for (var entry in datetime) entry.keys.first.toIso8601String(): Timestamp.fromDate(entry.values.first)},
+        'datetime': {
+          for (var entry in datetime)
+            entry.keys.first.toIso8601String():
+                Timestamp.fromDate(entry.values.first)
+        },
         'capacity': capacity,
         'imageLink': imageLink,
         'isAnonymous': isAnonymous,
@@ -119,24 +129,24 @@ class EventModel {
     String? imageLink,
     bool? isAnonymous,
     EventStatus? status,
-    Map<String?, String?>? materials,
+    Map<String, String>? materials,
     List<String>? participants,
-  }) => EventModel(
-      id: id ?? this.id,
-      organizerEmail: organizerEmail ?? this.organizerEmail,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      venue: venue ?? this.venue,
-      fees: fees ?? this.fees,
-      contact: contact ?? this.contact,
-      type: type ?? this.type,
-      datetime: datetime ?? this.datetime,
-      capacity: capacity ?? this.capacity,
-      imageLink: imageLink ?? this.imageLink,
-      isAnonymous: isAnonymous ?? this.isAnonymous,
-      status: status ?? this.status,
-      materials: materials ?? this.materials ?? {},
-      participants: participants ?? this.participants ?? [],
-    );
-  
+  }) =>
+      EventModel(
+        id: id ?? this.id,
+        organizerEmail: organizerEmail ?? this.organizerEmail,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        venue: venue ?? this.venue,
+        fees: fees ?? this.fees,
+        contact: contact ?? this.contact,
+        type: type ?? this.type,
+        datetime: datetime ?? this.datetime,
+        capacity: capacity ?? this.capacity,
+        imageLink: imageLink ?? this.imageLink,
+        isAnonymous: isAnonymous ?? this.isAnonymous,
+        status: status ?? this.status,
+        materials: materials ?? this.materials ?? {},
+        participants: participants ?? this.participants ?? [],
+      );
 }

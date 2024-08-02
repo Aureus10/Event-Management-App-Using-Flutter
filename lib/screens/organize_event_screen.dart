@@ -27,21 +27,21 @@ class OrganizeEventScreen extends StatefulWidget {
 }
 
 class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
-  LatLng? _location;
   int _currentPage = 0;
   final _formKey = GlobalKey<FormState>();
-  final List<Map<DateTime, DateTime>> _eventDateTime = [{}];
   final TextEditingController _locationController = TextEditingController();
   late ProfileProvider provider;
 
   final ScrollController _scrollController = ScrollController();
 
+  LatLng? _location = LatLng(3.15, 101.689);
+  final List<Map<DateTime, DateTime>> _eventDateTime = [{DateTime.now() : DateTime.now().add(const Duration(hours: 2))}];
   EventType _eventType = EventType.exhibition;
-  String? _eventTitle;
-  String? _eventDesc;
-  String? _contact;
-  double? _eventFees;
-  int? _capacity;
+  String? _eventTitle = 'TemporaryTitle';
+  String? _eventDesc = 'Temporary Description';
+  String? _contact = '0101101010';
+  double? _eventFees = 10;
+  int? _capacity = 10;
   bool _isAnonymous = false;
   File? _image;
   Map<String, File> _eventMaterials = {};
@@ -89,16 +89,11 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               child: CircularProgressIndicator(),
             ));
 
-    EventProvider eventProvider =
-        Provider.of<EventProvider>(context, listen: false);
-    if (_eventMaterials.isNotEmpty) {
-      //upload files and fetch the url.
-    }
-    String email =
-        Provider.of<ProfileProvider>(context, listen: false).userProfile!.email;
+    EventProvider eventProvider = Provider.of<EventProvider>(context, listen: false);
+    // String email = Provider.of<ProfileProvider>(context, listen: false).userProfile!.email;
+    String email = 'testing11111@gmail.com';
     eventProvider.organizeEvent(
         EventModel(
-            id: '',
             organizerEmail: email,
             title: _eventTitle!,
             description: _eventDesc!,
@@ -108,11 +103,20 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
             type: _eventType,
             datetime: _eventDateTime,
             capacity: _capacity!,
-            imageLink: '',
+            imageLink: 'temp',
             isAnonymous: _isAnonymous,
-            status: EventStatus.scheduled),
+            status: EventStatus.scheduled,
+            ),
         _image!,
-        _eventMaterials);
+        _eventMaterials).then((id) => {
+          if(id != null) {
+            Navigator.of(context).pop(),
+            Navigator.of(context).pushNamed('/testing', arguments: id)
+          } else {
+            debugPrint('123')
+          }
+        });
+
   }
 
   @override
@@ -222,11 +226,15 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                         style: mediumTextStyle,
                       ),
                       CustomDateTimePicker(
-                          setDatetime: (DateTime start, DateTime end) {
-                        setState(() {
-                          _eventDateTime[index] = {start: end};
-                        });
-                      }),
+                        setDatetime: (DateTime start, DateTime end) {
+                          setState(() {
+                            _eventDateTime[index] = {start: end};
+                          });
+                        },
+                        lastDateTime: index > 0
+                            ? _eventDateTime[index - 1].values.first
+                            : DateTime.now().add(const Duration(days: 1)),
+                      ),
                       Visibility(
                         visible: _eventDateTime.length > 1,
                         child: CustomLink(
@@ -331,6 +339,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       const VerticalEmptySpace(),
       CustomTextFormField(
           text: 'Event Title',
+          initialValue: _eventTitle,
           validator: emptyValidator(),
           actionOnChanged: (value) {
             _eventTitle = value;
@@ -340,6 +349,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       ),
       CustomTextArea(
         text: 'Event Description',
+        initialValue: _eventDesc,
         validator: emptyValidator(),
         actionOnChanged: (value) {
           _eventDesc = value;
@@ -353,6 +363,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
             width: MediaQuery.of(context).size.width * 0.35,
             child: CustomNumericalTextFormField(
               text: 'Fees (RM)',
+              initialValue: _eventFees.toString(),
               validator: emptyValidator(),
               actionOnChanged: (value) {
                 _eventFees = double.parse(value);
@@ -364,7 +375,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               width: MediaQuery.of(context).size.width * 0.35,
               child: CustomNumericalTextFormField(
                 text: 'Capacity',
-                initialValue: _capacity,
+                initialValue: _capacity.toString(),
                 validator: emptyValidator(),
                 actionOnChanged: (value) {
                   _capacity = int.parse(value);
@@ -376,6 +387,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
       const VerticalEmptySpace(),
       CustomNumericalTextFormField(
           text: 'Event Contact',
+          initialValue: _contact,
           validator: contactValidator(),
           actionOnChanged: (value) {
             _contact = value;
@@ -431,33 +443,91 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
         },
         text: 'Event Image*',
       ),
-      if (_image != null)
-        Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+      const VerticalEmptySpace(),
+      Center(
+        child: SizedBox(
           width: 100,
           height: 100,
-          child: Image.file(_image!, height: 200, width: 200),
+          child: _image != null
+              ? Image.file(_image!, height: 200, width: 200)
+              : const Text(
+                  "Event Image Goes Here...",
+                  style: smallTextStyle,
+                ),
         ),
+      ),
+      const VerticalEmptySpace(
+        height: 24,
+      ),
+      const Text(
+        'Event Documents (optional)',
+        style: mediumTextStyle,
+      ),
+      CustomFilePicker(
+          text: 'Pick a file',
+          actionOnPressed: (names, files) {
+            if (names.isNotEmpty && files.isNotEmpty) {
+              for (int i = 0; i < names.length; i++) {
+                setState(() {
+                  _eventMaterials[names[i]!] = files[i]!;
+                });
+              }
+            }
+          }),
       const VerticalEmptySpace(),
-      // Row(children: [
-      //   const Text(
-      //     'Event Materials:',
-      //     style: mediumTextStyle,
-      //   ),
-      //   IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(
-      //         Icons.upload_file,
-      //         size: 36,
-      //       )),
-      // ]),
-      CustomFilePicker(actionOnPressed: (names, files) {
-        if (names.isNotEmpty && files.isNotEmpty) {
-          for (int i = 0; i < names.length; i++) {
-            _eventMaterials[names[i]!] = files[i]!;
-          }
-        }
-      }),
+      SizedBox(
+        height: _eventMaterials.length < 3 ? 100 : _eventMaterials.length * 40,
+        child: _eventMaterials.isEmpty
+            ? const Center(
+                child: Text(
+                "Event Documents Goes Here...",
+                style: smallTextStyle,
+              ))
+            : ListView.builder(
+                itemCount: _eventMaterials.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  String fileName = _eventMaterials.keys.elementAt(index);
+                  IconData fileIcon;
+                  if (fileName.endsWith('.pdf')) {
+                    fileIcon = Icons.picture_as_pdf;
+                  } else if (fileName.endsWith('.png') ||
+                      fileName.endsWith('.jpg') ||
+                      fileName.endsWith('.jpeg')) {
+                    fileIcon = Icons.image;
+                  } else if (fileName.endsWith('.xlsx') ||
+                      fileName.endsWith('.xls')) {
+                    fileIcon = Icons.table_chart;
+                  } else {
+                    fileIcon = Icons.insert_drive_file;
+                  }
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(fileIcon),
+                          Expanded(
+                            child: Text(
+                              fileName,
+                              style: smallTextStyle,
+                            ),
+                          ),
+                          CustomLink(
+                            displayText: 'Remove',
+                            actionOnPressed: () {
+                              setState(() {
+                                _eventMaterials.remove(fileName);
+                              });
+                            },
+                            color: Colors.red,
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                    ],
+                  );
+                }),
+      ),
       const VerticalEmptySpace(
         height: 24,
       ),
@@ -466,7 +536,14 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
             displayText: 'Organize',
             actionOnPressed: () {
               if (_image != null) {
-                Navigator.pop(context);
+                organizeEvent();
+              } else {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Image is required'),
+                  ),
+                );
               }
             }),
       ),

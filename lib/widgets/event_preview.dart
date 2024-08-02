@@ -60,17 +60,11 @@ class EventPreview extends StatelessWidget {
                     SizedBox(
                       height: 50,
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           CustomActionButton(
                             displayText: "View",
-                            actionOnPressed: () {},
-                            width: 70,
-                            height: 40,
-                          ),
-                          CustomActionButton(
-                            displayText: "Join",
                             actionOnPressed: () {},
                             width: 70,
                             height: 40,

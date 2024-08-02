@@ -95,7 +95,7 @@ class CustomNumericalTextFormField extends StatelessWidget {
       this.allowDecimal});
 
   final String text;
-  final int? initialValue;
+  final String? initialValue;
   final String? Function(String?)? validator;
   final Function(String) actionOnChanged;
   final String? hintText;
@@ -111,7 +111,7 @@ class CustomNumericalTextFormField extends StatelessWidget {
           style: mediumTextStyle,
         ),
         TextFormField(
-          initialValue: initialValue?.toString(),
+          initialValue: initialValue,
           onChanged: actionOnChanged,
           decoration: InputDecoration(hintText: hintText ?? ''),
           validator: validator,
