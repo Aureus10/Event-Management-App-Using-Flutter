@@ -14,7 +14,7 @@ class _RequestFeedbackScreenState extends State<RequestFeedbackScreen> {
   String? selectedRequestType;
   List<String> requestTypes = [
     'Request for Event Organizer Role',
-    'Request for Provide Feeback'
+    'Provide Feeback'
   ];
 
   @override
@@ -24,6 +24,7 @@ class _RequestFeedbackScreenState extends State<RequestFeedbackScreen> {
 
   @override
   Widget build(BuildContext context) {
+    selectedRequestType = ModalRoute.of(context)?.settings.arguments as String;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Request & Feedback'),

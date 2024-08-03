@@ -1,6 +1,5 @@
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/repositories/profile_repository.dart';
-import 'package:assignment/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class ProfileProvider extends ChangeNotifier {

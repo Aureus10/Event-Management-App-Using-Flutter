@@ -1,18 +1,24 @@
 import 'dart:io';
 
+import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/providers/event_provider.dart';
+import 'package:assignment/providers/profile_provider.dart';
+import 'package:assignment/theme/fonts.dart';
+import 'package:assignment/utils/formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:assignment/models/event_model.dart';
 
-class EventDetailsEditScreen extends StatefulWidget {
-  const EventDetailsEditScreen({super.key});
+class EventDetailsScreen extends StatefulWidget {
+  const EventDetailsScreen({super.key});
 
   @override
-  _EventDetailsEditScreenState createState() => _EventDetailsEditScreenState();
+  _EventDetailsScreenState createState() => _EventDetailsScreenState();
 }
 
-class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
+class _EventDetailsScreenState extends State<EventDetailsScreen> {
+  UserType _userType = UserType.user;
   EventType _eventType = EventType.exhibition;
   String? _eventTitle;
   String? _eventDesc;
@@ -27,19 +33,10 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
   final String organizer = "Organizer";
   final String venue = "Venue";
   final String daterange = "Date Range";
-  final List<Map<String, DateTime>> _eventDateTime = [
-    {
-      'start': DateTime(2023, 5, 1, 13, 28),
-      'end': DateTime(2023, 5, 1, 14, 28)
-    },
-    {
-      'start': DateTime(2023, 5, 2, 13, 29),
-      'end': DateTime(2023, 5, 2, 14, 29)
-    },
-    {
-      'start': DateTime(2023, 5, 3, 13, 30),
-      'end': DateTime(2023, 5, 3, 14, 30)
-    },
+  final List<Map<DateTime, DateTime>> _eventDateTime = [
+    {DateTime(2023, 5, 1, 13, 28): DateTime(2023, 5, 1, 14, 28)},
+    {DateTime(2023, 5, 2, 13, 29): DateTime(2023, 5, 2, 14, 29)},
+    {DateTime(2023, 5, 3, 13, 30): DateTime(2023, 5, 3, 14, 30)},
   ];
   final String fees = "Fees";
   final String capacity = "Capacity";
@@ -63,11 +60,7 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
     },
   ];
 
-  void edit(){
-
-  }
-  
-  void loadDate() {
+  void loadDate(EventModel event) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -80,9 +73,10 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: _eventDateTime.asMap().entries.map((entry) {
+                children: event.datetime.asMap().entries.map((entry) {
                   int index = entry.key;
-                  Map<String, DateTime> dateRange = entry.value;
+                  Map<DateTime, DateTime> dateRange = entry.value;
+                  debugPrint(dateRange.keys.first.toString());
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -90,19 +84,18 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
                       children: [
                         Text(
                           'Session ${index + 1}',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: mediumTextStyle,
                         ),
                         const SizedBox(height: 8.0),
                         Text(
-                          'Start Datetime: ${DateFormat('yyyy-MM-dd HH:mm').format(dateRange['start']!)}',
-                          style: const TextStyle(fontSize: 16),
+                          'Start Datetime: ${formatDateTimeToString(dateRange.keys.first)}',
+                          // 'Start',
+                          style: smallTextStyle,
                         ),
                         Text(
-                          'End Datetime: ${DateFormat('yyyy-MM-dd HH:mm').format(dateRange['end']!)}',
-                          style: const TextStyle(fontSize: 16),
+                          'End Datetime: ${formatDateTimeToString(dateRange.values.first)}',
+                          // 'End',
+                          style: smallTextStyle,
                         ),
                         const Divider(),
                       ],
@@ -147,8 +140,68 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
     }
   }
 
+  bool isOrganizer(String organizer) {
+    return Provider.of<ProfileProvider>(context, listen: false)
+            .userProfile!
+            .email ==
+        organizer;
+  }
+
+  bool isParticipant(List<String>? participants) {
+    if (participants == null) {
+      return false;
+    }
+    return participants.contains(
+        Provider.of<ProfileProvider>(context, listen: false)
+            .userProfile!
+            .email);
+  }
+
+  bool isViewOnly() {
+    return _userType == UserType.administrator;
+  }
+
+  void joinEvent(EventModel event) {
+    EventProvider().joinEvent(event);
+  }
+
+  void leaveEvent(EventModel event) {
+    EventProvider().leaveEvent(event);
+  }
+
+  void editEvent(EventModel event) {
+    Navigator.of(context).pushNamed('/edit_event', arguments: event);
+  }
+
   @override
   Widget build(BuildContext context) {
+    EventModel event = ModalRoute.of(context)!.settings.arguments as EventModel;
+    void Function()? actionOnPressed;
+    String actionButtonText;
+    Color actionButtonColor;
+    if (isViewOnly()) {
+      actionOnPressed = null;
+      actionButtonText = '';
+      actionButtonColor = Colors.transparent;
+    } else if (isOrganizer(event.organizerEmail)) {
+      actionOnPressed = () {
+        editEvent(event);
+      };
+      actionButtonText = 'Edit';
+      actionButtonColor = Colors.blueAccent;
+    } else if (isParticipant(event.participants)) {
+      actionOnPressed = () {
+        leaveEvent(event);
+      };
+      actionButtonText = 'Leave';
+      actionButtonColor = Colors.redAccent;
+    } else {
+      actionOnPressed = () {
+        joinEvent(event);
+      };
+      actionButtonText = 'Join';
+      actionButtonColor = Colors.blueAccent;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Event Details'),
@@ -176,35 +229,27 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
                 style:
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
-            Row(
-              children: [
-                Container(
-                  width: 200,
-                  height: 150,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image, size: 60),
-                ),
-                const SizedBox(width: 40),
-                Column(
-                  children: [
-                    const CircleAvatar(
-                      radius: 30,
-                      child: Icon(Icons.person, size: 40),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(organizer),
-                  ],
-                ),
-              ],
+            Center(
+              child: SizedBox(
+                height: 150,
+                child: Image.network(event.imageLink),
+              ),
             ),
             const SizedBox(height: 16.0),
+            Row(
+              children: [
+                const CircleAvatar(
+                  radius: 30,
+                  child: Icon(Icons.person, size: 40),
+                ),
+                const SizedBox(height: 5),
+                Text(organizer),
+              ],
+            ),
             Container(
-              constraints: const BoxConstraints(
-                  minHeight:
-                      40),
+              constraints: const BoxConstraints(minHeight: 40),
               child: Row(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
                     child: Column(
@@ -232,7 +277,9 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         GestureDetector(
-                          onTap: loadDate,
+                          onTap: () {
+                            loadDate(event);
+                          },
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -242,13 +289,8 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
                                 child: Wrap(
                                   children: [
                                     Text(
-                                      daterange,
-                                      style: const TextStyle(
-                                        color: Colors.blue,
-                                        decoration: TextDecoration.underline,
-                                        decorationColor: Colors.blue,
-                                      ),
-                                    ),
+                                        'Sessions: ${event.datetime.length + 1}',
+                                        style: linkTextStyle),
                                   ],
                                 ),
                               ),
@@ -258,39 +300,14 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
                       ],
                     ),
                   ),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.date_range),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: Wrap(
-                                children: [
-                                  Text(
-                                      'Sessions: ${_eventDateTime.length}'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
             const SizedBox(height: 16.0),
             Container(
-              constraints: const BoxConstraints(
-                  minHeight:
-                      40),
+              constraints: const BoxConstraints(minHeight: 40),
               child: Row(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
                     child: Column(
@@ -344,8 +361,7 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
             Container(
               constraints: const BoxConstraints(minHeight: 40),
               child: Row(
-                crossAxisAlignment:
-                    CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Flexible(
                     child: Column(
@@ -396,8 +412,10 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
               ),
             ),
             const SizedBox(height: 16.0),
-            const Text("Materials",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            if (isOrganizer(event.organizerEmail) ||
+                isParticipant(event.participants))
+              const Text("Materials",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             ...files.map((file) {
               return ListTile(
                 leading: Icon(getFileIcon(file['name']!)),
@@ -406,47 +424,44 @@ class _EventDetailsEditScreenState extends State<EventDetailsEditScreen> {
                   openFile(file['url']!);
                 },
               );
-            }).toList(),
+            }),
             const SizedBox(height: 8.0),
-            Text(description),
+            const Text('Event Description', style: mediumTextStyle,),
+            Text(description, style: smallTextStyle,),
             const SizedBox(height: 16.0),
             Text('Participants ($participants/$maxParticipants)',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
-            Wrap(
-              children: List.generate(participants, (index) {
-                return const Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: CircleAvatar(
-                    child: Icon(Icons.person),
-                  ),
-                );
-              }),
-            ),
+            if (!_isAnonymous)
+              Wrap(
+                children: List.generate(participants, (index) {
+                  return const Padding(
+                    padding: EdgeInsets.all(4.0),
+                    child: CircleAvatar(
+                      child: Icon(Icons.person),
+                    ),
+                  );
+                }),
+              ),
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          onPressed: () {
-            edit();
-          },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Color.fromARGB(255, 0, 102, 255),
-            minimumSize: const Size(double.infinity, 48),
-          ),
-          child: const Text(
-            'Edit',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+      bottomNavigationBar: isViewOnly()
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                onPressed: actionOnPressed,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: actionButtonColor,
+                  minimumSize: const Size(double.infinity, 48),
+                ),
+                child: Text(actionButtonText,
+                    style: mediumTextStyle.copyWith(color: Colors.white)),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

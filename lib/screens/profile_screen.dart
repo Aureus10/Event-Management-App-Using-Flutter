@@ -1,22 +1,18 @@
+import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/providers/profile_provider.dart';
+import 'package:assignment/services/auth_service.dart';
+import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key, required this.userProfile});
 
-  const ProfileScreen({super.key});
+  final ProfileModel userProfile;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: Stack(
+    return Stack(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -118,13 +114,13 @@ class ProfileScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          // Row for Report User Button
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               TextButton(
                                 onPressed: () {
                                   // Add ban user functionality here
+                                  Navigator.of(context).pushNamed('/ban_user', arguments: '');
                                 },
                                 child: const Text('Edit Profile'),
                               )
@@ -136,23 +132,22 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                // Text fields for additional user information
                 TextField(
                   readOnly: true,
-                  controller: TextEditingController(text: '_Name'), // Default value
+                  controller: TextEditingController(text: userProfile?.username ?? ''),
                   decoration: const InputDecoration(
                     labelText: 'Name',
                   ),
                 ),
-                const SizedBox(height: 8),
+                const VerticalEmptySpace(),
                 Row(
                   children: [
                     Expanded(
                       child: TextField(
                         readOnly: true,
-                        controller: TextEditingController(text: '21'),
+                        controller: TextEditingController(text: userProfile?.dateOfBirth ?? ''),
                         decoration: const InputDecoration(
-                          labelText: 'Age',
+                          labelText: 'Date of birth',
                         ),
                       ),
                     ),
@@ -160,7 +155,7 @@ class ProfileScreen extends StatelessWidget {
                     Expanded(
                       child: TextField(
                         readOnly: true,
-                        controller: TextEditingController(text: 'Male'),
+                        controller: TextEditingController(text: userProfile?.gender.toString() ?? ''),
                         decoration: const InputDecoration(
                           labelText: 'Gender',
                         ),
@@ -168,18 +163,18 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const VerticalEmptySpace(),
                 TextField(
                   readOnly: true,
-                  controller: TextEditingController(text: '_Name@gmail.com'),
+                  controller: TextEditingController(text: userProfile?.email ?? ''),
                   decoration: const InputDecoration(
                     labelText: 'Email Address',
                   ),
                 ),
-                const SizedBox(height: 8),
+                const VerticalEmptySpace(),
                 TextField(
                   readOnly: true,
-                  controller: TextEditingController(text: '016-123 4567'),
+                  controller: TextEditingController(text: userProfile?.contact ?? ''),
                   decoration: const InputDecoration(
                     labelText: 'Contact Number',
                   ),
@@ -188,17 +183,17 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           Positioned(
-            bottom: 16.0, // Distance from the bottom
-            right: 16.0, // Distance from the right
+            bottom: 16.0,
+            right: 16.0,
             child: Column(
               children: [
                 FloatingActionButton(
                   onPressed: () {
-                    // Your onPressed code here
+                    AuthService().signOut();
                   },
-                  child: const Icon(Icons.logout), // Icon for the button
+                  child: const Icon(Icons.logout),
                 ),
-                const SizedBox(height: 8), // Spacing between the button and text
+                const VerticalEmptySpace(),
                 const Text(
                   'Logout',
                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
@@ -207,7 +202,7 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:assignment/config/poviders.dart';
-import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/config/routes.dart';
 import 'package:assignment/screens/home_screen.dart';

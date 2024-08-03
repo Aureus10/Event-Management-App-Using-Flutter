@@ -2,9 +2,9 @@ import 'package:assignment/models/event_model.dart';
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/event_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
-import 'package:assignment/screens/event_calendar_screen.dart';
+import 'package:assignment/screens/event_calendar.dart';
+import 'package:assignment/screens/manage_request_screen.dart';
 import 'package:assignment/screens/profile_screen.dart';
-import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
@@ -13,7 +13,6 @@ import 'package:assignment/widgets/event_preview.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:assignment/widgets/side_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:assignment/data/event_sample.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,58 +23,63 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  late Future<void> _profileFuture;
+
   int _selectedIndex = 0;
-  final List<Widget> _widgetList = <Widget>[
-    const HomeBody(),
-    const EventCalendarScreen(),
-    const ProfileScreen()
-  ];
 
   void _onSelected(int index) => setState(() {
         _selectedIndex = index;
       });
 
-  ProfileModel? _userProfile;
-
   @override
   void initState() {
     super.initState();
+        _profileFuture = context.read<ProfileProvider>().initializeProfile('New1234@gmail.com');
   }
 
   @override
   void didChangeDependencies() async {
-    // ProfileProvider profileProvider =
-    //     Provider.of<ProfileProvider>(context, listen: false);
-    // if (profileProvider.userProfile == null) {
-    //   await profileProvider
-    //       .initializeProfile(AuthService().currentUser!.email!);
-    // }
-    // // _userProfile = profileProvider.userProfile;
-    // setState(() {
-    //   _userProfile = profileProvider.userProfile;
-    // });
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: _profileFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error loading profile'));
+        } else {
+          ProfileModel _userProfile = Provider.of<ProfileProvider>(context).userProfile!;
+
+          final List<Widget> _widgetList = <Widget>[
+            const HomeBody(),
+            _userProfile.type != UserType.administrator
+                ? const EventCalendarScreen()
+                : const ManageRequestScreen(),
+            // const ManageRequestScreen(),
+            ProfileScreen(userProfile: _userProfile),
+          ];
     return Scaffold(
       appBar: const HeaderBar(
         headerTitle: 'GesT EMS',
         menuRequired: true,
       ),
       endDrawer: CustomSideBar(
-        accountName: _userProfile?.username ?? '',
-        imageUrl: _userProfile?.username ?? '',
-        userType: UserType.user,
+        accountName: _userProfile.username,
+        imageUrl: _userProfile.imageLink,
+        // userType: UserType.user,
         // accountName: _userProfile.username,
         // accountEmail: _userProfile.email,
         // imageUrl: _userProfile.imageLink,
-        // userType: _userProfile.type,
+        userType: _userProfile.type,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
             icon: Icon(
               Icons.home,
               size: 28,
@@ -84,12 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.calendar_month,
+              _userProfile.type != UserType.administrator ? Icons.calendar_month : Icons.edit_document,
+              // Icons.calendar_month,
               size: 28,
             ),
-            label: 'Event Calendar',
+            label: _userProfile.type != UserType.administrator ? 'Event Calendar' : 'Manage Request',
+            // label: '111',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(
               Icons.account_circle,
               size: 28,
@@ -104,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: _widgetList[_selectedIndex],
     );
-  }
-}
+  }});
+}}
 
 class HomeBody extends StatefulWidget {
   const HomeBody({super.key});
@@ -136,21 +142,21 @@ class _HomeBodyState extends State<HomeBody> {
     _eventProvider.getEvents();
   }
 
-  void onQueryChanged(String query) {
-    _searchQuery = query;
-    setState(() {
-      _searchResults = _eventProvider.events.where((item) {
-      // _searchResults = sampleEvents.where((item) {
-        bool matchesTitle =
-            item.title.toLowerCase().contains(query.toLowerCase());
-        bool matchesDescription =
-            item.description.toLowerCase().contains(query.toLowerCase());
-        bool matchesEventStatus = _eventStatusFilter[item.status] ?? false;
-        // return matchesTitle || matchesDescription;
-        return (matchesTitle || matchesDescription) && matchesEventStatus;
-      }).toList();
-    });
-  }
+    void onQueryChanged(String query) {
+      _searchQuery = query;
+      setState(() {
+        _searchResults = _eventProvider.events.where((item) {
+          // _searchResults = sampleEvents.where((item) {
+          bool matchesTitle =
+              item.title.toLowerCase().contains(query.toLowerCase());
+          bool matchesDescription =
+              item.description.toLowerCase().contains(query.toLowerCase());
+          bool matchesEventStatus = _eventStatusFilter[item.status] ?? false;
+          // return matchesTitle || matchesDescription;
+          return (matchesTitle || matchesDescription) && matchesEventStatus;
+        }).toList();
+      });
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +224,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   onChanged: (val) {
                                     _eventStatusFilter[EventStatus.scheduled] =
                                         val!;
-                                        onQueryChanged(_searchQuery);
+                                    onQueryChanged(_searchQuery);
                                   },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.scheduled]),
@@ -239,7 +245,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   onChanged: (val) {
                                     _eventStatusFilter[EventStatus.ongoing] =
                                         val!;
-                                        onQueryChanged(_searchQuery);
+                                    onQueryChanged(_searchQuery);
                                   },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.ongoing]),
@@ -259,7 +265,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   onChanged: (val) {
                                     _eventStatusFilter[EventStatus.completed] =
                                         val!;
-                                        onQueryChanged(_searchQuery);
+                                    onQueryChanged(_searchQuery);
                                   },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.completed]),
@@ -279,7 +285,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   onChanged: (val) {
                                     _eventStatusFilter[EventStatus.cancelled] =
                                         val!;
-                                       onQueryChanged(_searchQuery);
+                                    onQueryChanged(_searchQuery);
                                   },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.cancelled]),
@@ -300,7 +306,7 @@ class _HomeBodyState extends State<HomeBody> {
                                   onChanged: (val) {
                                     _eventStatusFilter[EventStatus.postponed] =
                                         val!;
-                                        onQueryChanged(_searchQuery);
+                                    onQueryChanged(_searchQuery);
                                   },
                                   fillColor: WidgetStateProperty.all(
                                       eventStatusColor[EventStatus.postponed]),

@@ -65,7 +65,9 @@ class EventPreview extends StatelessWidget {
                         children: [
                           CustomActionButton(
                             displayText: "View",
-                            actionOnPressed: () {},
+                            actionOnPressed: () {
+                              Navigator.of(context).pushNamed('/event_details', arguments: event);
+                            },
                             width: 70,
                             height: 40,
                           ),

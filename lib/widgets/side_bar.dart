@@ -24,27 +24,39 @@ class CustomSideBar extends StatelessWidget {
         MenuItems(
           icon: Icons.info,
           text: 'FAQs',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/faq');
+          },
         ),
         MenuItems(
           icon: Icons.flag,
           text: 'Provide Feedback',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/make_request_feedback',
+                arguments: 'Provide Feedback');
+          },
         ),
         MenuItems(
           icon: Icons.edit_document,
           text: 'Request for Event Organizer Role',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/make_request_feedback',
+                arguments: 'Request for Event Organizer Role');
+          },
         ),
         MenuItems(
           icon: Icons.history,
           text: 'Past Request & Feedback',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/view_past_request');
+          },
         ),
         MenuItems(
           icon: Icons.warning,
           text: 'Report User',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/report_user', arguments: '');
+          },
           color: Colors.red,
         ),
         MenuItems(
@@ -62,22 +74,31 @@ class CustomSideBar extends StatelessWidget {
         MenuItems(
           icon: Icons.info,
           text: 'FAQs',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/faq');
+          },
         ),
         MenuItems(
           icon: Icons.flag,
           text: 'Provide Feedback',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/make_request_feedback',
+                arguments: 'Provide Feedback');
+          },
         ),
         MenuItems(
           icon: Icons.history,
           text: 'Past Request & Feedback',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/view_past_request');
+          },
         ),
         MenuItems(
           icon: Icons.warning,
           text: 'Report User',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/report_user', arguments: '');
+          },
           color: Colors.red,
         ),
         MenuItems(
@@ -96,17 +117,21 @@ class CustomSideBar extends StatelessWidget {
         MenuItems(
           icon: Icons.info,
           text: 'FAQs',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/faq');
+          },
         ),
-        MenuItems(
-          icon: Icons.edit_document,
-          text: 'Manage Requests',
-          actionOnTap: () {},
-        ),
+        // MenuItems(
+        //   icon: Icons.edit_document,
+        //   text: 'Manage Requests',
+        //   actionOnTap: () {},
+        // ),
         MenuItems(
           icon: Icons.warning,
           text: 'Ban User',
-          actionOnTap: () {},
+          actionOnTap: () {
+            Navigator.of(context).pushNamed('/ban_user', arguments: '');
+          },
           color: Colors.red,
         ),
         MenuItems(
@@ -164,8 +189,7 @@ class CustomSideBar extends StatelessWidget {
               child: ListView.builder(
                   itemCount: menuItems.length,
                   itemBuilder: (context, index) => ListTile(
-                        leading: 
-                        Icon(
+                        leading: Icon(
                           menuItems[index].icon,
                           color: menuItems[index].color ?? Colors.black,
                           size: 28,

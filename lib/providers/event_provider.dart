@@ -4,10 +4,8 @@ import 'package:assignment/models/event_model.dart';
 import 'package:assignment/providers/file_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/repositories/event_repository.dart';
-import 'package:assignment/repositories/profile_repository.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class EventProvider extends ChangeNotifier {
   final EventRepository _eventRepository = EventRepository();
@@ -82,6 +80,10 @@ class EventProvider extends ChangeNotifier {
     if (changed) {
       notifyListeners();
     }
+  }
+
+  EventModel getEvent(String id) {
+    return events.firstWhere((event) => event.id == id);
   }
 
   Future<void> joinEvent(EventModel event) async {

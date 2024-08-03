@@ -1,5 +1,9 @@
 abstract class BaseRequestModel {
   String? get id;
+  String get date;
+  String get status;
+  String get type;
+  String get description;
 
   factory BaseRequestModel.fromMap(String id, Map<String, dynamic> map) {
     throw UnimplementedError('fromMap() has not been implemented.');
@@ -22,11 +26,14 @@ class RequestModel implements BaseRequestModel {
   ///for request and feedback
   @override
   final String? id;
-
   final String userEmail;
+  @override
   final String date;
+  @override
   final String status;
+  @override
   final String type;
+  @override
   final String description;
   final Map<String, String> supportingDocs;
 
@@ -86,12 +93,15 @@ class ReportModel implements BaseRequestModel {
   ///for report user
   @override
   final String? id;
-
   final String userEmail;
   final String reportedUserEmail;
+  @override
   final String date;
+  @override
   final String status;
+  @override
   final String type;
+  @override
   final String description;
   final Map<String, String> supportingDocs;
 

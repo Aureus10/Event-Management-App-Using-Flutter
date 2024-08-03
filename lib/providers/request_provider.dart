@@ -10,9 +10,9 @@ class RequestProvider extends ChangeNotifier {
 
   List<BaseRequestModel> _requestList = [];
 
-  List<BaseRequestModel> get events => _requestList;
+  List<BaseRequestModel> get requests => _requestList;
 
-  Future<void> getEvents() async {
+  Future<void> getRequests() async {
     _requestRepostiory.getAllRequests().listen((snapshot) {
       _requestList = snapshot.docs
           .map((doc) => BaseRequestModel.fromMap(doc.id, doc.data()))
@@ -40,12 +40,16 @@ class RequestProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateEvent(BaseRequestModel request, int index) async {
+  Future<void> updateRequest(BaseRequestModel request, int index) async {
     bool status = await _requestRepostiory.updateRequest(request);
 
     if (status) {
       _requestList[index] = request;
       notifyListeners();
     }
+  }
+
+  Future<BaseRequestModel> getRequest(String id) async {
+    return await _requestRepostiory.getRequest(id);
   }
 }

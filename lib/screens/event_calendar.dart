@@ -1,5 +1,9 @@
+import 'package:assignment/models/event_model.dart';
+import 'package:assignment/providers/event_provider.dart';
+import 'package:assignment/providers/profile_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class EventCalendarScreen extends StatefulWidget {
@@ -13,98 +17,105 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  List<Map<String, dynamic>> _events = [];
+  List<EventModel> _events = [];
+  String _searchQuery = '';
+
+  late EventProvider _eventProvider;
+  void _loadEvents() {
+    setState(() {
+      _events = _eventProvider.events.where((event) {
+        bool matchesDateTime = event.datetime.any((dateMap) {
+          return dateMap.keys.any((date) => isSameDay(date, _selectedDay)) || dateMap.values.any((date) => isSameDay(date, _selectedDay));
+        });
+        bool matchesTitle = event.title.toLowerCase().contains(_searchQuery.toLowerCase());
+        debugPrint(event.title);
+        bool matchesDesc = event.description.toLowerCase().contains(_searchQuery.toLowerCase());
+        return matchesDateTime && (matchesTitle || matchesDesc);
+      }).toList();
+    });
+  }
+
+  // void _search() {
+  //   _events = _eventProvider.events.where((event) {
+  //     bool matchesTitle = event.title.contains(_searchQuery.toLowerCase());
+  //     bool matchesDesc = event.description.contains(_searchQuery.toLowerCase());
+  //     return matchesTitle || matchesDesc;
+  //   }).toList();
+  // }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _eventProvider = Provider.of<EventProvider>(context);
+    _eventProvider.getEvents();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Calendar'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              // Add your menu action here
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search),
-                hintText: 'Search by Keyword',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.search),
+              hintText: 'Search by Keyword',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            const SizedBox(height: 16.0),
-            TableCalendar(
-              firstDay: DateTime.utc(2010, 10, 16),
-              lastDay: DateTime.utc(2030, 3, 14),
-              focusedDay: _focusedDay,
-              calendarFormat: _calendarFormat,
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-                _loadEvents(selectedDay);
-              },
-              onFormatChanged: (format) {
-                if (_calendarFormat != format) {
-                  setState(() {
-                    _calendarFormat = format;
-                  });
-                }
-              },
-              onPageChanged: (focusedDay) {
+            onChanged: (val) {
+              _searchQuery = val;
+              debugPrint(_searchQuery);
+              _loadEvents();
+            },
+          ),
+          const SizedBox(height: 16.0),
+          TableCalendar(
+            firstDay: DateTime.utc(2010, 10, 16),
+            lastDay: DateTime.utc(2030, 3, 14),
+            focusedDay: _focusedDay,
+            calendarFormat: _calendarFormat,
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
-              },
-            ),
-            const SizedBox(height: 16.0),
-            if (_events.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: _events.map((event) {
-                  return Card(
-                    child: ListTile(
-                      title: Text(event['title']),
-                      subtitle: Text(event['description']),
-                    ),
-                  );
-                }).toList(),
-              )
-            else
-              const Text('No events for this day'),
-          ],
-        ),
+              });
+              _loadEvents();
+            },
+            onFormatChanged: (format) {
+              if (_calendarFormat != format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              }
+            },
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
+          ),
+          const SizedBox(height: 16.0),
+          if (_events.isNotEmpty)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _events.map((event) {
+                debugPrint(event.participants.toString());
+                return Card(
+                  // color: 
+                  child: ListTile(
+                    title: Text(event.title),
+                    subtitle: Text(event.description),
+                  ),
+                );
+              }).toList(),
+            )
+          else
+            const Text('No events for this day'),
+        ],
       ),
     );
-  }
-
-  Future<void> _loadEvents(DateTime selectedDay) async {
-    final FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final String formattedDate = "${selectedDay.year}-${selectedDay.month}-${selectedDay.day}";
-
-    try {
-      QuerySnapshot snapshot = await firestore
-          .collection('events')
-          .where('date', isEqualTo: formattedDate)
-          .get();
-
-      setState(() {
-        _events = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
-      });
-    } catch (e) {
-      print('Error fetching events: $e');
-    }
   }
 }

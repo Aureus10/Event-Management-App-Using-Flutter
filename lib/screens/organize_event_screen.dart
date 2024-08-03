@@ -14,7 +14,6 @@ import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/custom_input_fields.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
