@@ -120,7 +120,7 @@ class ProfileScreen extends StatelessWidget {
                               TextButton(
                                 onPressed: () {
                                   // Add ban user functionality here
-                                  Navigator.of(context).pushNamed('/ban_user', arguments: '');
+                                  Navigator.of(context).pushNamed('/edit_profile', arguments: userProfile);
                                 },
                                 child: const Text('Edit Profile'),
                               )

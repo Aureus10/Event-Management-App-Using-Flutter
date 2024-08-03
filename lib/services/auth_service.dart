@@ -1,5 +1,8 @@
 import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/models/request_model.dart';
 import 'package:assignment/providers/profile_provider.dart';
+import 'package:assignment/repositories/profile_repository.dart';
+import 'package:assignment/repositories/request_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +16,8 @@ class AuthService {
 
   String? get userEmail => _firebaseAuth.currentUser?.email;
 
-  DateTime? get lastLoggedInDate => _firebaseAuth.currentUser?.metadata.lastSignInTime;
+  DateTime? get lastLoggedInDate =>
+      _firebaseAuth.currentUser?.metadata.lastSignInTime;
 
   Future<String> signInWithEmailAndPassword({
     required String email,
@@ -86,5 +90,26 @@ class AuthService {
     await _firebaseAuth.signOut();
   }
 
+  Future<bool> reauthenticateUser(String password) async {
+    try {
+      if (currentUser != null) {
+        return false;
+      }
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: currentUser!.email!,
+        password: password,
+      );
 
+      await _firebaseAuth.currentUser!.reauthenticateWithCredential(credential);
+      return true;
+    } on FirebaseAuthException {
+      return false;
+    }
+  }
+
+  Future<void> banUser(ProfileModel targetUser, ReportModel banModel) async {
+    await ProfileRepository()
+        .updateProfile(targetUser.copyWith(status: AccountStatus.banned));
+    await RequestRepository().addRequest(banModel);
+  }
 }

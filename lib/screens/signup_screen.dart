@@ -5,6 +5,7 @@ import 'package:assignment/providers/file_provider.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
+import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/custom_input_fields.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
@@ -51,8 +52,7 @@ class _SignupScreenState extends State<SignupScreen> {
       Navigator.of(context).push(MaterialPageRoute(
           builder: (ctx) =>
               (const CustomLoading(loadingText: 'Signing up...'))));
-      FileProvider
-          .uploadProfileImage(_image!, _email)
+      FileProvider.uploadProfileImage(_image!, _email)
           .then((imageUrl) => {
                 AuthService().createNewUser(
                     newProfile: ProfileModel(
@@ -64,7 +64,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         contact: _contact!,
                         creditScore: 100,
                         imageLink: imageUrl!,
-                        status: AccountStatus.active),
+                        status: AccountStatus.active,
+                        lastLoggedInDate: formatDateTimeToDate(DateTime.now())),
                     password: _password!,
                     context: ctx)
               })
@@ -167,13 +168,25 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Image.file(_image!, height: 200, width: 200),
         ),
       const VerticalEmptySpace(),
-      CustomTextFormField(
-          text: 'Date of birth',
-          initialValue: _dateOfBirth,
-          validator: dateValidator(),
-          actionOnChanged: (value) {
-            _dateOfBirth = value;
-          }),
+      Text(
+        'Date of Birth',
+        style: mediumTextStyle,
+      ),
+      TextFormField(
+        initialValue: _dateOfBirth,
+        onChanged: (value) {
+          _dateOfBirth = value;
+        },
+        validator: dateValidator(),
+        decoration: const InputDecoration(
+          labelText: 'Date of Birth',
+          prefixIcon: Icon(Icons.calendar_today),
+        ),
+        readOnly: true,
+        onTap: () {
+          _selectDate(context);
+        },
+      ),
       const VerticalEmptySpace(),
       CustomGenderTextFormField(
           initialValue: _gender,
@@ -233,5 +246,21 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Initial date for the date picker
+      firstDate: DateTime(1924), // The earliest date that can be selected
+      lastDate: DateTime.now(), // The latest date that can be selected
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dateOfBirth =
+            formatDateTimeToStringDate(pickedDate); // Format the date
+      });
+    }
   }
 }

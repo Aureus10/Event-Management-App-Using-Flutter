@@ -1,4 +1,19 @@
+import 'dart:ffi';
+import 'dart:io';
+
+import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/providers/profile_provider.dart';
+import 'package:assignment/services/auth_service.dart';
+import 'package:assignment/theme/fonts.dart';
+import 'package:assignment/utils/form_vadidator.dart';
+import 'package:assignment/utils/formatter.dart';
+import 'package:assignment/widgets/components/custom_buttons.dart';
+import 'package:assignment/widgets/components/empty_space.dart';
+import 'package:assignment/widgets/header_bar.dart';
+import 'package:assignment/widgets/pickers/image_picker.dart';
+import 'package:assignment/widgets/pickers/profile_image_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileEditScreen extends StatefulWidget {
   const ProfileEditScreen({super.key});
@@ -11,28 +26,39 @@ class ProfileEditScreen extends StatefulWidget {
 class _ProfileEditScreenState extends State<ProfileEditScreen> {
   bool _showPassword = false;
 
+  final _formKey = GlobalKey<FormState>();
+
+  late ProfileModel profile;
+
+  File? _image;
   // Controllers for text fields
-  final TextEditingController _nameController =
-      TextEditingController(text: 'Golden');
-  final TextEditingController _dobController =
-      TextEditingController(text: '12/2003');
-  final TextEditingController _emailController =
-      TextEditingController(text: 'Golden@gmail.com');
-  final TextEditingController _contactController =
-      TextEditingController(text: '01x - xxx xxxx');
+
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  // final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _contactController = TextEditingController();
   final TextEditingController _currentPasswordController =
-      TextEditingController(text: 'CurrentPassword');
-  final TextEditingController _newPasswordController =
-      TextEditingController(text: 'NewPassword');
+      TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController(text: 'NewPassword');
+      TextEditingController();
+
+  @override
+  void didChangeDependencies() {
+    profile = Provider.of<ProfileProvider>(context).userProfile!;
+    _nameController.text = profile.username;
+    _dobController.text = profile.dateOfBirth;
+    // _emailController.text = profile.email;
+    _contactController.text = profile.contact;
+    super.didChangeDependencies();
+  }
 
   @override
   void dispose() {
     // Dispose controllers when the widget is disposed
     _nameController.dispose();
     _dobController.dispose();
-    _emailController.dispose();
+    // _emailController.dispose();
     _contactController.dispose();
     _currentPasswordController.dispose();
     _newPasswordController.dispose();
@@ -40,144 +66,194 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     super.dispose();
   }
 
+  Future<void> _editProfile() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ));
+    await Provider.of<ProfileProvider>(context, listen: false)
+        .updateProfile(profile, _image)
+        .then((status) => {
+              Navigator.of(context).pop(),
+              if (status)
+                {
+                  Navigator.of(context).pop(),
+                }
+              else
+                {
+                  ScaffoldMessenger.of(context).clearSnackBars(),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Profile Update Failed!'),
+                    ),
+                  ),
+                }
+            });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
+      appBar: const HeaderBar(headerTitle: 'Edit Profile', menuRequired: false),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ListView(
+            children: [
+              CustomProfileImagePicker(
+                  imageLink: profile.imageLink,
+                  actionOnPressed: (image) {
+                    _image = image;
+                  }),
+              const VerticalEmptySpace(),
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                ),
+              ),
+              const VerticalEmptySpace(),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _dobController,
+                      decoration: const InputDecoration(
+                        labelText: 'Date of Birth',
+                        prefixIcon: Icon(Icons.calendar_today),
+                      ),
+                      readOnly: true,
+                      onTap: () {
+                        _selectDate(context);
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 16), // Space between fields
+                  Expanded(
+                    child: DropdownButtonFormField<String>(
+                      decoration: const InputDecoration(
+                        labelText: 'Gender',
+                      ),
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'male',
+                          child: Text('Male'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'female',
+                          child: Text('Female'),
+                        ),
+                      ],
+                      onChanged: (String? value) {},
+                      value: profile.gender.toString().split('.').last,
+                    ),
+                  ),
+                ],
+              ),
+              const VerticalEmptySpace(),
+              // TextFormField(
+              //   controller: _emailController,
+              //   decoration: const InputDecoration(
+              //     labelText: 'Email Address',
+              //   ),
+              //   keyboardType: TextInputType.emailAddress,
+              //   validator: emailValidator(),
+              // ),
+              // const VerticalEmptySpace(),
+              TextFormField(
+                controller: _contactController,
+                decoration: const InputDecoration(
+                  labelText: 'Contact Number',
+                ),
+                keyboardType: TextInputType.phone,
+                validator: contactValidator(),
+              ),
+              const VerticalEmptySpace(),
+              TextFormField(
+                controller: _currentPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'Current Password',
+                ),
+                obscureText: true,
+              ),
+              const VerticalEmptySpace(),
+              TextFormField(
+                controller: _newPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'New Password',
+                ),
+                obscureText: !_showPassword,
+                validator: passwordValidator(),
+                onChanged: (value) {
+                  setState(() {
+                    _newPasswordController.text = value;
+                  });
+                },
+              ),
+              const VerticalEmptySpace(),
+              TextFormField(
+                controller: _confirmPasswordController,
+                decoration: const InputDecoration(
+                  labelText: 'Confirm Password',
+                ),
+                obscureText: !_showPassword,
+                onChanged: (value) {
+                  setState(() {
+                    _confirmPasswordController.text = value;
+                  });
+                },
+                validator:
+                    confirmPasswordValidator(_newPasswordController.text),
+              ),
+              const VerticalEmptySpace(),
+              Row(
+                children: [
+                  Switch(
+                    value: _showPassword,
+                    onChanged: (bool value) {
+                      setState(() {
+                        _showPassword = value;
+                      });
+                    },
+                  ),
+                  const Text('Show Password'),
+                ],
+              ),
+              const SizedBox(height: 16),
+              CustomActionButton(
+                displayText: 'Update',
+                actionOnPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    if (await AuthService()
+                        .reauthenticateUser(_confirmPasswordController.text)) {
+                      _editProfile();
+                    }
+                  }
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-              ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _dobController,
-                    decoration: const InputDecoration(
-                      labelText: 'Date of Birth',
-                      prefixIcon: Icon(Icons.calendar_today),
-                    ),
-                    keyboardType: TextInputType.datetime,
-                  ),
-                ),
-                const SizedBox(width: 16), // Space between fields
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Gender',
-                    ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'Male',
-                        child: Text('Male'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Female',
-                        child: Text('Female'),
-                      ),
-                    ],
-                    onChanged: (String? value) {},
-                    value: 'Male',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(
-                labelText: 'Email Address',
-              ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _contactController,
-              decoration: const InputDecoration(
-                labelText: 'Contact Number',
-              ),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _currentPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'Current Password',
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _newPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'New Password',
-              ),
-              obscureText: !_showPassword,
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _confirmPasswordController,
-              decoration: const InputDecoration(
-                labelText: 'Confirm Password',
-              ),
-              obscureText: !_showPassword,
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Switch(
-                  value: _showPassword,
-                  onChanged: (bool value) {
-                    setState(() {
-                      _showPassword = value;
-                    });
-                  },
-                ),
-                const Text('Show Password'),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Add update functionality here
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor:
-                    Colors.blue, // Set the button background color to blue
-              ),
-              child: const Text(
-                'Update',
-                style: TextStyle(
-                  color: Colors.white, // Set text color to white
-                  fontWeight: FontWeight.bold, // Make the text bold
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Initial date for the date picker
+      firstDate: DateTime(1924), // The earliest date that can be selected
+      lastDate: DateTime.now(), // The latest date that can be selected
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _dobController.text =
+            formatDateTimeToStringDate(pickedDate); // Format the date
+      });
+    }
   }
 }

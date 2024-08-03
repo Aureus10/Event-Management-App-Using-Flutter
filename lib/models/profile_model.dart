@@ -1,4 +1,6 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 enum UserType { user, organizer, administrator }
 
 enum Gender { male, female }
@@ -16,6 +18,7 @@ class ProfileModel {
   final int creditScore;
   final String imageLink;
   final AccountStatus status;
+  final DateTime lastLoggedInDate;
 
   const ProfileModel({
     required this.email,
@@ -28,6 +31,7 @@ class ProfileModel {
     required this.imageLink,
     required this.status,
     this.eventHistory,
+    required this.lastLoggedInDate,
   });
 
   @override
@@ -45,6 +49,7 @@ class ProfileModel {
         imageLink: map['imageLink'],
         status: AccountStatus.values.firstWhere(
             (e) => e.toString() == 'AccountStatus.${map['status']}'),
+        lastLoggedInDate: (map['lastLoggedInDate'] as Timestamp).toDate(),
       );
 
   Map<String, dynamic> toMap() => {
@@ -58,6 +63,7 @@ class ProfileModel {
         'creditScore': creditScore,
         'imageLink': imageLink,
         'status': status.toString().split('.').last,
+        'lastLoggedInDate' : lastLoggedInDate,
       };
 
   ProfileModel copyWith({
@@ -71,6 +77,7 @@ class ProfileModel {
     int? creditScore,
     String? imageLink,
     AccountStatus? status,
+    DateTime? lastLoggedInDate,
   }) =>
       ProfileModel(
           type: type ?? this.type,
@@ -82,5 +89,7 @@ class ProfileModel {
           eventHistory: eventHistory ?? this.eventHistory ?? [],
           creditScore: creditScore ?? this.creditScore,
           imageLink: imageLink ?? this.imageLink,
-          status: status ?? this.status);
+          status: status ?? this.status,
+          lastLoggedInDate: lastLoggedInDate ?? this.lastLoggedInDate,
+          );
 }

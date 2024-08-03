@@ -1,6 +1,7 @@
 import 'package:assignment/models/request_model.dart';
 import 'package:assignment/providers/request_provider.dart';
 import 'package:assignment/theme/fonts.dart';
+import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:flutter/material.dart';
@@ -201,7 +202,7 @@ class RequestPreview extends StatelessWidget {
   });
 
   final String requestId;
-  final String requestDate;
+  final DateTime requestDate;
   final String status;
   final String requestType;
 
@@ -223,7 +224,7 @@ class RequestPreview extends StatelessWidget {
             style: mediumTextStyle,
           ),
           Text(
-            'Request Date: $requestDate',
+            'Request Date: ${formatDateTimeToString(requestDate)}',
             style: mediumTextStyle,
           ),
           Text(

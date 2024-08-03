@@ -33,6 +33,15 @@ String formatDateTimeToString(DateTime dateTime) {
   return '$year-$month-$day $hour:$minute';
 }
 
+String formatDateTimeToStringDate(DateTime dateTime) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  
+  String year = dateTime.year.toString();
+  String month = twoDigits(dateTime.month);
+  String day = twoDigits(dateTime.day);  
+  return '$year-$month-$day';
+}
+
 DateTime formatDateTime (DateTime dateTime) {
   return DateTime(
     dateTime.year,
@@ -42,5 +51,9 @@ DateTime formatDateTime (DateTime dateTime) {
     dateTime.minute,
     dateTime.second,
   );
+}
+
+DateTime formatDateTimeToDate (DateTime dateTime) {
+  return DateTime(dateTime.year, dateTime.month, dateTime.day);
 }
 

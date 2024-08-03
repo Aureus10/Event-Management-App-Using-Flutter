@@ -28,14 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int _selectedIndex = 0;
 
-  void _onSelected(int index) => setState(() {
+  void _onSelected(int index) { 
+    Provider.of<ProfileProvider>(context, listen: false).changeIndex(index);
+    setState(() {
         _selectedIndex = index;
       });
+  }
 
   @override
   void initState() {
+    _selectedIndex = context.read<ProfileProvider>().index;
+    _profileFuture = context.read<ProfileProvider>().initializeProfile('New1234@gmail.com');
     super.initState();
-        _profileFuture = context.read<ProfileProvider>().initializeProfile('New1234@gmail.com');
   }
 
   @override

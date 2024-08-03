@@ -1,6 +1,6 @@
 abstract class BaseRequestModel {
   String? get id;
-  String get date;
+  DateTime get date;
   String get status;
   String get type;
   String get description;
@@ -13,7 +13,7 @@ abstract class BaseRequestModel {
 
   BaseRequestModel copyWith({
     String? id,
-    String? date,
+    DateTime? date,
     String? userEmail,
     String? status,
     String? type,
@@ -28,7 +28,7 @@ class RequestModel implements BaseRequestModel {
   final String? id;
   final String userEmail;
   @override
-  final String date;
+  final DateTime date;
   @override
   final String status;
   @override
@@ -71,7 +71,7 @@ class RequestModel implements BaseRequestModel {
   @override
   RequestModel copyWith({
     String? id,
-    String? date,
+    DateTime? date,
     String? userEmail,
     String? status,
     String? type,
@@ -96,7 +96,7 @@ class ReportModel implements BaseRequestModel {
   final String userEmail;
   final String reportedUserEmail;
   @override
-  final String date;
+  final DateTime date;
   @override
   final String status;
   @override
@@ -104,6 +104,7 @@ class ReportModel implements BaseRequestModel {
   @override
   final String description;
   final Map<String, String> supportingDocs;
+  final int? days;
 
   ReportModel({
     this.id,
@@ -114,6 +115,7 @@ class ReportModel implements BaseRequestModel {
     required this.type,
     required this.description,
     required this.supportingDocs,
+    this.days
   });
 
   factory ReportModel.fromMap(String id, Map<String, dynamic> map) =>
@@ -126,6 +128,7 @@ class ReportModel implements BaseRequestModel {
         type: map['type'],
         description: map['description'],
         supportingDocs: Map<String, String>.from(map['supportingDocs']),
+        days: map['days'] ?? 0,
       );
 
   @override
@@ -137,18 +140,20 @@ class ReportModel implements BaseRequestModel {
         'type': type,
         'description': description,
         'supportingDocs': supportingDocs,
+        'days': days ?? 0,
       };
 
   @override
   ReportModel copyWith({
     String? id,
-    String? date,
+    DateTime? date,
     String? userEmail,
     String? reportedUserEmail,
     String? status,
     String? type,
     String? description,
     Map<String, String>? supportingDocs,
+    int? days,
   }) =>
       ReportModel(
         id: id ?? this.id,
@@ -159,5 +164,6 @@ class ReportModel implements BaseRequestModel {
         type: type ?? this.type,
         description: description ?? this.description,
         supportingDocs: supportingDocs ?? this.supportingDocs,
+        days: days ?? this.days,
       );
 }

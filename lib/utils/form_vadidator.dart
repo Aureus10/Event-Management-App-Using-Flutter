@@ -83,8 +83,8 @@ String? Function(String?)? confirmPasswordValidator(String? password) =>
         return "Password is required";
       }
       if (password != value) {
-        debugPrint(password);
-        debugPrint(value);
+        // debugPrint(password);
+        // debugPrint(value);
         return "Password does not match";
       }
       if (!value.isValidPassword) {
