@@ -11,6 +11,10 @@ class AuthService {
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
+  String? get userEmail => _firebaseAuth.currentUser?.email;
+
+  DateTime? get lastLoggedInDate => _firebaseAuth.currentUser?.metadata.lastSignInTime;
+
   Future<String> signInWithEmailAndPassword({
     required String email,
     required String password,

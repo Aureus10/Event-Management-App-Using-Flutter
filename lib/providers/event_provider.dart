@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:assignment/models/event_model.dart';
 import 'package:assignment/providers/file_provider.dart';
+import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/repositories/event_repository.dart';
+import 'package:assignment/repositories/profile_repository.dart';
+import 'package:assignment/services/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EventProvider extends ChangeNotifier {
   final EventRepository _eventRepository = EventRepository();
@@ -43,7 +47,8 @@ class EventProvider extends ChangeNotifier {
       }
 
       if (imageLink != null) {
-        await _eventRepository.updateEvent(event.copyWith(id: id, materials: eventMaterials, imageLink: imageLink));
+        await _eventRepository.updateEvent(event.copyWith(
+            id: id, materials: eventMaterials, imageLink: imageLink));
         return id;
       }
 
@@ -58,23 +63,58 @@ class EventProvider extends ChangeNotifier {
     bool changed = false;
     for (EventModel event in _eventList) {
       for (Map<DateTime, DateTime> datetime in event.datetime) {
-        if (event.status == EventStatus.cancelled || event.status == EventStatus.completed) {
+        if (event.status == EventStatus.cancelled ||
+            event.status == EventStatus.completed) {
           break;
         }
         if (datetime.values.last.isBefore(DateTime.now())) {
-          _eventRepository.updateEvent(event.copyWith(status: EventStatus.completed));
+          _eventRepository
+              .updateEvent(event.copyWith(status: EventStatus.completed));
           changed = true;
-        } else if (datetime.keys.first.isBefore(DateTime.now()) && datetime.values.last.isAfter(DateTime.now())) {
-          _eventRepository.updateEvent(event.copyWith(status: EventStatus.ongoing));
+        } else if (datetime.keys.first.isBefore(DateTime.now()) &&
+            datetime.values.last.isAfter(DateTime.now())) {
+          _eventRepository
+              .updateEvent(event.copyWith(status: EventStatus.ongoing));
           changed = true;
         }
-
       }
     }
     if (changed) {
       notifyListeners();
     }
   }
+
+  Future<void> joinEvent(EventModel event) async {
+    String? email = AuthService().userEmail;
+
+    if (email != null) {
+      List<String>? participants = event.participants;
+      if (participants != null) {
+        participants.add(email);
+      } else {
+        participants = [email];
+      }
+      await _eventRepository
+          .updateEvent(event.copyWith(participants: participants));
+    }
+  }
+
+  Future<void> leaveEvent(EventModel event) async {
+    String? email = AuthService().userEmail;
+
+    if (email != null) {
+      List<String>? participants = event.participants;
+      if (participants != null) {
+        participants.remove(email);
+      }
+      if (await ProfileProvider().deductCreditScore()) {
+        await _eventRepository
+            .updateEvent(event.copyWith(participants: participants));
+      }
+    }
+  }
+
+  Future<void> editEvent(EventModel event) async {}
 
   // Stream<List<EventModel>> getEventsByStatus(EventStatus status) => _eventRepository.getEventsByStatus(status);
 }

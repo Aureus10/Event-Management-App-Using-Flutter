@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:assignment/models/request_model.dart';
+import 'package:assignment/providers/file_provider.dart';
 import 'package:assignment/repositories/request_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -18,11 +21,22 @@ class RequestProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> makeRequest(BaseRequestModel request) async {
+  Future<void> makeRequest(BaseRequestModel request, Map<String, File> supportingDocuments) async {
     String id = await _requestRepostiory.addRequest(request);
+
+    Map<String, String> supportingDocs = {};
+
+    if (supportingDocuments.isNotEmpty) {
+      for (String fileName in supportingDocuments.keys) {
+        String ? link = await FileProvider.uploadSupportingDoc(supportingDocuments[fileName]!, id, fileName);
+        if (link != null) {
+          supportingDocs[fileName] = link;
+        }
+      }
+    }
+
     if (id != '') {
-      _requestList.add(request.copyWith(id: id));
-      notifyListeners();
+      await _requestRepostiory.updateRequest(request.copyWith(id: id, supportingDocs: supportingDocs));
     }
   }
 

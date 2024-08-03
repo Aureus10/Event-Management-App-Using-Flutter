@@ -46,6 +46,22 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> deductCreditScore() async {
+    try {
+      bool status = false;
+      if (_profile != null) {
+        status = await _profileRepository.updateProfile(_profile!.copyWith(creditScore: _profile!.creditScore - 1));
+      }
+      if (status) {
+        _profile = _profile!.copyWith(creditScore: _profile!.creditScore - 1);
+        notifyListeners();
+      }
+      return true;
+    } on Exception catch (_) {
+      return false;
+    }
+  }
+
   // Future<bool> deleteProfile(String email) {
   //   return
   // }

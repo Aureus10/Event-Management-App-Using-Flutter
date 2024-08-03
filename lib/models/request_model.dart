@@ -14,7 +14,7 @@ abstract class BaseRequestModel {
     String? status,
     String? type,
     String? description,
-    List<String>? supportingDocs,
+    Map<String, String>? supportingDocs,
   });
 }
 
@@ -28,7 +28,7 @@ class RequestModel implements BaseRequestModel {
   final String status;
   final String type;
   final String description;
-  final List<String> supportingDocs;
+  final Map<String, String> supportingDocs;
 
   RequestModel({
     this.id,
@@ -48,7 +48,7 @@ class RequestModel implements BaseRequestModel {
         status: map['status'],
         type: map['type'],
         description: map['description'],
-        supportingDocs: List<String>.from(map['supportingDocs']),
+        supportingDocs: Map<String, String>.from(map['supportingDocs']),
       );
 
   @override
@@ -69,7 +69,7 @@ class RequestModel implements BaseRequestModel {
     String? status,
     String? type,
     String? description,
-    List<String>? supportingDocs,
+    Map<String, String>? supportingDocs,
   }) =>
       RequestModel(
         id: id ?? this.id,
@@ -93,7 +93,7 @@ class ReportModel implements BaseRequestModel {
   final String status;
   final String type;
   final String description;
-  final List<String> supportingDocs;
+  final Map<String, String> supportingDocs;
 
   ReportModel({
     this.id,
@@ -115,7 +115,7 @@ class ReportModel implements BaseRequestModel {
         status: map['status'],
         type: map['type'],
         description: map['description'],
-        supportingDocs: List<String>.from(map['supportingDocs']),
+        supportingDocs: Map<String, String>.from(map['supportingDocs']),
       );
 
   @override
@@ -138,7 +138,7 @@ class ReportModel implements BaseRequestModel {
     String? status,
     String? type,
     String? description,
-    List<String>? supportingDocs,
+    Map<String, String>? supportingDocs,
   }) =>
       ReportModel(
         id: id ?? this.id,
