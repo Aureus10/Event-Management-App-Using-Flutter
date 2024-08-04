@@ -53,19 +53,19 @@ class _HomeScreenState extends State<HomeScreen> {
       future: _profileFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error loading profile'));
+          return const Center(child: Text('Error loading profile'));
         } else {
-          ProfileModel _userProfile = Provider.of<ProfileProvider>(context).userProfile!;
+          ProfileModel userProfile = Provider.of<ProfileProvider>(context).userProfile!;
 
-          final List<Widget> _widgetList = <Widget>[
-            HomeBody(userType: _userProfile.type),
-            _userProfile.type != UserType.administrator
+          final List<Widget> widgetList = <Widget>[
+            HomeBody(userType: userProfile.type),
+            userProfile.type != UserType.administrator
                 ? const EventCalendarScreen()
                 : const ManageRequestScreen(),
             // const ManageRequestScreen(),
-            ProfileScreen(userProfile: _userProfile),
+            ProfileScreen(userProfile: userProfile),
           ];
     return Scaffold(
       appBar: const HeaderBar(
@@ -73,9 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
         menuRequired: true,
       ),
       endDrawer: CustomSideBar(
-        accountName: _userProfile.username,
-        imageUrl: _userProfile.imageLink,
-        userType: _userProfile.type,
+        accountName: userProfile.username,
+        imageUrl: userProfile.imageLink,
+        userType: userProfile.type,
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
@@ -88,11 +88,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              _userProfile.type != UserType.administrator ? Icons.calendar_month : Icons.edit_document,
+              userProfile.type != UserType.administrator ? Icons.calendar_month : Icons.edit_document,
               // Icons.calendar_month,
               size: 28,
             ),
-            label: _userProfile.type != UserType.administrator ? 'Event Calendar' : 'Manage Request',
+            label: userProfile.type != UserType.administrator ? 'Event Calendar' : 'Manage Request',
             // label: '111',
           ),
           const BottomNavigationBarItem(
@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: CustomizedColors.unselectedColor,
         onTap: _onSelected,
       ),
-      body: _widgetList[_selectedIndex],
+      body: widgetList[_selectedIndex],
     );
   }});
 }}
@@ -123,7 +123,6 @@ class HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<HomeBody> {
-  final UserType userType = UserType.organizer;
 
   late EventProvider _eventProvider;
 
@@ -164,7 +163,7 @@ class _HomeBodyState extends State<HomeBody> {
   Widget build(BuildContext context) {
     Widget eventsPreview;
     if (_searchResults.isNotEmpty) {
-      if (userType == UserType.organizer) {
+      if (widget.userType == UserType.organizer) {
         eventsPreview = ListView.builder(
             itemCount: _searchResults.length + 1,
             itemBuilder: (ctx, index) {
@@ -331,7 +330,7 @@ class _HomeBodyState extends State<HomeBody> {
         ),
         Flexible(
             // child: eventsPreview,
-            child: userType == UserType.organizer
+            child: widget.userType == UserType.organizer
                 ? HomeBodyDisplay(eventsPreview: eventsPreview)
                 : eventsPreview),
       ],
@@ -388,48 +387,3 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 }
 
-// class SearchEvent extends StatefulWidget {
-//   const SearchEvent({super.key});
-
-//   @override
-//   State<SearchEvent> createState() => _SearchEventState();
-// }
-
-// class _SearchEventState extends State<SearchEvent> {
-//   late EventProvider eventProvider;
-
-//   List<EventModel> searchResults = [];
-
-//   @override
-//   void didChangeDependencies() {
-//     super.didChangeDependencies();
-//     eventProvider = Provider.of<EventProvider>(context);
-//   }
-
-//   void onQueryChanged(String query) {
-//     setState(() {
-//       // searchResults = eventProvider.events.where((item) {
-//       searchResults = sampleEvents.where((item) {
-//         bool matchesTitle =
-//             item.title.toLowerCase().contains(query.toLowerCase());
-//         bool matchesDescription =
-//             item.description.toLowerCase().contains(query.toLowerCase());
-//         return matchesTitle || matchesDescription;
-//       }).toList();
-//     });
-//   }
-
-
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Row(
-//           children: [],
-//         ),
-//         EventPreview(event: )
-//       ],
-//     );
-//   }
-// }

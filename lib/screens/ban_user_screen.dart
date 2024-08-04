@@ -10,8 +10,7 @@ class BanUserScreen extends StatefulWidget {
   const BanUserScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _BanUserScreenState createState() => _BanUserScreenState();
+  State<BanUserScreen> createState() => _BanUserScreenState();
 }
 
 class _BanUserScreenState extends State<BanUserScreen> {

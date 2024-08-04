@@ -1,14 +1,9 @@
-// ignore_for_file: prefer_final_fields, prefer_const_constructors
-
-import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/models/request_model.dart';
-import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/providers/request_provider.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
-import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,7 +12,7 @@ class ViewRequestScreen extends StatefulWidget {
   const ViewRequestScreen({super.key});
 
   @override
-  _ViewRequestScreenState createState() => _ViewRequestScreenState();
+  State<ViewRequestScreen> createState() => _ViewRequestScreenState();
 }
 
 class _ViewRequestScreenState extends State<ViewRequestScreen> {
@@ -111,7 +106,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
           );
         }
       });
-      ;
+      
     } else {
       RequestProvider()
           .updateRequest(_request.copyWith(status: status))
@@ -181,7 +176,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
       ];
     }
     return Scaffold(
-      appBar: HeaderBar(headerTitle: 'View Request', menuRequired: false),
+      appBar: const HeaderBar(headerTitle: 'View Request', menuRequired: false),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -193,7 +188,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
             ),
             const SizedBox(height: 18),
             Row(children: [
-              Text(
+              const Text(
                 'Request ID: ',
                 style: mediumTextStyle,
               ),
@@ -249,7 +244,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
                   },
                   child: Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.access_time,
                         size: 24,
                       ),

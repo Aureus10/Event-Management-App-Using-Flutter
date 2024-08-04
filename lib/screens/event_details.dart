@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/event_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
@@ -15,7 +13,7 @@ class EventDetailsScreen extends StatefulWidget {
   const EventDetailsScreen({super.key});
 
   @override
-  _EventDetailsScreenState createState() => _EventDetailsScreenState();
+  State<EventDetailsScreen> createState() => _EventDetailsScreenState();
 }
 
 class _EventDetailsScreenState extends State<EventDetailsScreen> {
@@ -90,16 +88,16 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   void openFile(String url) async {
     try {
       final Uri uri = Uri.parse(url);
-      print('Attempting to open URL: $uri');
+      // print('Attempting to open URL: $uri');
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
-        print('URL successfully opened: $url');
+        // print('URL successfully opened: $url');
       } else {
-        print('Could not open the URL: $url');
+        // print('Could not open the URL: $url');
         throw 'Could not open the URL: $url';
       }
     } catch (e) {
-      print('Error: $e');
+      // print('Error: $e');
     }
   }
 
@@ -198,9 +196,9 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
               children: [
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(right: 10),
+                    margin: const EdgeInsets.only(right: 10),
                     height: 150,
-                    decoration: BoxDecoration(color: Colors.amber),
+                    decoration: const BoxDecoration(color: Colors.amber),
                     child: Center(child: Image.network(event.imageLink)),
                   ),
                 ),

@@ -20,7 +20,7 @@ ThemeData customTheme = ThemeData(
   focusColor: const Color(0xFF444CB4),
   shadowColor: Colors.black,
   fontFamily: 'Fredoka',
-  scaffoldBackgroundColor: Color.fromARGB(255, 247, 247, 247),
+  scaffoldBackgroundColor: const Color.fromARGB(255, 247, 247, 247),
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.white,
     surfaceTintColor: Colors.white,

@@ -20,7 +20,7 @@ class RequestFeedbackScreen extends StatefulWidget {
   const RequestFeedbackScreen({super.key});
 
   @override
-  _RequestFeedbackScreenState createState() => _RequestFeedbackScreenState();
+  State<RequestFeedbackScreen> createState() => _RequestFeedbackScreenState();
 }
 
 class _RequestFeedbackScreenState extends State<RequestFeedbackScreen> {

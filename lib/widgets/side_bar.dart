@@ -2,7 +2,6 @@ import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CustomSideBar extends StatelessWidget {

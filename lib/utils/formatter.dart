@@ -8,7 +8,7 @@ LatLng formatStringToLocation(String location) {
   List<String> parts = location.split(','); // Split the input string by comma
   
   if (parts.length != 2) {
-    throw FormatException('Invalid location format'); // Handle invalid format
+    throw const FormatException('Invalid location format'); // Handle invalid format
   }
   
   try {

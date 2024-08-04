@@ -5,7 +5,7 @@ class FAQScreen extends StatefulWidget {
   const FAQScreen({super.key});
 
   @override
-  _FAQScreenState createState() => _FAQScreenState();
+  State<FAQScreen> createState() => _FAQScreenState();
 }
 
 class _FAQScreenState extends State<FAQScreen> {
@@ -29,7 +29,7 @@ class _FAQScreenState extends State<FAQScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: HeaderBar(headerTitle: 'FAQs', menuRequired: false),
+      appBar: const HeaderBar(headerTitle: 'FAQs', menuRequired: false),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

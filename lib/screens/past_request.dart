@@ -14,22 +14,22 @@ class PastRequestScreen extends StatefulWidget {
   const PastRequestScreen({super.key});
 
   @override
-  _PastRequestScreenState createState() => _PastRequestScreenState();
+  State<PastRequestScreen> createState() => _PastRequestScreenState();
 }
 
 class _PastRequestScreenState extends State<PastRequestScreen> {
   List<BaseRequestModel>? _requests;
   //Import the data initially
-  String _date = '18/5/2024';
-  String _status = 'Pending Review';
-  String _requestType = 'Request for Organizer Role';
-  String _requestDescription = 'Description...';
-  Map<String, String> files = {
-    'document1.pdf':
-        'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FScreenshot%202023-05-19%20031809.png?alt=media&token=48f860ff-6960-404e-84f1-373b27cfd029',
-    'image1.png':
-        'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FNew1234%40gmail.com?alt=media&token=75388f82-e280-4d43-8e79-30ff42c6107b'
-  };
+  // String _date = '18/5/2024';
+  // String _status = 'Pending Review';
+  // String _requestType = 'Request for Organizer Role';
+  // String _requestDescription = 'Description...';
+  // Map<String, String> files = {
+  //   'document1.pdf':
+  //       'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FScreenshot%202023-05-19%20031809.png?alt=media&token=48f860ff-6960-404e-84f1-373b27cfd029',
+  //   'image1.png':
+  //       'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FNew1234%40gmail.com?alt=media&token=75388f82-e280-4d43-8e79-30ff42c6107b'
+  // };
 
   void loadRequests() {}
 

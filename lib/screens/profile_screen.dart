@@ -19,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
             Container(
               height: 160,
               padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 4.0),
-              color: Color.fromARGB(255, 222, 222, 222),
+              color: const Color.fromARGB(255, 222, 222, 222),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -32,7 +32,7 @@ class ProfileScreen extends StatelessWidget {
                         backgroundColor: Colors.grey,
                         backgroundImage: NetworkImage(userProfile.imageLink),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         userProfile.type.toString().split('.').last,
                         style: smallTextStyle,
@@ -111,7 +111,7 @@ class ProfileScreen extends StatelessWidget {
                                                   .toString(),
                                               style: smallTextStyle,
                                             ),
-                                            Text(
+                                            const Text(
                                               'Credit Score',
                                               style: smallTextStyle,
                                             ),

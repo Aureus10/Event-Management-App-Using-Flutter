@@ -27,7 +27,6 @@ class EventProvider extends ChangeNotifier {
   Future<EventModel?> organizeEvent(
       EventModel event, File image, Map<String, File> materials) async {
     try {
-
       String id = await _eventRepository.addEvent(event);
       String? imageLink = await FileProvider.uploadEventImage(image, id);
 
@@ -139,7 +138,51 @@ class EventProvider extends ChangeNotifier {
     return eventUserImages;
   }
 
-  Future<void> editEvent(EventModel event) async {}
+  Future<EventModel?> editEvent(EventModel event,
+      {Map<String, dynamic>? materials,
+      List<Map<DateTime, DateTime>>? sessions,
+      File? image}) async {
+    if (materials != null) {
+      Map<String, String> eventMaterials = {};
+      if (materials.isNotEmpty) {
+        for (String fileName in materials.keys) {
+          if (materials[fileName] is File) {
+            String? link = await FileProvider.uploadEventFile(
+                materials[fileName]!, event.id!, fileName);
+            if (link != null) {
+              eventMaterials[fileName] = link;
+            }
+          } else {
+            eventMaterials[fileName] = materials[fileName];
+          }
+        }
+      }
+      event = event.copyWith(materials: eventMaterials);
+    }
+    if (sessions != null) {
+      event = event.copyWith(datetime: sessions);
+    }
+    if (image != null) {
+      String? imageLink = await FileProvider.uploadEventImage(image, event.id!);
+      if (imageLink != null) {
+        event = event.copyWith(imageLink: imageLink);
+      }
+    }
+    bool status = await _eventRepository.updateEvent(event);
+    if (status) {
+      return event;
+    }
+    return null;
+  }
+
+  Future<EventModel?> cancelEvent(EventModel event) async {
+    event = event.copyWith(status: EventStatus.cancelled);
+    bool status = await _eventRepository.updateEvent(event);
+    if (status) {
+      return event;
+    }
+    return null;
+  } 
 
   // void updateListener(EventModel updatedEvent) {
 

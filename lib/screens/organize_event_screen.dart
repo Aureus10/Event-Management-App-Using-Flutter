@@ -33,7 +33,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
 
   final ScrollController _scrollController = ScrollController();
 
-  LatLng? _location = LatLng(3.15, 101.689);
+  LatLng? _location = const LatLng(3.15, 101.689);
   final List<Map<DateTime, DateTime>> _eventDateTime = [
     {DateTime.now(): DateTime.now().add(const Duration(hours: 2))}
   ];
@@ -43,9 +43,20 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   String? _contact = '0101101010';
   double? _eventFees = 10;
   int? _capacity = 10;
+
+  // LatLng? _location;
+  // final List<Map<DateTime, DateTime>> _eventDateTime = [
+  //   {DateTime.now(): DateTime.now().add(const Duration(hours: 2))}
+  // ];
+  // EventType _eventType = EventType.exhibition;
+  // String? _eventTitle;
+  // String? _eventDesc;
+  // String? _contact;
+  // double? _eventFees;
+  // int? _capacity;
   bool _isAnonymous = false;
   File? _image;
-  Map<String, File> _eventMaterials = {};
+  final Map<String, File> _eventMaterials = {};
 
   @override
   void initState() {

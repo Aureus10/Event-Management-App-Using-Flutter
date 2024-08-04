@@ -168,7 +168,7 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Image.file(_image!, height: 200, width: 200),
         ),
       const VerticalEmptySpace(),
-      Text(
+      const Text(
         'Date of Birth',
         style: mediumTextStyle,
       ),

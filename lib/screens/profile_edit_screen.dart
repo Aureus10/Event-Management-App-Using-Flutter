@@ -1,16 +1,13 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/services/auth_service.dart';
-import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
 import 'package:assignment/utils/formatter.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
 import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
-import 'package:assignment/widgets/pickers/image_picker.dart';
 import 'package:assignment/widgets/pickers/profile_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,8 +16,7 @@ class ProfileEditScreen extends StatefulWidget {
   const ProfileEditScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ProfileEditScreenState createState() => _ProfileEditScreenState();
+  State<ProfileEditScreen> createState() => _ProfileEditScreenState();
 }
 
 class _ProfileEditScreenState extends State<ProfileEditScreen> {

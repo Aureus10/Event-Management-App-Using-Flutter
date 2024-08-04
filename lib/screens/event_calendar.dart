@@ -8,7 +8,7 @@ class EventCalendarScreen extends StatefulWidget {
   const EventCalendarScreen({super.key});
 
   @override
-  _EventCalendarScreenState createState() => _EventCalendarScreenState();
+  State<EventCalendarScreen> createState() => _EventCalendarScreenState();
 }
 
 class _EventCalendarScreenState extends State<EventCalendarScreen> {
