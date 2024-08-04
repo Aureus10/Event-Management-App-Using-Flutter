@@ -130,7 +130,7 @@ class ProfileProvider extends ChangeNotifier {
       if (_profile!.lastLoggedInDate.isBefore(DateTime.now())) {
         await _profileRepository.updateProfile(_profile!.copyWith(
             creditScore: _profile!.creditScore + 1,
-            lastLoggedInDate: formatDateTimeToDate(DateTime.now())));
+            lastLoggedInDate: formatDateTime(DateTime.now())));
       }
     }
   }

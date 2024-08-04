@@ -17,7 +17,6 @@ class EventDetailsScreen extends StatefulWidget {
 }
 
 class _EventDetailsScreenState extends State<EventDetailsScreen> {
-
   late EventModel event;
   String? _organizerImage;
   Map<String, String>? _participantsImage;
@@ -97,7 +96,34 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
         throw 'Could not open the URL: $url';
       }
     } catch (e) {
-      // print('Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
+    }
+  }
+
+  void launchLocation(String location) async {
+    try {
+      Uri uri = Uri.parse('https://maps.google.com/?q=$location');
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        throw 'Could not open the URL: ${uri.toString()}';
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
     }
   }
 
@@ -216,7 +242,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                       ),
                     ),
                     const SizedBox(height: 5),
-                    Text(event.organizerEmail, style: smallTextStyle,),
+                    Text(
+                      event.organizerEmail,
+                      style: smallTextStyle,
+                    ),
                   ],
                 ),
               ],
@@ -233,24 +262,29 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {
-
+                            launchLocation(event.venue);
                           },
                           child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.location_on),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: Wrap(
-                                children: [
-                                  Text(event.venue, style: smallTextStyle,),
-                                ],
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.location_on,
+                                color: Colors.blue,
                               ),
-                            ),
-                          ],
-                        ),
+                              const SizedBox(width: 8.0),
+                              Expanded(
+                                child: Wrap(
+                                  children: [
+                                    Text(
+                                      event.venue,
+                                      style: linkTextStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         )
-                        
                       ],
                     ),
                   ),
@@ -265,7 +299,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Icon(Icons.date_range),
+                              const Icon(
+                                Icons.date_range,
+                                color: Colors.blue,
+                              ),
                               const SizedBox(width: 8.0),
                               Expanded(
                                 child: Wrap(
@@ -303,7 +340,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(event.fees.toString(), style: smallTextStyle,),
+                                  Text(
+                                    event.fees.toString(),
+                                    style: smallTextStyle,
+                                  ),
                                 ],
                               ),
                             ),
@@ -324,7 +364,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(event.capacity.toString(), style: smallTextStyle,),
+                                  Text(
+                                    event.capacity.toString(),
+                                    style: smallTextStyle,
+                                  ),
                                 ],
                               ),
                             ),
@@ -357,7 +400,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(event.contact, style: smallTextStyle,),
+                                  Text(
+                                    event.contact,
+                                    style: smallTextStyle,
+                                  ),
                                 ],
                               ),
                             ),
@@ -378,7 +424,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(event.type.toString().split('.').last, style: smallTextStyle,),
+                                  Text(
+                                    event.type.toString().split('.').last,
+                                    style: smallTextStyle,
+                                  ),
                                 ],
                               ),
                             ),
@@ -405,7 +454,10 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
               ...event.materials!.keys.map((key) {
                 return ListTile(
                   leading: Icon(getFileIcon(key)),
-                  title: Text(key, style: smallTextStyle,),
+                  title: Text(
+                    key,
+                    style: smallTextStyle,
+                  ),
                   onTap: () {
                     openFile(event.materials![key]!);
                   },
@@ -472,14 +524,13 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       String organizerEmail, List<String>? participantsEmails) async {
     Map<String, String> eventUserImages = await EventProvider()
         .getEventUserImages(organizerEmail, participantsEmails);
-        if (mounted) {
-
-    setState(() {
-      _organizerImage = eventUserImages[organizerEmail]!;
-      eventUserImages.remove(organizerEmail);
-      _participantsImage = eventUserImages;
-    });
-        }
+    if (mounted) {
+      setState(() {
+        _organizerImage = eventUserImages[organizerEmail]!;
+        eventUserImages.remove(organizerEmail);
+        _participantsImage = eventUserImages;
+      });
+    }
   }
 
   Future<void> _viewOthersProfile(String email) async {

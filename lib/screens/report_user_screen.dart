@@ -60,7 +60,7 @@ class _ReportUserScreenState extends State<ReportUserScreen> {
                     .userProfile!
                     .email,
                 reportedUserEmail: targetUser['email']!,
-                date: formatDateTimeToDate(DateTime.now()),
+                date: formatDateTime(DateTime.now()),
                 status: 'Pending Review',
                 type: 'Report User',
                 description: _desc!,

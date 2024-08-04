@@ -32,7 +32,7 @@ class _BanUserScreenState extends State<BanUserScreen> {
         ReportModel(
             userEmail: ProfileProvider().userProfile!.email,
             reportedUserEmail: targetUser.email,
-            date: formatDateTimeToDate(DateTime.now()),
+            date: formatDateTime(DateTime.now()),
             status: 'Approved',
             type: 'Report User',
             description: _reasons,
