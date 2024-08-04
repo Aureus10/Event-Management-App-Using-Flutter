@@ -142,6 +142,9 @@ class EventProvider extends ChangeNotifier {
       {Map<String, dynamic>? materials,
       List<Map<DateTime, DateTime>>? sessions,
       File? image}) async {
+        bool status1 = false;
+        bool status2 = false;
+        bool status3 = false;
     if (materials != null) {
       Map<String, String> eventMaterials = {};
       if (materials.isNotEmpty) {
@@ -158,17 +161,23 @@ class EventProvider extends ChangeNotifier {
         }
       }
       event = event.copyWith(materials: eventMaterials);
+      status1 = true;
     }
     if (sessions != null) {
-      event = event.copyWith(datetime: sessions);
+      event = event.copyWith(datetime: sessions, status: EventStatus.rescheduled);
+      status2 = true;
     }
     if (image != null) {
       String? imageLink = await FileProvider.uploadEventImage(image, event.id!);
       if (imageLink != null) {
         event = event.copyWith(imageLink: imageLink);
+        status3 = true;
       }
     }
-    bool status = await _eventRepository.updateEvent(event);
+    bool status = false;
+    if (status1 && status2 && status3) {
+      status = await _eventRepository.updateEvent(event);
+    }
     if (status) {
       return event;
     }

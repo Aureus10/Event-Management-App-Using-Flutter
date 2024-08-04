@@ -22,14 +22,14 @@ enum EventStatus {
   ongoing,
   completed,
   cancelled,
-  postponed,
+  rescheduled,
 }
 
 const Map<EventStatus, Color> eventStatusColor = {
   EventStatus.cancelled: Color.fromARGB(255, 255, 66, 66),
   EventStatus.completed: Color.fromARGB(255, 199, 194, 194),
   EventStatus.ongoing: Color.fromARGB(255, 120, 255, 125),
-  EventStatus.postponed: Colors.amber,
+  EventStatus.rescheduled: Colors.amber,
   EventStatus.scheduled: Color.fromARGB(255, 113, 191, 255)
 };
 

@@ -1,9 +1,8 @@
 import 'dart:io';
 
 import 'package:assignment/repositories/file_repository.dart';
-import 'package:flutter/material.dart';
 
-class FileProvider extends ChangeNotifier {
+class FileProvider {
 
   static final FileRepository _fileRepository = FileRepository();
 

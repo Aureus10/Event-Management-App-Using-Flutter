@@ -132,7 +132,7 @@ class _HomeBodyState extends State<HomeBody> {
     EventStatus.cancelled: true,
     EventStatus.completed: true,
     EventStatus.ongoing: true,
-    EventStatus.postponed: true,
+    EventStatus.rescheduled: true,
     EventStatus.scheduled: true,
   };
 
@@ -303,20 +303,20 @@ class _HomeBodyState extends State<HomeBody> {
                               children: [
                                 Checkbox(
                                   value:
-                                      _eventStatusFilter[EventStatus.postponed],
+                                      _eventStatusFilter[EventStatus.rescheduled],
                                   onChanged: (val) {
-                                    _eventStatusFilter[EventStatus.postponed] =
+                                    _eventStatusFilter[EventStatus.rescheduled] =
                                         val!;
                                     onQueryChanged(_searchQuery);
                                   },
                                   fillColor: WidgetStateProperty.all(
-                                      eventStatusColor[EventStatus.postponed]),
+                                      eventStatusColor[EventStatus.rescheduled]),
                                 ),
                                 Text(
-                                  'Postponed',
+                                  'Rescheduled',
                                   style: smallTextStyle.copyWith(
                                       color: eventStatusColor[
-                                          EventStatus.postponed]),
+                                          EventStatus.rescheduled]),
                                 ),
                               ],
                             ),
