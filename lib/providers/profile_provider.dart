@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/file_provider.dart';
-import 'package:assignment/repositories/file_repository.dart';
 import 'package:assignment/repositories/profile_repository.dart';
 import 'package:assignment/repositories/request_repository.dart';
 import 'package:assignment/services/auth_service.dart';
@@ -28,16 +27,16 @@ class ProfileProvider extends ChangeNotifier {
   Future<void> initializeProfile(String email) async {
     // await _profileRepository.getProfile(email);
     _profile = await _profileRepository.getProfile(email);
-    // if (await isBanned()) {
-    //   _profile = null;
-    //   AuthService().signOut();
-    //   return;
-    // }
-    // updateCreditScore();
+    if (await isBanned()) {
+      _profile = null;
+      AuthService().signOut();
+      return;
+    }
+    updateCreditScore();
     notifyListeners();
   }
 
-  Future<void> getOthersProfile(String email) =>
+  Future<ProfileModel> getOthersProfile(String email) =>
       _profileRepository.getProfile(email);
 
   Future<bool> addProfile(ProfileModel profile) async {
@@ -53,14 +52,14 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> updateProfile(ProfileModel profile, File? image) async {
+  Future<bool> updateProfile(ProfileModel profile, {File? image}) async {
     try {
-      String? imageLink;
       if (image != null) {
+        String? imageLink;
         imageLink = await FileProvider.uploadProfileImage(image, profile.email);
-      }
-      if (imageLink != null) {
-        profile = profile.copyWith(imageLink: imageLink);
+        if (imageLink != null) {
+          profile = profile.copyWith(imageLink: imageLink);
+        }
       }
       bool status = await _profileRepository.updateProfile(profile);
       if (status) {
@@ -73,22 +72,55 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deductCreditScore() async {
-    try {
-      bool status = false;
-      if (_profile != null) {
-        status = await _profileRepository.updateProfile(
-            _profile!.copyWith(creditScore: _profile!.creditScore - 1));
-      }
-      if (status) {
-        _profile = _profile!.copyWith(creditScore: _profile!.creditScore - 1);
-        notifyListeners();
-      }
-      return true;
-    } on Exception catch (_) {
-      return false;
+  Future<void> joinEvent(String eventID) async {
+    List<String> eventHistory;
+    if (_profile!.eventHistory == null) {
+      eventHistory = [];
+    } else {
+      eventHistory = _profile!.eventHistory!;
+    }
+    eventHistory.add(eventID);
+    bool status = await _profileRepository
+        .updateProfile(_profile!.copyWith(eventHistory: eventHistory));
+    if (status) {
+      _profile = _profile!.copyWith(eventHistory: eventHistory);
+      notifyListeners();
     }
   }
+
+  Future<bool> leaveEvent(String eventID) async {
+    if (_profile!.eventHistory == null) {
+      return false;
+    }
+    List<String> eventHistory = _profile!.eventHistory!;
+    eventHistory.remove(eventID);
+
+    bool status = await _profileRepository.updateProfile(_profile!.copyWith(
+        eventHistory: eventHistory, creditScore: _profile!.creditScore - 1));
+    if (status) {
+      _profile = _profile!.copyWith(
+          eventHistory: eventHistory, creditScore: _profile!.creditScore - 1);
+      notifyListeners();
+    }
+    return status;
+  }
+
+  // Future<bool> deductCreditScore() async {
+  //   try {
+  //     bool status = false;
+  //     if (_profile != null) {
+  //       status = await _profileRepository.updateProfile(
+  //           _profile!.copyWith(creditScore: _profile!.creditScore - 1));
+  //     }
+  //     if (status) {
+  //       _profile = _profile!.copyWith(creditScore: _profile!.creditScore - 1);
+  //       notifyListeners();
+  //     }
+  //     return true;
+  //   } on Exception catch (_) {
+  //     return false;
+  //   }
+  // }
 
   Future<void> updateCreditScore() async {
     if (_profile != null) {
@@ -109,14 +141,16 @@ class ProfileProvider extends ChangeNotifier {
         if (await RequestRepository().getBannedStatus(_profile!.email)) {
           return true;
         } else {
-          _profileRepository.updateProfile(_profile!.copyWith(status: AccountStatus.active));
+          _profileRepository
+              .updateProfile(_profile!.copyWith(status: AccountStatus.active));
         }
       }
     }
     return false;
   }
 
-  // Future<bool> deleteProfile(String email) {
-  //   return
-  // }
+  Future<String?> userExist(String email) async {
+    return await _profileRepository.checkIfUserExist(email);
+  }
+
 }

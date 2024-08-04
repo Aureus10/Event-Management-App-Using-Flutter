@@ -3,6 +3,7 @@ import 'package:assignment/models/request_model.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/utils/formatter.dart';
+import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 
 class BanUserScreen extends StatefulWidget {
@@ -19,6 +20,14 @@ class _BanUserScreenState extends State<BanUserScreen> {
   String _reasons = '';
 
   Future<void> _banUser(ProfileModel targetUser) async {
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+              child: CircularProgressIndicator(),
+            ));
+
     AuthService().banUser(
         targetUser,
         ReportModel(
@@ -28,7 +37,19 @@ class _BanUserScreenState extends State<BanUserScreen> {
             status: 'Approved',
             type: 'Report User',
             description: _reasons,
-            supportingDocs: {}));
+            supportingDocs: {})).then((status) {
+      Navigator.of(context).pop();
+      if (status) {
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ban Failed!'),
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -36,21 +57,7 @@ class _BanUserScreenState extends State<BanUserScreen> {
     ProfileModel targetUser =
         ModalRoute.of(context)!.settings.arguments as ProfileModel;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ban User'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: const HeaderBar(headerTitle: 'Ban User', menuRequired: false),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -67,6 +74,14 @@ class _BanUserScreenState extends State<BanUserScreen> {
             TextFormField(
               readOnly: true,
               initialValue: targetUser.email,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              readOnly: true,
+              initialValue: targetUser.username,
               decoration: const InputDecoration(
                 labelText: 'Username',
               ),

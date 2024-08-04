@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ProfileModel _userProfile = Provider.of<ProfileProvider>(context).userProfile!;
 
           final List<Widget> _widgetList = <Widget>[
-            const HomeBody(),
+            HomeBody(userType: _userProfile.type),
             _userProfile.type != UserType.administrator
                 ? const EventCalendarScreen()
                 : const ManageRequestScreen(),
@@ -75,10 +75,6 @@ class _HomeScreenState extends State<HomeScreen> {
       endDrawer: CustomSideBar(
         accountName: _userProfile.username,
         imageUrl: _userProfile.imageLink,
-        // userType: UserType.user,
-        // accountName: _userProfile.username,
-        // accountEmail: _userProfile.email,
-        // imageUrl: _userProfile.imageLink,
         userType: _userProfile.type,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -118,7 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
 }}
 
 class HomeBody extends StatefulWidget {
-  const HomeBody({super.key});
+  const HomeBody({super.key, required this.userType});
+
+  final UserType userType;
 
   @override
   State<HomeBody> createState() => _HomeBodyState();
@@ -368,7 +366,7 @@ class HomeBodyDisplay extends StatelessWidget {
               child: CustomActionButton(
                   displayText: 'Organize Events',
                   actionOnPressed: () {
-                    Navigator.of(context).pushNamed('/organize');
+                    Navigator.of(context).pushNamed('/organize_event');
                   }),
             ))
       ],

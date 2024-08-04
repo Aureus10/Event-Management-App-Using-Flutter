@@ -1,6 +1,13 @@
 // ignore_for_file: prefer_final_fields, prefer_const_constructors
 
+import 'package:assignment/models/request_model.dart';
+import 'package:assignment/providers/profile_provider.dart';
+import 'package:assignment/providers/request_provider.dart';
+import 'package:assignment/theme/fonts.dart';
+import 'package:assignment/utils/formatter.dart';
+import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class PastRequestScreen extends StatefulWidget {
@@ -11,6 +18,7 @@ class PastRequestScreen extends StatefulWidget {
 }
 
 class _PastRequestScreenState extends State<PastRequestScreen> {
+  List<BaseRequestModel>? _requests;
   //Import the data initially
   String _date = '18/5/2024';
   String _status = 'Pending Review';
@@ -22,6 +30,59 @@ class _PastRequestScreenState extends State<PastRequestScreen> {
     'image1.png':
         'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FNew1234%40gmail.com?alt=media&token=75388f82-e280-4d43-8e79-30ff42c6107b'
   };
+
+  void loadRequests() {}
+
+  @override
+  void didChangeDependencies() async {
+    String email =
+        Provider.of<ProfileProvider>(context, listen: false).userProfile!.email;
+    debugPrint(email);
+    await Provider.of<RequestProvider>(context, listen: false)
+        .getPersonalRequests(email)
+        .then((_) {
+      if (mounted) {
+        setState(() {
+          _requests =
+              Provider.of<RequestProvider>(context, listen: false).requests;
+        });
+      }
+    });
+    debugPrint(_requests.toString());
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: HeaderBar(headerTitle: 'Past Requests', menuRequired: false),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (_requests != null)
+              ..._requests!.map((request) {
+                return Column(
+                  children: [
+                    RequestPreview(
+                        index: _requests!.indexOf(request), request: request),
+                    Divider(),
+                  ],
+                );
+              }),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RequestPreview extends StatelessWidget {
+  const RequestPreview({super.key, required this.index, required this.request});
+
+  final int index;
+  final BaseRequestModel request;
 
   IconData getFileIcon(String fileName) {
     if (fileName.endsWith('.pdf')) {
@@ -47,105 +108,87 @@ class _PastRequestScreenState extends State<PastRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Past Requests'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${index + 1}. Request Details',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Request Details',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(children: [
-              const Text(
-                'Request Date: ',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _date,
-                style: const TextStyle(
-                    fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
-              ),
-            ]),
-            const SizedBox(height: 16),
-            Row(children: [
-              const Text(
-                'Status: ',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _status,
-                style: const TextStyle(
-                    fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
-              ),
-            ]),
-            const SizedBox(height: 16),
-            Row(children: [
-              const Text(
-                'Request Type: ',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _requestType,
-                style: const TextStyle(
-                    fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
-              ),
-            ]),
-            const SizedBox(height: 16),
-            Row(children: [
-              const Text(
-                'Request Description: ',
-                style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                _requestDescription,
-                style: const TextStyle(
-                    fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
-              ),
-            ]),
-            const Text(
-              'Supporting Documents: ',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 8),
-            ...files.keys.map((fileName) {
-              return ListTile(
-                leading: Icon(getFileIcon(fileName)),
-                title: Text(fileName),
-                onTap: () {
-                  openFile(files[fileName]!);
-                },
-              );
-            }),
-            const SizedBox(height: 32),
-            const SizedBox(height: 16),
-          ],
         ),
-      ),
+        const SizedBox(height: 16),
+        Row(children: [
+          const Text(
+            'Request Date: ',
+            style: smallTextStyle,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            formatDateTimeToStringDate(request.date),
+            style: const TextStyle(
+                fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
+          ),
+        ]),
+        const SizedBox(height: 16),
+        Row(children: [
+          const Text(
+            'Status: ',
+            style: smallTextStyle,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            request.status,
+            style: const TextStyle(
+                fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
+          ),
+        ]),
+        const SizedBox(height: 16),
+        Row(children: [
+          const Text(
+            'Request Type: ',
+            style: smallTextStyle,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            request.type,
+            style: const TextStyle(
+                fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
+          ),
+        ]),
+        const SizedBox(height: 16),
+        const Text(
+          'Request Description: ',
+          style: smallTextStyle,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          request.description,
+          style: const TextStyle(
+              fontSize: 16, color: Color.fromARGB(255, 0, 136, 255)),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'Supporting Documents: ',
+          style: smallTextStyle,
+        ),
+        const SizedBox(height: 8),
+        if (request.supportingDocs != null)
+          ...request.supportingDocs!.keys.map((fileName) {
+            return ListTile(
+              leading: Icon(getFileIcon(fileName)),
+              title: Text(
+                fileName,
+                style: smallTextStyle,
+              ),
+              onTap: () {
+                openFile(request.supportingDocs![fileName]!);
+              },
+            );
+          }),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:assignment/providers/event_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/formatter.dart';
+import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,47 +19,10 @@ class EventDetailsScreen extends StatefulWidget {
 }
 
 class _EventDetailsScreenState extends State<EventDetailsScreen> {
-  UserType _userType = UserType.user;
-  EventType _eventType = EventType.exhibition;
-  String? _eventTitle;
-  String? _eventDesc;
-  String? _contact;
-  double? _eventFees;
-  int? _capacity;
-  bool _isAnonymous = false;
-  File? _image;
-  Map<String, String> _materials = {};
 
-  final String eventTitle = "Event Title";
-  final String organizer = "Organizer";
-  final String venue = "Venue";
-  final String daterange = "Date Range";
-  final List<Map<DateTime, DateTime>> _eventDateTime = [
-    {DateTime(2023, 5, 1, 13, 28): DateTime(2023, 5, 1, 14, 28)},
-    {DateTime(2023, 5, 2, 13, 29): DateTime(2023, 5, 2, 14, 29)},
-    {DateTime(2023, 5, 3, 13, 30): DateTime(2023, 5, 3, 14, 30)},
-  ];
-  final String fees = "Fees";
-  final String capacity = "Capacity";
-  final String contact = "Contact";
-  final String type = "Type";
-  final String materials = "Materials";
-  final String description =
-      "Event Description Goes Here! Event Description Goes Here! Event Description Goes Here! Event Description Goes Here! Event Description Goes Here!";
-  final int participants = 11;
-  final int maxParticipants = 100;
-  final List<Map<String, String>> files = [
-    {
-      'name': 'image1.png',
-      'url':
-          'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FScreenshot%202023-05-19%20031809.png?alt=media&token=48f860ff-6960-404e-84f1-373b27cfd029'
-    },
-    {
-      'name': 'document1.pdf',
-      'url':
-          'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2FLab%2010%20-%20Queues.pdf?alt=media&token=98f856ae-d110-40dc-8a76-bfe78332ac59'
-    },
-  ];
+  late EventModel event;
+  String? _organizerImage;
+  Map<String, String>? _participantsImage;
 
   void loadDate(EventModel event) {
     showDialog(
@@ -136,7 +100,6 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       }
     } catch (e) {
       print('Error: $e');
-      // You can show an error message to the user here
     }
   }
 
@@ -158,10 +121,25 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
   }
 
   bool isViewOnly() {
-    return _userType == UserType.administrator;
+    return Provider.of<ProfileProvider>(context, listen: false)
+            .userProfile!
+            .type ==
+        UserType.administrator;
   }
 
   void joinEvent(EventModel event) {
+    if (Provider.of<ProfileProvider>(context, listen: false)
+            .userProfile!
+            .creditScore <
+        90) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Your credit score is not enough! (less than 90)'),
+        ),
+      );
+      return;
+    }
     EventProvider().joinEvent(event);
   }
 
@@ -175,7 +153,8 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    EventModel event = ModalRoute.of(context)!.settings.arguments as EventModel;
+    event = ModalRoute.of(context)!.settings.arguments as EventModel;
+    _fetchProfileImage(event.organizerEmail, event.participants);
     void Function()? actionOnPressed;
     String actionButtonText;
     Color actionButtonColor;
@@ -203,49 +182,48 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
       actionButtonColor = Colors.blueAccent;
     }
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Details'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Go back
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              // Open menu
-            },
-          ),
-        ],
-      ),
+      appBar:
+          const HeaderBar(headerTitle: 'Event Details', menuRequired: false),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(eventTitle,
+            Text(event.title,
                 style:
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
-            Center(
-              child: SizedBox(
-                height: 150,
-                child: Image.network(event.imageLink),
-              ),
-            ),
-            const SizedBox(height: 16.0),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const CircleAvatar(
-                  radius: 30,
-                  child: Icon(Icons.person, size: 40),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10),
+                    height: 150,
+                    decoration: BoxDecoration(color: Colors.amber),
+                    child: Center(child: Image.network(event.imageLink)),
+                  ),
                 ),
-                const SizedBox(height: 5),
-                Text(organizer),
+                Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        _viewOthersProfile(event.organizerEmail);
+                      },
+                      child: CircleAvatar(
+                        radius: 40,
+                        backgroundImage: _organizerImage == null
+                            ? null
+                            : NetworkImage(_organizerImage!),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(event.organizerEmail, style: smallTextStyle,),
+                  ],
+                ),
               ],
             ),
+            const SizedBox(height: 16.0),
             Container(
               constraints: const BoxConstraints(minHeight: 40),
               child: Row(
@@ -255,7 +233,11 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Row(
+                        GestureDetector(
+                          onTap: () {
+
+                          },
+                          child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             const Icon(Icons.location_on),
@@ -263,12 +245,14 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(venue),
+                                  Text(event.venue, style: smallTextStyle,),
                                 ],
                               ),
                             ),
                           ],
                         ),
+                        )
+                        
                       ],
                     ),
                   ),
@@ -321,7 +305,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(fees),
+                                  Text(event.fees.toString(), style: smallTextStyle,),
                                 ],
                               ),
                             ),
@@ -342,7 +326,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(capacity),
+                                  Text(event.capacity.toString(), style: smallTextStyle,),
                                 ],
                               ),
                             ),
@@ -375,7 +359,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(contact),
+                                  Text(event.contact, style: smallTextStyle,),
                                 ],
                               ),
                             ),
@@ -396,7 +380,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                             Expanded(
                               child: Wrap(
                                 children: [
-                                  Text(type),
+                                  Text(event.type.toString().split('.').last, style: smallTextStyle,),
                                 ],
                               ),
                             ),
@@ -412,37 +396,58 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
               ),
             ),
             const SizedBox(height: 16.0),
-            if (isOrganizer(event.organizerEmail) ||
-                isParticipant(event.participants))
+            if ((isOrganizer(event.organizerEmail) ||
+                    isParticipant(event.participants)) &&
+                event.materials!.isNotEmpty)
               const Text("Materials",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ...files.map((file) {
-              return ListTile(
-                leading: Icon(getFileIcon(file['name']!)),
-                title: Text(file['name']!),
-                onTap: () {
-                  openFile(file['url']!);
-                },
-              );
-            }),
+            if ((isOrganizer(event.organizerEmail) ||
+                    isParticipant(event.participants)) &&
+                event.materials!.isNotEmpty)
+              ...event.materials!.keys.map((key) {
+                return ListTile(
+                  leading: Icon(getFileIcon(key)),
+                  title: Text(key, style: smallTextStyle,),
+                  onTap: () {
+                    openFile(event.materials![key]!);
+                  },
+                );
+              }),
             const SizedBox(height: 8.0),
-            const Text('Event Description', style: mediumTextStyle,),
-            Text(description, style: smallTextStyle,),
+            Text(
+              'Event Description',
+              style: mediumTextStyle.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              event.description,
+              style: smallTextStyle,
+            ),
             const SizedBox(height: 16.0),
-            Text('Participants ($participants/$maxParticipants)',
+            Text(
+                'Participants (${event.participants?.length ?? 0}/${event.capacity})',
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8.0),
-            if (!_isAnonymous)
-              Wrap(
-                children: List.generate(participants, (index) {
-                  return const Padding(
-                    padding: EdgeInsets.all(4.0),
-                    child: CircleAvatar(
-                      child: Icon(Icons.person),
-                    ),
-                  );
-                }),
+            if (!event.isAnonymous && _participantsImage != null)
+              SizedBox(
+                height: (40 * _participantsImage!.length).toDouble(),
+                child: ListView.builder(
+                    itemCount: _participantsImage!.length,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          _viewOthersProfile(_participantsImage!.keys.elementAt(
+                            index,
+                          ));
+                        },
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundImage: NetworkImage(
+                              _participantsImage!.values.elementAt(index)),
+                        ),
+                      );
+                    }),
               ),
           ],
         ),
@@ -463,5 +468,26 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
               ),
             ),
     );
+  }
+
+  Future<void> _fetchProfileImage(
+      String organizerEmail, List<String>? participantsEmails) async {
+    Map<String, String> eventUserImages = await EventProvider()
+        .getEventUserImages(organizerEmail, participantsEmails);
+        if (mounted) {
+
+    setState(() {
+      _organizerImage = eventUserImages[organizerEmail]!;
+      eventUserImages.remove(organizerEmail);
+      _participantsImage = eventUserImages;
+    });
+        }
+  }
+
+  Future<void> _viewOthersProfile(String email) async {
+    await ProfileProvider().getOthersProfile(email).then((othersProfile) {
+      Navigator.of(context)
+          .pushNamed('/others_profile', arguments: othersProfile);
+    });
   }
 }

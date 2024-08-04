@@ -70,8 +70,9 @@ class CustomActionButton extends StatelessWidget {
   ///blue background & blue violet outline
   final double? width;
   final double? height;
+  final Color? color;
   const CustomActionButton(
-      {super.key, required this.displayText, required this.actionOnPressed, this.width, this.height});
+      {super.key, required this.displayText, required this.actionOnPressed, this.width, this.height, this.color});
 
   final String displayText;
   final VoidCallback actionOnPressed;
@@ -82,7 +83,7 @@ class CustomActionButton extends StatelessWidget {
         onPressed: actionOnPressed,
         style: ButtonStyle(
           backgroundColor:
-              WidgetStateProperty.all<Color>(CustomizedColors.buttonColor),
+              WidgetStateProperty.all<Color>(color ?? const Color(0xFF27A1FF)),
           minimumSize: WidgetStateProperty.all<Size>(
           Size(width ?? MediaQuery.of(context).size.width * 0.8, height ?? 60)),
           shape: WidgetStateProperty.all<RoundedRectangleBorder>(

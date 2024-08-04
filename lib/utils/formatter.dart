@@ -57,3 +57,11 @@ DateTime formatDateTimeToDate (DateTime dateTime) {
   return DateTime(dateTime.year, dateTime.month, dateTime.day);
 }
 
+String formatContact(String contact) {
+
+  String part1 = contact.substring(0, 3);
+  String part2 = contact.substring(3, 6);
+  String part3 = contact.substring(6);
+
+  return '$part1-$part2 $part3';
+}

@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 abstract class BaseRequestModel {
   String? get id;
+  String get userEmail;
   DateTime get date;
   String get status;
   String get type;
   String get description;
+  Map<String, String>? get supportingDocs;
 
   factory BaseRequestModel.fromMap(String id, Map<String, dynamic> map) {
     throw UnimplementedError('fromMap() has not been implemented.');
@@ -23,9 +27,10 @@ abstract class BaseRequestModel {
 }
 
 class RequestModel implements BaseRequestModel {
-  ///for request and feedback
+  ///type = 'Organizer Role Request' | 'Feedback'
   @override
   final String? id;
+  @override
   final String userEmail;
   @override
   final DateTime date;
@@ -35,6 +40,7 @@ class RequestModel implements BaseRequestModel {
   final String type;
   @override
   final String description;
+  @override
   final Map<String, String> supportingDocs;
 
   RequestModel({
@@ -51,7 +57,7 @@ class RequestModel implements BaseRequestModel {
       RequestModel(
         id: id,
         userEmail: map['userEmail'],
-        date: map['date'],
+        date: (map['date'] as Timestamp).toDate(),
         status: map['status'],
         type: map['type'],
         description: map['description'],
@@ -90,9 +96,10 @@ class RequestModel implements BaseRequestModel {
 }
 
 class ReportModel implements BaseRequestModel {
-  ///for report user
+  ///type = 'Report User'
   @override
   final String? id;
+  @override
   final String userEmail;
   final String reportedUserEmail;
   @override
@@ -103,6 +110,7 @@ class ReportModel implements BaseRequestModel {
   final String type;
   @override
   final String description;
+  @override
   final Map<String, String> supportingDocs;
   final int? days;
 
@@ -123,7 +131,7 @@ class ReportModel implements BaseRequestModel {
         id: id,
         userEmail: map['userEmail'],
         reportedUserEmail: map['reportedUserEmail'],
-        date: map['date'],
+        date: (map['date'] as Timestamp).toDate(),
         status: map['status'],
         type: map['type'],
         description: map['description'],

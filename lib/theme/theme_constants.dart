@@ -20,6 +20,7 @@ ThemeData customTheme = ThemeData(
   focusColor: const Color(0xFF444CB4),
   shadowColor: Colors.black,
   fontFamily: 'Fredoka',
+  scaffoldBackgroundColor: Color.fromARGB(255, 247, 247, 247),
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.white,
     surfaceTintColor: Colors.white,
@@ -31,4 +32,11 @@ ThemeData customTheme = ThemeData(
     surfaceTintColor: Colors.white,
     color: Colors.white,
   ),
+  cardTheme: const CardTheme(
+    surfaceTintColor: Colors.white,
+    color: Colors.white
+  ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    backgroundColor: Colors.white
+  )
 );

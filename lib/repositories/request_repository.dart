@@ -8,6 +8,14 @@ class RequestRepository {
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllRequests() =>
       _requestCollection.snapshots();
 
+  Future<QuerySnapshot<Map<String, dynamic>>?> getPersonalRequests(String email) async {
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _requestCollection.where('userEmail', isEqualTo: email).get();
+    if(querySnapshot.docs.isNotEmpty) {
+      return querySnapshot;
+    }
+    return null;
+  }
+
   Future<BaseRequestModel> getRequest(String id) async =>
       _requestCollection.doc(id).get().then((DocumentSnapshot doc) =>
           BaseRequestModel.fromMap(doc.id, doc.data() as Map<String, dynamic>));

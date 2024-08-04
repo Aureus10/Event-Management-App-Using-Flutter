@@ -2,7 +2,6 @@ import 'package:assignment/models/profile_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileRepository {
-
   final _profileCollection = FirebaseFirestore.instance.collection('users');
 
   Future<ProfileModel> getProfile(String email) async =>
@@ -20,6 +19,19 @@ class ProfileRepository {
       .update(profile.toMap())
       .then((_) => true)
       .catchError((_) => false);
+
+  Future<String?> checkIfUserExist(String email) async {
+    try {
+      DocumentSnapshot doc =
+          await FirebaseFirestore.instance.collection('users').doc(email).get();
+      if (doc.data() != null) {
+        return (doc.data() as Map<String, dynamic>)['username'];
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
 
   // static Future<bool> deleteProfile(String email) => _profileCollection
   //     .doc(email)

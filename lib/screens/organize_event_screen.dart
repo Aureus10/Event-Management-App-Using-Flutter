@@ -34,7 +34,9 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
   final ScrollController _scrollController = ScrollController();
 
   LatLng? _location = LatLng(3.15, 101.689);
-  final List<Map<DateTime, DateTime>> _eventDateTime = [{DateTime.now() : DateTime.now().add(const Duration(hours: 2))}];
+  final List<Map<DateTime, DateTime>> _eventDateTime = [
+    {DateTime.now(): DateTime.now().add(const Duration(hours: 2))}
+  ];
   EventType _eventType = EventType.exhibition;
   String? _eventTitle = 'TemporaryTitle';
   String? _eventDesc = 'Temporary Description';
@@ -88,34 +90,48 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               child: CircularProgressIndicator(),
             ));
 
-    EventProvider eventProvider = Provider.of<EventProvider>(context, listen: false);
+    EventProvider eventProvider =
+        Provider.of<EventProvider>(context, listen: false);
     // String email = Provider.of<ProfileProvider>(context, listen: false).userProfile!.email;
-    String email = 'testing11111@gmail.com';
-    eventProvider.organizeEvent(
-        EventModel(
-            organizerEmail: email,
-            title: _eventTitle!,
-            description: _eventDesc!,
-            venue: formatLocationToString(_location!),
-            fees: _eventFees!,
-            contact: _contact!,
-            type: _eventType,
-            datetime: _eventDateTime,
-            capacity: _capacity!,
-            imageLink: 'temp',
-            isAnonymous: _isAnonymous,
-            status: EventStatus.scheduled,
+    eventProvider
+        .organizeEvent(
+            EventModel(
+              organizerEmail:
+                  Provider.of<ProfileProvider>(context, listen: false)
+                      .userProfile!
+                      .email,
+              title: _eventTitle!,
+              description: _eventDesc!,
+              venue: formatLocationToString(_location!),
+              fees: _eventFees!,
+              contact: _contact!,
+              type: _eventType,
+              datetime: _eventDateTime,
+              capacity: _capacity!,
+              imageLink: 'temp',
+              isAnonymous: _isAnonymous,
+              status: EventStatus.scheduled,
             ),
-        _image!,
-        _eventMaterials).then((id) => {
-          if(id != null) {
-            Navigator.of(context).pop(),
-            Navigator.of(context).pushNamed('/testing', arguments: id)
-          } else {
-            debugPrint('123')
-          }
-        });
-
+            _image!,
+            _eventMaterials)
+        .then((eventOrganized) => {
+              Navigator.of(context).pop(),
+              if (eventOrganized != null)
+                {
+                  Navigator.of(context)
+                      .pushReplacementNamed('/event_details', arguments: eventOrganized)
+                }
+              else
+                {
+                  ScaffoldMessenger.of(context).clearSnackBars(),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Event Organized Failed!'),
+                    ),
+                  ),
+                  // Navigator.of(context).pop(),
+                }
+            });
   }
 
   @override

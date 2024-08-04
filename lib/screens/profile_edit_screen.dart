@@ -74,7 +74,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               child: CircularProgressIndicator(),
             ));
     await Provider.of<ProfileProvider>(context, listen: false)
-        .updateProfile(profile, _image)
+        .updateProfile(profile, image: _image)
         .then((status) => {
               Navigator.of(context).pop(),
               if (status)

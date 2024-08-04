@@ -24,13 +24,11 @@ class EventProvider extends ChangeNotifier {
     updateStatus();
   }
 
-  Future<String?> organizeEvent(
+  Future<EventModel?> organizeEvent(
       EventModel event, File image, Map<String, File> materials) async {
     try {
-      debugPrint('test4');
 
       String id = await _eventRepository.addEvent(event);
-      debugPrint(id);
       String? imageLink = await FileProvider.uploadEventImage(image, id);
 
       Map<String, String> eventMaterials = {};
@@ -45,20 +43,21 @@ class EventProvider extends ChangeNotifier {
       }
 
       if (imageLink != null) {
-        await _eventRepository.updateEvent(event.copyWith(
-            id: id, materials: eventMaterials, imageLink: imageLink));
-        return id;
+        EventModel eventOrganized = event.copyWith(
+            id: id, materials: eventMaterials, imageLink: imageLink);
+        bool status = await _eventRepository.updateEvent(eventOrganized);
+        if (status) {
+          return eventOrganized;
+        }
       }
 
       return null;
     } catch (e) {
-      debugPrint('test1');
       return null;
     }
   }
 
   Future<void> updateStatus() async {
-    bool changed = false;
     for (EventModel event in _eventList) {
       for (Map<DateTime, DateTime> datetime in event.datetime) {
         if (event.status == EventStatus.cancelled ||
@@ -66,19 +65,20 @@ class EventProvider extends ChangeNotifier {
           break;
         }
         if (datetime.values.last.isBefore(DateTime.now())) {
-          _eventRepository
+          await _eventRepository
               .updateEvent(event.copyWith(status: EventStatus.completed));
-          changed = true;
+          // if (status) {
+          //   updateListener(event.copyWith(status: EventStatus.completed));
+          // }
         } else if (datetime.keys.first.isBefore(DateTime.now()) &&
             datetime.values.last.isAfter(DateTime.now())) {
-          _eventRepository
+          await _eventRepository
               .updateEvent(event.copyWith(status: EventStatus.ongoing));
-          changed = true;
+          // if (status) {
+          //   updateListener(event.copyWith(status: EventStatus.ongoing));
+          // }
         }
       }
-    }
-    if (changed) {
-      notifyListeners();
     }
   }
 
@@ -96,8 +96,12 @@ class EventProvider extends ChangeNotifier {
       } else {
         participants = [email];
       }
-      await _eventRepository
+      bool status = await _eventRepository
           .updateEvent(event.copyWith(participants: participants));
+      if (status) {
+        ProfileProvider().joinEvent(event.id!);
+        // updateListener(event.copyWith(participants: participants));
+      }
     }
   }
 
@@ -109,14 +113,44 @@ class EventProvider extends ChangeNotifier {
       if (participants != null) {
         participants.remove(email);
       }
-      if (await ProfileProvider().deductCreditScore()) {
+      if (await ProfileProvider().leaveEvent(email)) {
         await _eventRepository
             .updateEvent(event.copyWith(participants: participants));
+        // if (status) {
+        //   updateListener(event.copyWith(participants: participants));
+        // }
       }
     }
   }
 
+  Future<Map<String, String>> getEventUserImages(
+      String organizer, List<String>? participants) async {
+    Map<String, String> eventUserImages = {};
+    eventUserImages[organizer] = await ProfileProvider()
+        .getOthersProfile(organizer)
+        .then((profile) => profile.imageLink);
+    if (participants != null) {
+      for (String participant in participants) {
+        eventUserImages[participant] = await ProfileProvider()
+            .getOthersProfile(participant)
+            .then((profile) => profile.imageLink);
+      }
+    }
+    return eventUserImages;
+  }
+
   Future<void> editEvent(EventModel event) async {}
+
+  // void updateListener(EventModel updatedEvent) {
+
+  //   int index = _eventList.indexWhere((event) => event.id == updatedEvent.id);
+
+  //   if (index != -1) {
+  //     _eventList[index] = updatedEvent;
+  //     notifyListeners();
+  //   }
+
+  // }
 
   // Stream<List<EventModel>> getEventsByStatus(EventStatus status) => _eventRepository.getEventsByStatus(status);
 }

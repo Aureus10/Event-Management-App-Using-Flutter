@@ -1,4 +1,5 @@
 import 'package:assignment/app.dart';
+import 'package:assignment/screens/edit_event_screen.dart';
 import 'package:assignment/screens/forgot_password_screen.dart';
 import 'package:assignment/screens/home_screen.dart';
 import 'package:assignment/screens/login_screen.dart';
@@ -34,8 +35,7 @@ final Map<String, WidgetBuilder> routesConfig = {
   '/make_request_feedback':  (_) => const RequestFeedbackScreen(),
   '/view_past_request':  (_) => const PastRequestScreen(),
   '/organize_event': (_) => const OrganizeEventScreen(),
-
-  // '/edit_event':  (_) => const EventDetailsEditScreen(),
+  '/edit_event':  (_) => const EditEventScreen(),
   '/view_request':  (_) => const ViewRequestScreen(),
   '/ban_user' : (_) => const BanUserScreen(),
 };

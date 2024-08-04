@@ -1,3 +1,4 @@
+import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 
 class FAQScreen extends StatefulWidget {
@@ -28,21 +29,7 @@ class _FAQScreenState extends State<FAQScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('FAQs'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: HeaderBar(headerTitle: 'FAQs', menuRequired: false),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -60,17 +47,22 @@ class _FAQScreenState extends State<FAQScreen> {
               ...List.generate(_faqs.length, (index) {
                 final faq = _faqs[index];
                 return Theme(
-                  data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                  data: Theme.of(context)
+                      .copyWith(dividerColor: Colors.transparent),
                   child: ExpansionTile(
                     title: Text(
                       faq['question'],
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: _expandedIndex == index ? Colors.blue : Colors.black,
+                        color: _expandedIndex == index
+                            ? Colors.blue
+                            : Colors.black,
                       ),
                     ),
                     trailing: Icon(
-                      _expandedIndex == index ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                      _expandedIndex == index
+                          ? Icons.keyboard_arrow_up
+                          : Icons.keyboard_arrow_down,
                       color: Colors.blue,
                     ),
                     children: [

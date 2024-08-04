@@ -1,31 +1,20 @@
+import 'package:assignment/models/profile_model.dart';
+import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/theme/fonts.dart';
+import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileViewScreen extends StatelessWidget {
-  final bool isAdmin;
-  final String _name = '';
-
-  const ProfileViewScreen({super.key, this.isAdmin = false});
+  const ProfileViewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    UserType userType = Provider.of<ProfileProvider>(context).userProfile!.type;
+    ProfileModel userProfile =
+        ModalRoute.of(context)!.settings.arguments as ProfileModel;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {},
-          ),
-        ],
-      ),
+      appBar: const HeaderBar(headerTitle: 'Profile', menuRequired: false),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -35,23 +24,18 @@ class ProfileViewScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Column 1: Avatar and User Type
-                const Column(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
                       radius: 40,
                       backgroundColor: Colors.grey,
-                      child: Icon(
-                        Icons.person,
-                        size: 40,
-                      ),
+                      backgroundImage: NetworkImage(userProfile.imageLink),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
-                      'User Type',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold, // Make the text bold
-                      ),
+                      userProfile.toString().split('.').last,
+                      style: smallTextStyle
                     ),
                   ],
                 ),
@@ -134,17 +118,17 @@ class ProfileViewScreen extends StatelessWidget {
                             Icons.warning,
                             color: Colors.red,
                           ),
-                          if (isAdmin)
+                          if (userType == UserType.administrator)
                             TextButton(
                               onPressed: () {
-                                // Add ban user functionality here
+                                Navigator.of(context).pushNamed('/ban_user', arguments: userProfile);
                               },
                               child: const Text('Ban User', style: TextStyle(color: Colors.red)),
                             )
                           else
                             TextButton(
                               onPressed: () {
-                                // Add report user functionality here
+                                Navigator.of(context).pushNamed('/report_user', arguments: userProfile);
                               },
                               child: const Text('Report User', style: TextStyle(color: Colors.red)),
                             ),
@@ -157,9 +141,9 @@ class ProfileViewScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             // Text fields for additional user information
-            TextField(
+            TextFormField(
               readOnly: true,
-              controller: TextEditingController(text: _name), // Default value
+              initialValue: userProfile.username,// Default value
               decoration: const InputDecoration(
                 labelText: 'Name',
               ),
@@ -168,19 +152,19 @@ class ProfileViewScreen extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: TextField(
+                  child: TextFormField(
                     readOnly: true,
-                    controller: TextEditingController(text: '21'),
+                    initialValue: userProfile.dateOfBirth,
                     decoration: const InputDecoration(
-                      labelText: 'Age',
+                      labelText: 'Date of Birth',
                     ),
                   ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: TextField(
+                  child: TextFormField(
                     readOnly: true,
-                    controller: TextEditingController(text: 'Male'),
+                    initialValue: userProfile.gender.toString(),
                     decoration: const InputDecoration(
                       labelText: 'Gender',
                     ),
@@ -189,17 +173,17 @@ class ProfileViewScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            TextField(
+            TextFormField(
               readOnly: true,
-              controller: TextEditingController(text: '_Name@gmail.com'),
+              initialValue: userProfile.email,
               decoration: const InputDecoration(
                 labelText: 'Email Address',
               ),
             ),
             const SizedBox(height: 8),
-            TextField(
+            TextFormField(
               readOnly: true,
-              controller: TextEditingController(text: '016-123 4567'),
+              initialValue: userProfile.contact,
               decoration: const InputDecoration(
                 labelText: 'Contact Number',
               ),

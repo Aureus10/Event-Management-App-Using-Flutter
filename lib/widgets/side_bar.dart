@@ -33,7 +33,7 @@ class CustomSideBar extends StatelessWidget {
           text: 'Provide Feedback',
           actionOnTap: () {
             Navigator.of(context).pushNamed('/make_request_feedback',
-                arguments: 'Provide Feedback');
+                arguments: 'Feedback');
           },
         ),
         MenuItems(
@@ -41,7 +41,7 @@ class CustomSideBar extends StatelessWidget {
           text: 'Request for Event Organizer Role',
           actionOnTap: () {
             Navigator.of(context).pushNamed('/make_request_feedback',
-                arguments: 'Request for Event Organizer Role');
+                arguments: 'Organizer Role Request');
           },
         ),
         MenuItems(
@@ -55,7 +55,7 @@ class CustomSideBar extends StatelessWidget {
           icon: Icons.warning,
           text: 'Report User',
           actionOnTap: () {
-            Navigator.of(context).pushNamed('/report_user', arguments: '');
+            Navigator.of(context).pushNamed('/report_user', arguments: <String, String>{});
           },
           color: Colors.red,
         ),
@@ -97,7 +97,7 @@ class CustomSideBar extends StatelessWidget {
           icon: Icons.warning,
           text: 'Report User',
           actionOnTap: () {
-            Navigator.of(context).pushNamed('/report_user', arguments: '');
+            Navigator.of(context).pushNamed('/report_user', arguments: <String, String>{});
           },
           color: Colors.red,
         ),
@@ -126,14 +126,14 @@ class CustomSideBar extends StatelessWidget {
         //   text: 'Manage Requests',
         //   actionOnTap: () {},
         // ),
-        MenuItems(
-          icon: Icons.warning,
-          text: 'Ban User',
-          actionOnTap: () {
-            Navigator.of(context).pushNamed('/ban_user', arguments: '');
-          },
-          color: Colors.red,
-        ),
+        // MenuItems(
+        //   icon: Icons.warning,
+        //   text: 'Ban User',
+        //   actionOnTap: () {
+        //     Navigator.of(context).pushNamed('/ban_user', arguments: {});
+        //   },
+        //   color: Colors.red,
+        // ),
         MenuItems(
           icon: Icons.logout,
           text: 'Logout',

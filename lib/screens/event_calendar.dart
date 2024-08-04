@@ -1,7 +1,5 @@
 import 'package:assignment/models/event_model.dart';
 import 'package:assignment/providers/event_provider.dart';
-import 'package:assignment/providers/profile_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -28,7 +26,6 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
           return dateMap.keys.any((date) => isSameDay(date, _selectedDay)) || dateMap.values.any((date) => isSameDay(date, _selectedDay));
         });
         bool matchesTitle = event.title.toLowerCase().contains(_searchQuery.toLowerCase());
-        debugPrint(event.title);
         bool matchesDesc = event.description.toLowerCase().contains(_searchQuery.toLowerCase());
         return matchesDateTime && (matchesTitle || matchesDesc);
       }).toList();
@@ -46,7 +43,7 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _eventProvider = Provider.of<EventProvider>(context);
+    _eventProvider = Provider.of<EventProvider>(context, listen: false);
     _eventProvider.getEvents();
   }
 
@@ -66,7 +63,7 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
             ),
             onChanged: (val) {
               _searchQuery = val;
-              debugPrint(_searchQuery);
+              // debugPrint(_searchQuery);
               _loadEvents();
             },
           ),
@@ -102,7 +99,6 @@ class _EventCalendarScreenState extends State<EventCalendarScreen> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: _events.map((event) {
-                debugPrint(event.participants.toString());
                 return Card(
                   // color: 
                   child: ListTile(

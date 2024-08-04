@@ -21,13 +21,13 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
   String _searchQuery = '';
   final Map<String, bool> _requestTypeFilter = {
     'Feedback': true,
-    'Report': true,
-    'Organizer Role Requests': true,
+    'Report User': true,
+    'Organizer Role Request': true,
   };
   final Map<String, Color> _requestTypeColor = {
     'Feedback': Colors.amber,
-    'Report': Colors.red,
-    'Organizer Role Requests': Colors.blue,
+    'Report User': Colors.red,
+    'Organizer Role Request': Colors.blue,
   };
   final Map<String, bool> _requestStatusFilter = {
     'Pending Review': true,
@@ -50,7 +50,7 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
         bool matchesTitle =
             item.id!.toLowerCase().contains(query.toLowerCase());
         bool matchesDescription =
-            item.description!.toLowerCase().contains(query.toLowerCase());
+            item.description.toLowerCase().contains(query.toLowerCase());
         bool matchesType = _requestTypeFilter[item.type] ?? false;
         bool matchesStatus = _requestStatusFilter[item.status] ?? false;
         return (matchesTitle || matchesDescription) &&
@@ -67,10 +67,13 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
       requestPreview = ListView.builder(
           itemCount: _searchResults.length,
           itemBuilder: (ctx, index) {
-            return RequestPreview(requestId: _searchResults[index].id!, requestDate: _searchResults[index].date, status: _searchResults[index].status, requestType: _searchResults[index].type);
+            return RequestPreview(
+              request: _searchResults[index],
+              color: _requestTypeColor[_searchResults[index].type] ?? Colors.grey,
+            );
           });
     } else {
-      requestPreview = const Text("No events found");
+      requestPreview = const Text("No requests found");
       onQueryChanged(_searchQuery);
     }
     return Column(children: [
@@ -96,7 +99,7 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
                   ),
                   Container(
                       margin: const EdgeInsets.only(top: 12),
-                      height: 50,
+                      height: 70,
                       // width: 400,
                       child: GridView.count(
                         childAspectRatio: 5,
@@ -115,7 +118,7 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
                                     _requestTypeColor['Feedback']),
                               ),
                               Text(
-                                'Scheduled',
+                                'Feedback',
                                 style: smallTextStyle.copyWith(
                                     color: _requestTypeColor['Feedback']),
                               ),
@@ -124,17 +127,17 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
                           Row(
                             children: [
                               Checkbox(
-                                value: _requestTypeFilter['Report'],
+                                value: _requestTypeFilter['Report User'],
                                 onChanged: (val) {
-                                  _requestTypeFilter['Report'] = val!;
+                                  _requestTypeFilter['Report User'] = val!;
                                   onQueryChanged(_searchQuery);
                                 },
                                 fillColor: WidgetStateProperty.all(
-                                    _requestTypeColor['Report']),
+                                    _requestTypeColor['Report User']),
                               ),
-                              Text('Ongoing',
+                              Text('User Report',
                                   style: smallTextStyle.copyWith(
-                                    color: _requestTypeColor['Report'],
+                                    color: _requestTypeColor['Report User'],
                                   )),
                             ],
                           ),
@@ -142,20 +145,20 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
                             children: [
                               Checkbox(
                                 value: _requestTypeFilter[
-                                    'Organizer Role Requests'],
+                                    'Organizer Role Request'],
                                 onChanged: (val) {
-                                  _requestTypeFilter[
-                                      'Organizer Role Requests'] = val!;
+                                  _requestTypeFilter['Organizer Role Request'] =
+                                      val!;
                                   onQueryChanged(_searchQuery);
                                 },
                                 fillColor: WidgetStateProperty.all(
                                     _requestTypeColor[
-                                        'Organizer Role Requests']),
+                                        'Organizer Role Request']),
                               ),
-                              Text('Completed',
+                              Text('Organizer Request',
                                   style: smallTextStyle.copyWith(
                                     color: _requestTypeColor[
-                                        'Organizer Role Requests'],
+                                        'Organizer Role Request'],
                                   )),
                             ],
                           ),
@@ -171,11 +174,11 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
                                   onQueryChanged(_searchQuery);
                                 },
                                 fillColor:
-                                    WidgetStateProperty.all(Colors.lightGreen),
+                                    WidgetStateProperty.all(Colors.grey),
                               ),
                               Text('Reviewed',
                                   style: smallTextStyle.copyWith(
-                                    color: Colors.lightGreen,
+                                    color: Colors.grey,
                                   )),
                             ],
                           ),
@@ -187,7 +190,7 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
           ],
         ),
       ),
-      requestPreview
+      Flexible(child: requestPreview),
     ]);
   }
 }
@@ -195,45 +198,69 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
 class RequestPreview extends StatelessWidget {
   const RequestPreview({
     super.key,
-    required this.requestId,
-    required this.requestDate,
-    required this.status,
-    required this.requestType,
+    required this.request,
+    required this.color,
   });
 
-  final String requestId;
-  final DateTime requestDate;
-  final String status;
-  final String requestType;
+  final BaseRequestModel request;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
-      padding: EdgeInsets.all(16.0),
-      margin: EdgeInsets.all(8.0),
+      height: 230,
+      padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        // color: const Color.fromARGB(255, 221, 221, 221),
+        gradient: LinearGradient(colors: [
+          color.withOpacity(0.4),
+          color,
+        ]),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Request ID: $requestId',
-            style: mediumTextStyle,
+          Row(
+            children: [
+              const Text(
+                'Request ID: ',
+                style: smallTextStyle,
+              ),
+              Text(request.id!, style: linkTextStyle.copyWith(decoration: TextDecoration.none, color: Colors.white),)
+            ],
           ),
-          Text(
-            'Request Date: ${formatDateTimeToString(requestDate)}',
-            style: mediumTextStyle,
+          const VerticalEmptySpace(),
+          Row(
+            children: [
+              const Text(
+                'Request Date: ',
+                style: smallTextStyle,
+              ),
+              Text(formatDateTimeToString(request.date), style: linkTextStyle.copyWith(decoration: TextDecoration.none, color: Colors.white),)
+            ],
           ),
-          Text(
-            'Status: $status',
-            style: mediumTextStyle,
+          const VerticalEmptySpace(),
+          Row(
+            children: [
+              const Text(
+                'Request Status: ',
+                style: smallTextStyle,
+              ),
+              Text(request.status, style: linkTextStyle.copyWith(decoration: TextDecoration.none, color: Colors.white),)
+            ],
           ),
-          Text(
-            'Request Type: $requestType',
-            style: mediumTextStyle,
+          const VerticalEmptySpace(),
+          Row(
+            children: [
+              const Text(
+                'Request Type: ',
+                style: smallTextStyle,
+              ),
+              Text(request.type, style: linkTextStyle.copyWith(decoration: TextDecoration.none, color: Colors.white),)
+            ],
           ),
           const VerticalEmptySpace(),
           Align(
@@ -241,7 +268,8 @@ class RequestPreview extends StatelessWidget {
             child: CustomActionButton(
               displayText: "View",
               actionOnPressed: () {
-                Navigator.of(context).pushNamed('/view_request', arguments: requestId);
+                Navigator.of(context)
+                    .pushNamed('/view_request', arguments: request);
               },
               width: 70,
               height: 40,

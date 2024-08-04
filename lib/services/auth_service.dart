@@ -107,9 +107,15 @@ class AuthService {
     }
   }
 
-  Future<void> banUser(ProfileModel targetUser, ReportModel banModel) async {
-    await ProfileRepository()
+  Future<bool> banUserUsingEmail(String email, ReportModel banModel) async {
+    ProfileModel targetUser = await ProfileProvider().getOthersProfile(email);
+    return await banUser(targetUser, banModel);
+  }
+
+  Future<bool> banUser(ProfileModel targetUser, ReportModel banModel) async {
+    bool status1 = await ProfileRepository()
         .updateProfile(targetUser.copyWith(status: AccountStatus.banned));
-    await RequestRepository().addRequest(banModel);
+    String status2 = await RequestRepository().addRequest(banModel);
+    return status1 && status2 != '';
   }
 }
