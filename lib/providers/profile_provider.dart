@@ -128,9 +128,15 @@ class ProfileProvider extends ChangeNotifier {
         return;
       }
       if (_profile!.lastLoggedInDate.isBefore(DateTime.now())) {
-        await _profileRepository.updateProfile(_profile!.copyWith(
+        bool status = await _profileRepository.updateProfile(_profile!.copyWith(
             creditScore: _profile!.creditScore + 1,
             lastLoggedInDate: formatDateTime(DateTime.now())));
+            if (status) {
+              _profile = _profile!.copyWith(
+            creditScore: _profile!.creditScore + 1,
+            lastLoggedInDate: formatDateTime(DateTime.now()));
+            notifyListeners();
+            }
       }
     }
   }
@@ -143,6 +149,8 @@ class ProfileProvider extends ChangeNotifier {
         } else {
           _profileRepository
               .updateProfile(_profile!.copyWith(status: AccountStatus.active));
+              _profile = _profile!.copyWith(status: AccountStatus.active);
+              notifyListeners();
         }
       }
     }
