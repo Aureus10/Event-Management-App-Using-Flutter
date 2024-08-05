@@ -76,7 +76,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     context: ctx)
               })
           .then((_) => {
-                // Navigator.of(context).pop()
                 Navigator.of(ctx).pushNamedAndRemoveUntil(
                     '/home', (Route<dynamic> route) => false)
               });
