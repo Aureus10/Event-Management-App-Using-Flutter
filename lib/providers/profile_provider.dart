@@ -25,7 +25,6 @@ class ProfileProvider extends ChangeNotifier {
   ProfileModel? get userProfile => _profile;
 
   Future<void> initializeProfile(String email) async {
-    // await _profileRepository.getProfile(email);
     _profile = await _profileRepository.getProfile(email);
     if (await isBanned()) {
       _profile = null;
