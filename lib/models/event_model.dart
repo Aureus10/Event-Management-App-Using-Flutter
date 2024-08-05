@@ -76,7 +76,8 @@ class EventModel {
         title: map['title'],
         description: map['description'],
         venue: map['venue'],
-        fees: (map['fees'] as int).toDouble(),
+        // fees: (map['fees'] as num).toDouble(),
+        fees: map['fees'],
         contact: map['contact'],
         type: EventType.values
             .firstWhere((e) => e.toString() == 'EventType.${map['type']}'),
