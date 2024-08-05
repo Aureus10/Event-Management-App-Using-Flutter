@@ -5,6 +5,7 @@ import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/screens/event_calendar.dart';
 import 'package:assignment/screens/manage_request_screen.dart';
 import 'package:assignment/screens/profile_screen.dart';
+import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/colors.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/widgets/components/custom_buttons.dart';
@@ -38,7 +39,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _selectedIndex = context.read<ProfileProvider>().index;
-    _profileFuture = context.read<ProfileProvider>().initializeProfile('New1234@gmail.com');
+    // _profileFuture = context.read<ProfileProvider>().initializeProfile('New1234@gmail.com');
+    _profileFuture = context.read<ProfileProvider>().initializeProfile(AuthService().currentUser!.email!);
     super.initState();
   }
 
@@ -232,7 +234,7 @@ class _HomeBodyState extends State<HomeBody> {
                                 ),
                                 Text(
                                   'Scheduled',
-                                  style: smallTextStyle.copyWith(
+                                  style: smallTextStyle.copyWith( 
                                       color: eventStatusColor[
                                           EventStatus.scheduled]),
                                 ),
@@ -252,7 +254,7 @@ class _HomeBodyState extends State<HomeBody> {
                                       eventStatusColor[EventStatus.ongoing]),
                                 ),
                                 Text('Ongoing',
-                                    style: smallTextStyle.copyWith(
+                                    style: smallTextStyle.copyWith( 
                                       color:
                                           eventStatusColor[EventStatus.ongoing],
                                     )),
@@ -272,7 +274,7 @@ class _HomeBodyState extends State<HomeBody> {
                                       eventStatusColor[EventStatus.completed]),
                                 ),
                                 Text('Completed',
-                                    style: smallTextStyle.copyWith(
+                                    style: smallTextStyle.copyWith( 
                                       color: eventStatusColor[
                                           EventStatus.completed],
                                     )),
@@ -293,7 +295,7 @@ class _HomeBodyState extends State<HomeBody> {
                                 ),
                                 Text(
                                   'Cancelled',
-                                  style: smallTextStyle.copyWith(
+                                  style: smallTextStyle.copyWith( 
                                       color: eventStatusColor[
                                           EventStatus.cancelled]),
                                 ),
@@ -314,7 +316,7 @@ class _HomeBodyState extends State<HomeBody> {
                                 ),
                                 Text(
                                   'Rescheduled',
-                                  style: smallTextStyle.copyWith(
+                                  style: smallTextStyle.copyWith(fontSize: 13, 
                                       color: eventStatusColor[
                                           EventStatus.rescheduled]),
                                 ),

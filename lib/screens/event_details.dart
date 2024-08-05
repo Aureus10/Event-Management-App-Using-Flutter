@@ -308,7 +308,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                                 child: Wrap(
                                   children: [
                                     Text(
-                                        'Sessions: ${event.datetime.length + 1}',
+                                        'Sessions: ${event.datetime.length}',
                                         style: linkTextStyle),
                                   ],
                                 ),

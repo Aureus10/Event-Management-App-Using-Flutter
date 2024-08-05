@@ -12,7 +12,7 @@ import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/components/password_field.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:assignment/widgets/loading.dart';
-import 'package:assignment/widgets/pickers/image_picker.dart';
+import 'package:assignment/widgets/pickers/profile_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -24,28 +24,35 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-  // final TextEditingController _pass = TextEditingController();
+
+  final TextEditingController _dateOfBirthController = TextEditingController();
+
+  @override
+  void dispose() {
+    _dateOfBirthController.dispose();
+    super.dispose();
+  }
 
   String? errorMessage = '';
   bool isFirstPage = true;
   final _formKey = GlobalKey<FormState>();
 
   // FOR TESTING PURPOSES ONLY
-  // String? _username = 'username';
-  // String _email = 'testing12@gmail.com';
-  // String? _password = 'sample123!P';
-  // int? _age = 12;
-  // Gender _gender = Gender.female;
-  // String? _contact = '1011101101';
-  // File? _image;
-
-  String? _username;
-  String _email = '';
-  String? _password;
-  String? _dateOfBirth;
+  String? _username = 'Golden Lim';
+  String _email = 'goldenlimjc@gmail.com';
+  String? _password = 'New1234!';
+  String? _dateOfBirth = '2003-08-05';
   Gender _gender = Gender.female;
-  String? _contact;
+  String? _contact = '0101237890';
   File? _image;
+
+  // String? _username;
+  // String _email = '';
+  // String? _password;
+  // String? _dateOfBirth;
+  // Gender _gender = Gender.female;
+  // String? _contact;
+  // File? _image;
 
   void signUp(BuildContext ctx) {
     try {
@@ -155,28 +162,40 @@ class _SignupScreenState extends State<SignupScreen> {
       const VerticalEmptySpace(
         height: 20,
       ),
-      CustomImagePicker(actionOnPressed: (image) {
-        setState(() {
-          _image = image;
-        });
-      }),
-      if (_image != null)
-        Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
-          width: 100,
-          height: 100,
-          child: Image.file(_image!, height: 200, width: 200),
-        ),
+      const Text(
+        'Profile Picture*',
+        style: mediumTextStyle,
+      ),
+      // CustomImagePicker(actionOnPressed: (image) {
+      //   setState(() {
+      //     _image = image;
+      //   });
+      // }),
+      // const VerticalEmptySpace(),
+      const VerticalEmptySpace(),
+      CustomProfileImagePicker(
+          actionOnPressed: (image) {
+            setState(() {
+              _image = image;
+            });
+          },
+          imageLink:
+              'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2Feve.jpg?alt=media&token=c723cad0-6ad9-4774-b8e8-1b803520bcbc'),
+      // if (_image != null)
+      //   Center(
+      //     child:
+      //     CircleAvatar(
+      //         backgroundImage: FileImage(_image!),
+      //         radius: 50,
+      //       ),
+      //   ),
       const VerticalEmptySpace(),
       const Text(
-        'Date of Birth',
+        'Date of Birth*',
         style: mediumTextStyle,
       ),
       TextFormField(
-        initialValue: _dateOfBirth,
-        onChanged: (value) {
-          _dateOfBirth = value;
-        },
+        controller: _dateOfBirthController,
         validator: dateValidator(),
         decoration: const InputDecoration(
           labelText: 'Date of Birth',
@@ -258,9 +277,46 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (pickedDate != null) {
       setState(() {
-        _dateOfBirth =
+        _dateOfBirthController.text =
             formatDateTimeToStringDate(pickedDate); // Format the date
       });
     }
+  }
+}
+
+class DateOfBirthPicker extends StatelessWidget {
+  const DateOfBirthPicker(
+      {super.key, required this.dateOfBirth, required this.dateOfBirthSetter});
+
+  final String? dateOfBirth;
+  final Function(String?) dateOfBirthSetter;
+
+  Future<void> _selectDate(BuildContext context) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(), // Initial date for the date picker
+      firstDate: DateTime(1924), // The earliest date that can be selected
+      lastDate: DateTime.now(), // The latest date that can be selected
+    );
+
+    if (pickedDate != null) {
+      dateOfBirthSetter(formatDateTimeToStringDate(pickedDate));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: dateOfBirth,
+      validator: dateValidator(),
+      decoration: const InputDecoration(
+        labelText: 'Date of Birth',
+        prefixIcon: Icon(Icons.calendar_today),
+      ),
+      readOnly: true,
+      onTap: () {
+        _selectDate(context);
+      },
+    );
   }
 }

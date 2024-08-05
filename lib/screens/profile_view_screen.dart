@@ -34,7 +34,7 @@ class ProfileViewScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      userProfile.toString().split('.').last,
+                      userProfile.type.toString().split('.').last,
                       style: smallTextStyle
                     ),
                   ],

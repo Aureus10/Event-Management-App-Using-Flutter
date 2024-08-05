@@ -72,7 +72,7 @@ String? Function(String?)? passwordValidator() => (String? value) {
       }
       if (!value.isValidPassword) {
         debugPrint(value);
-        return "Invalid Format (length of 8 with at least 1 lowercase letter, 1 uppercase letter, 1 numerical value, and 1 symbol)";
+        return "(length of 8 with at least 1 lowercase, 1 uppercase, 1 number, 1 symbol)";
       }
       return null;
     };

@@ -165,12 +165,12 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
                           Row(
                             children: [
                               Checkbox(
-                                value: _requestStatusFilter['Pending Review'],
+                                value: _requestStatusFilter['Reviewed'],
                                 onChanged: (val) {
-                                  _requestStatusFilter['Pending Review'] = val!;
-                                  _requestStatusFilter['Reviewed'] = !val;
-                                  _requestStatusFilter['Approved'] = !val;
-                                  _requestStatusFilter['Rejected'] = !val;
+                                  _requestStatusFilter['Pending Review'] = !val!;
+                                  _requestStatusFilter['Reviewed'] = val;
+                                  _requestStatusFilter['Approved'] = val;
+                                  _requestStatusFilter['Rejected'] = val;
                                   onQueryChanged(_searchQuery);
                                 },
                                 fillColor:

@@ -82,6 +82,11 @@ class RequestProvider extends ChangeNotifier {
     return await _requestRepostiory.updateRequest(request);
   }
 
+  Future<bool> updateStatus(BaseRequestModel request, String status) async {
+    request = request.copyWith(status: status);
+    return await _requestRepostiory.updateRequest(request);
+  }
+
   Future<BaseRequestModel> getRequest(String id) async {
     return await _requestRepostiory.getRequest(id);
   }
