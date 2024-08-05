@@ -16,10 +16,6 @@ class RequestRepository {
     return null;
   }
 
-  Future<BaseRequestModel> getRequest(String id) async =>
-      _requestCollection.doc(id).get().then((DocumentSnapshot doc) =>
-          BaseRequestModel.fromMap(doc.id, doc.data() as Map<String, dynamic>));
-
   Future<bool> getBannedStatus(String email) async {
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await _requestCollection
         .where('type', isEqualTo: 'Report')

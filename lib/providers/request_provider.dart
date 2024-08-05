@@ -87,8 +87,8 @@ class RequestProvider extends ChangeNotifier {
     return await _requestRepostiory.updateRequest(request);
   }
 
-  Future<BaseRequestModel> getRequest(String id) async {
-    return await _requestRepostiory.getRequest(id);
+  BaseRequestModel getRequest(String id) {
+    return _requestList.firstWhere((request) => request.id == id);
   }
 
   Future<bool> approveEventOrganizerRoleRequest(
@@ -100,5 +100,5 @@ class RequestProvider extends ChangeNotifier {
         .updateProfile(profile.copyWith(type: UserType.organizer));
     return status1 && status2;
   }
-  
+
 }
