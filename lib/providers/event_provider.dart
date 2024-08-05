@@ -66,16 +66,10 @@ class EventProvider extends ChangeNotifier {
         if (datetime.values.last.isBefore(DateTime.now())) {
           await _eventRepository
               .updateEvent(event.copyWith(status: EventStatus.completed));
-          // if (status) {
-          //   updateListener(event.copyWith(status: EventStatus.completed));
-          // }
         } else if (datetime.keys.first.isBefore(DateTime.now()) &&
             datetime.values.last.isAfter(DateTime.now())) {
           await _eventRepository
               .updateEvent(event.copyWith(status: EventStatus.ongoing));
-          // if (status) {
-          //   updateListener(event.copyWith(status: EventStatus.ongoing));
-          // }
         }
       }
     }
@@ -193,16 +187,4 @@ class EventProvider extends ChangeNotifier {
     return null;
   } 
 
-  // void updateListener(EventModel updatedEvent) {
-
-  //   int index = _eventList.indexWhere((event) => event.id == updatedEvent.id);
-
-  //   if (index != -1) {
-  //     _eventList[index] = updatedEvent;
-  //     notifyListeners();
-  //   }
-
-  // }
-
-  // Stream<List<EventModel>> getEventsByStatus(EventStatus status) => _eventRepository.getEventsByStatus(status);
 }

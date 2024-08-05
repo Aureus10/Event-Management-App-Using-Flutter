@@ -100,13 +100,5 @@ class RequestProvider extends ChangeNotifier {
         .updateProfile(profile.copyWith(type: UserType.organizer));
     return status1 && status2;
   }
-
-  // Future<void> updateListener(BaseRequestModel updatedRequest) async {
-  //   int index = _requestList.indexWhere((event) => event.id == updatedRequest.id);
-
-  //   if (index != -1) {
-  //     _requestList[index] = updatedRequest;
-  //     notifyListeners();
-  //   }
-  // }
+  
 }
