@@ -53,9 +53,4 @@ class RequestRepository {
           .then((_) => true)
           .catchError((_) => false);
 
-  Future<bool> deleteRequest(String id) async => _requestCollection
-      .doc(id)
-      .delete()
-      .then((_) => true)
-      .catchError((_) => false);
 }
