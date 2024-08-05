@@ -50,11 +50,12 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCOYIXx3ws2KD4HM4rLYDWGHQsgzrKUVdY',
-    appId: '1:132450195525:android:66befeb82afaeda2bb6b2c',
-    messagingSenderId: '132450195525',
-    projectId: 'mae-assignment-a88ea',
-    storageBucket: 'mae-assignment-a88ea.appspot.com',
+    apiKey: 'AIzaSyA1F3UyRFsOOsHWA0Lmu-TK7Gwt9v7rHR4',
+    appId: '1:411542835831:android:b515fcd2e92c219c0aac72',
+    messagingSenderId: '411542835831',
+    projectId: 'mae-assignment-f43cb',
+    databaseURL: 'https://mae-assignment-f43cb-default-rtdb.asia-southeast1.firebasedatabase.app',
+    storageBucket: 'mae-assignment-f43cb.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
