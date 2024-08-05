@@ -16,9 +16,6 @@ class AuthService {
 
   String? get userEmail => _firebaseAuth.currentUser?.email;
 
-  DateTime? get lastLoggedInDate =>
-      _firebaseAuth.currentUser?.metadata.lastSignInTime;
-
   Future<String> signInWithEmailAndPassword({
     required String email,
     required String password,
