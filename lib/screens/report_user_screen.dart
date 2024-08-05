@@ -46,6 +46,18 @@ class _ReportUserScreenState extends State<ReportUserScreen> {
   }
 
   Future<void> _submitReport() async {
+
+    if (targetUser['email']! == ProfileProvider().userProfile!.email) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Don\'t try to report yourself!'),
+          ),
+        );
+      Navigator.of(context).pop();
+      return;
+    }
+
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -120,7 +132,9 @@ class _ReportUserScreenState extends State<ReportUserScreen> {
                   _validateUserEmail(value);
                 },
               ),
+              if (targetUser['control'] != null)
               const VerticalEmptySpace(height: 20),
+              if (targetUser['control'] != null)
               TextFormField(
                 readOnly: true,
                 initialValue: targetUser['username'] ?? '',

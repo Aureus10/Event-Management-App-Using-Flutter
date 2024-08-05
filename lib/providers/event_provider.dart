@@ -80,7 +80,7 @@ class EventProvider extends ChangeNotifier {
   }
 
   Future<void> joinEvent(EventModel event) async {
-    String? email = AuthService().userEmail;
+    String? email = AuthService().currentUser!.email;
 
     if (email != null) {
       List<String>? participants = event.participants;
@@ -98,7 +98,7 @@ class EventProvider extends ChangeNotifier {
   }
 
   Future<void> leaveEvent(EventModel event) async {
-    String? email = AuthService().userEmail;
+    String? email = AuthService().currentUser!.email;
 
     if (email != null) {
       List<String>? participants = event.participants;
