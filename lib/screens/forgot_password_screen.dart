@@ -53,12 +53,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     return Scaffold(
       appBar: const HeaderBar(headerTitle: 'Forgot Password', menuRequired: false),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 28, 10, 18),
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 18),
         child: 
         Form(
           key: _formKey,
           child: 
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Reset Password',
@@ -73,15 +74,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   email = value;
                 }),
             const VerticalEmptySpace(),
-            CustomActionButton(
+            
+          ],
+        ),
+      ),),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: CustomActionButton(
                 displayText: 'Send Link to Email', actionOnPressed: () {
                   if (_formKey.currentState!.validate()) {
                     sendResetEmail();
                   }
-                })
-          ],
+                }),
         ),
-      ),),
+      ),
     );
   }
 }

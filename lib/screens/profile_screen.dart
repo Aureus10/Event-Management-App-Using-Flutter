@@ -170,7 +170,7 @@ class ProfileScreen extends StatelessWidget {
                 Expanded(
                   child: TextFormField(
                     readOnly: true,
-                    initialValue: userProfile.gender.toString(),
+                    initialValue: userProfile.gender.toString().split('.').last,
                     decoration: const InputDecoration(
                       labelText: 'Gender',
                     ),
