@@ -89,9 +89,8 @@ class EventModel {
         imageLink: map['imageLink'],
         isAnonymous: map['isAnonymous'],
         status: EventStatus.values
-            .firstWhere((e) => e.toString() == 'EventStatus.${map['status']}'),
+            .firstWhere((stat) => stat.toString() == 'EventStatus.${map['status']}'),
         materials: Map<String, String>.from(map['materials']),
-        // materials: {},
         participants: List<String>.from(map['participants']),
       );
 
