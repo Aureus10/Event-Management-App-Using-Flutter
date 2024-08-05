@@ -38,21 +38,21 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // FOR TESTING PURPOSES ONLY
-  String? _username = 'Golden Lim';
-  String _email = 'goldenlimjc@gmail.com';
-  String? _password = 'New1234!';
-  String? _dateOfBirth = '2003-08-05';
-  Gender _gender = Gender.female;
-  String? _contact = '0101237890';
-  File? _image;
-
-  // String? _username;
-  // String _email = '';
-  // String? _password;
-  // String? _dateOfBirth;
+  // String? _username = 'Golden Lim';
+  // String _email = 'goldenlimjc@gmail.com';
+  // String? _password = 'New1234!';
+  // String? _dateOfBirth = '2003-08-05';
   // Gender _gender = Gender.female;
-  // String? _contact;
+  // String? _contact = '0101237890';
   // File? _image;
+
+  String? _username;
+  String _email = '';
+  String? _password;
+  String? _dateOfBirth;
+  Gender _gender = Gender.female;
+  String? _contact;
+  File? _image;
 
   void signUp(BuildContext ctx) {
     try {
