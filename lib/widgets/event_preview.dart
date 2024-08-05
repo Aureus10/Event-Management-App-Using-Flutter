@@ -31,8 +31,8 @@ class EventPreview extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: const Image(
-                        image: AssetImage('assets/images/logo.png'),
+                      child: Image(
+                        image: NetworkImage(event.imageLink),
                         width: 88,
                         height: 88,
                       ),

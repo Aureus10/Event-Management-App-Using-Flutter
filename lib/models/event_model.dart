@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -74,7 +76,7 @@ class EventModel {
         title: map['title'],
         description: map['description'],
         venue: map['venue'],
-        fees: map['fees'],
+        fees: (map['fees'] as int).toDouble(),
         contact: map['contact'],
         type: EventType.values
             .firstWhere((e) => e.toString() == 'EventType.${map['type']}'),
