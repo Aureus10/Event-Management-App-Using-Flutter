@@ -6,10 +6,6 @@ class EventRepository {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllEvents() =>
       _eventCollection.snapshots();
-  
-  Future<EventModel> getEvent(String id) =>
-          _eventCollection.doc(id).get().then((DocumentSnapshot doc) =>
-          EventModel.fromMap(id, doc.data() as Map<String, dynamic>));
 
   Future<String> addEvent(EventModel event) async {
     return _eventCollection
@@ -28,4 +24,5 @@ class EventRepository {
       .delete()
       .then((_) => true)
       .catchError((_) => false);
+      
 }
