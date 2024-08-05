@@ -93,7 +93,6 @@ class EventProvider extends ChangeNotifier {
           .updateEvent(event.copyWith(participants: participants));
       if (status) {
         ProfileProvider().joinEvent(event.id!);
-        // updateListener(event.copyWith(participants: participants));
       }
     }
   }
@@ -109,9 +108,6 @@ class EventProvider extends ChangeNotifier {
       if (await ProfileProvider().leaveEvent(email)) {
         await _eventRepository
             .updateEvent(event.copyWith(participants: participants));
-        // if (status) {
-        //   updateListener(event.copyWith(participants: participants));
-        // }
       }
     }
   }
