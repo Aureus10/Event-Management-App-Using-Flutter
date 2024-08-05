@@ -36,7 +36,7 @@ class _BanUserScreenState extends State<BanUserScreen> {
             status: 'Approved',
             type: 'Report User',
             description: _reasons,
-            supportingDocs: {})).then((status) {
+            supportingDocs: {}), false).then((status) {
       Navigator.of(context).pop();
       if (status) {
         Navigator.of(context).pop();

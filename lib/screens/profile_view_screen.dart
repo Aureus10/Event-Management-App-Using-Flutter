@@ -128,7 +128,7 @@ class ProfileViewScreen extends StatelessWidget {
                           else
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pushNamed('/report_user', arguments: userProfile);
+                                Navigator.of(context).pushNamed('/report_user', arguments: {'control': '', 'email': userProfile.email, 'username': userProfile.username});
                               },
                               child: const Text('Report User', style: TextStyle(color: Colors.red)),
                             ),

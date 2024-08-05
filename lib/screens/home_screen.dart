@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late Future<void> _profileFuture;
 
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   void _onSelected(int index) { 
     Provider.of<ProfileProvider>(context, listen: false).changeIndex(index);
@@ -39,13 +39,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _selectedIndex = context.read<ProfileProvider>().index;
-    // _profileFuture = context.read<ProfileProvider>().initializeProfile('New1234@gmail.com');
     _profileFuture = context.read<ProfileProvider>().initializeProfile(AuthService().currentUser!.email!);
     super.initState();
   }
 
   @override
   void didChangeDependencies() async {
+    
     super.didChangeDependencies();
   }
 
@@ -71,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ];
     return Scaffold(
       appBar: const HeaderBar(
+        customAction: null,
         headerTitle: 'GesT EMS',
         menuRequired: true,
       ),

@@ -129,24 +129,29 @@ class EventProvider extends ChangeNotifier {
   }
 
   Future<EventModel?> editEvent(EventModel event,
-      {Map<String, dynamic>? materials,
+      {Map<String, String>? materials,
+      Map<String, File>? newMaterials,
       List<Map<DateTime, DateTime>>? sessions,
       File? image}) async {
-        bool status1 = false;
-        bool status2 = false;
-        bool status3 = false;
+    bool status1 = false;
+    bool status2 = false;
+    bool status3 = false;
     if (materials != null) {
       Map<String, String> eventMaterials = {};
       if (materials.isNotEmpty) {
         for (String fileName in materials.keys) {
-          if (materials[fileName] is File) {
+          eventMaterials[fileName] = materials[fileName]!;
+        }
+      }
+
+      if (newMaterials != null) {
+        if (newMaterials.isNotEmpty) {
+          for (String fileName in newMaterials.keys) {
             String? link = await FileProvider.uploadEventFile(
-                materials[fileName]!, event.id!, fileName);
+                newMaterials[fileName]!, event.id!, fileName);
             if (link != null) {
               eventMaterials[fileName] = link;
             }
-          } else {
-            eventMaterials[fileName] = materials[fileName];
           }
         }
       }
@@ -154,7 +159,8 @@ class EventProvider extends ChangeNotifier {
       status1 = true;
     }
     if (sessions != null) {
-      event = event.copyWith(datetime: sessions, status: EventStatus.rescheduled);
+      event =
+          event.copyWith(datetime: sessions, status: EventStatus.rescheduled);
       status2 = true;
     }
     if (image != null) {
@@ -165,7 +171,7 @@ class EventProvider extends ChangeNotifier {
       }
     }
     bool status = false;
-    if (status1 && status2 && status3) {
+    if (status1 || status2 || status3) {
       status = await _eventRepository.updateEvent(event);
     }
     if (status) {
@@ -181,6 +187,5 @@ class EventProvider extends ChangeNotifier {
       return event;
     }
     return null;
-  } 
-
+  }
 }

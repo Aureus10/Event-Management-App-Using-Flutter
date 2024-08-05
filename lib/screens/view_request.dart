@@ -19,6 +19,8 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
   //Import the data initially
 
   late BaseRequestModel _request;
+
+  int? durationDisplayed;
   // int _requestId = 001;
   // String _date = '18/5/2024';
   // String _status = 'Pending Review';
@@ -60,7 +62,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
     }
   }
 
-  Future<void> updateStatus(String status) async {
+  Future<void> updateStatus(String status, {int? duration}) async {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -74,8 +76,8 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
       }
       ReportModel report = _request as ReportModel;
       AuthService()
-          .banUserUsingEmail(report.reportedUserEmail,
-              report.copyWith(status: 'Approved', days: 7))
+          .banUserUsingEmail(
+              report.reportedUserEmail, report.copyWith(status: 'Approved', days: durationDisplayed, date: DateTime.now()), true)
           .then((status) {
         Navigator.of(context).pop();
         if (status) {
@@ -106,7 +108,6 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
           );
         }
       });
-      
     } else {
       RequestProvider()
           .updateRequest(_request.copyWith(status: status))
@@ -216,7 +217,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
             if (_request is ReportModel)
               Row(children: [
                 const Text(
-                  'Reporting user: ',
+                  'Reporting: ',
                   style: mediumTextStyle,
                 ),
                 const SizedBox(width: 8),
@@ -240,6 +241,10 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
                     if (duration != null) {
                       _request =
                           (_request as ReportModel).copyWith(days: duration);
+                      debugPrint((_request as ReportModel).days.toString());
+                      setState(() {
+                        durationDisplayed = duration;
+                      });
                     }
                   },
                   child: Row(
@@ -249,7 +254,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
                         size: 24,
                       ),
                       Text(
-                        '${(_request as ReportModel).days.toString()} days',
+                        '${durationDisplayed ?? 0} days',
                         style: linkTextStyle
                             .copyWith(
                                 decoration: TextDecoration.none, fontSize: 20)

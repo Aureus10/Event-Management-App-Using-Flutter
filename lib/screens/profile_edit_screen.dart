@@ -69,24 +69,34 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
         builder: (context) => const Center(
               child: CircularProgressIndicator(),
             ));
-    await Provider.of<ProfileProvider>(context, listen: false)
-        .updateProfile(profile, image: _image)
-        .then((status) => {
-              Navigator.of(context).pop(),
-              if (status)
-                {
-                  Navigator.of(context).pop(),
-                }
-              else
-                {
-                  ScaffoldMessenger.of(context).clearSnackBars(),
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Profile Update Failed!'),
-                    ),
-                  ),
-                }
-            });
+    await AuthService()
+        .reauthenticateUser(_currentPasswordController.text)
+        .then((status) async {
+      if (status) {
+        await AuthService()
+            .changePassword(_newPasswordController.text.trim())
+            .then((_) async {
+          await Provider.of<ProfileProvider>(context, listen: false)
+              .updateProfile(profile, image: _image)
+              .then((status) => {
+                    Navigator.of(context).pop(),
+                    if (status)
+                      {
+                        Navigator.of(context).pop(),
+                      }
+                    else
+                      {
+                        ScaffoldMessenger.of(context).clearSnackBars(),
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Profile Update Failed!'),
+                          ),
+                        ),
+                      }
+                  });
+        });
+      }
+    });
   }
 
   @override
@@ -150,15 +160,6 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 ],
               ),
               const VerticalEmptySpace(),
-              // TextFormField(
-              //   controller: _emailController,
-              //   decoration: const InputDecoration(
-              //     labelText: 'Email Address',
-              //   ),
-              //   keyboardType: TextInputType.emailAddress,
-              //   validator: emailValidator(),
-              // ),
-              // const VerticalEmptySpace(),
               TextFormField(
                 controller: _contactController,
                 decoration: const InputDecoration(
@@ -223,10 +224,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 displayText: 'Update',
                 actionOnPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    if (await AuthService()
-                        .reauthenticateUser(_confirmPasswordController.text)) {
-                      _editProfile();
-                    }
+                    _editProfile();
                   }
                 },
               ),

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/file_provider.dart';
+import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/form_vadidator.dart';
@@ -15,6 +16,7 @@ import 'package:assignment/widgets/loading.dart';
 import 'package:assignment/widgets/pickers/profile_image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -76,8 +78,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     context: ctx)
               })
           .then((_) => {
-                Navigator.of(ctx).pushNamedAndRemoveUntil(
-                    '/home', (Route<dynamic> route) => false)
+                // AuthService().signInWithEmailAndPassword(email: _email, password: _password!),
+                // debugPrint(AuthService().currentUser?.email),
+                    Navigator.of(ctx).pushReplacementNamed(
+                        '/authSignUp')
               });
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(ctx).clearSnackBars();
