@@ -63,6 +63,7 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
   @override
   Widget build(BuildContext context) {
     Widget requestPreview;
+    onQueryChanged(_searchQuery);
     if (_searchResults.isNotEmpty) {
       requestPreview = ListView.builder(
           itemCount: _searchResults.length,
@@ -74,7 +75,6 @@ class _ManageRequestScreenState extends State<ManageRequestScreen> {
           });
     } else {
       requestPreview = const Text("No requests found");
-      onQueryChanged(_searchQuery);
     }
     return Column(children: [
       IntrinsicHeight(

@@ -3,7 +3,6 @@ import 'package:assignment/providers/event_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/theme/fonts.dart';
 import 'package:assignment/utils/formatter.dart';
-import 'package:assignment/widgets/components/empty_space.dart';
 import 'package:assignment/widgets/header_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
