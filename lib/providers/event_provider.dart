@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:assignment/models/event_model.dart';
+import 'package:assignment/models/profile_model.dart';
 import 'package:assignment/providers/file_provider.dart';
 import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/repositories/event_repository.dart';
@@ -79,36 +80,28 @@ class EventProvider extends ChangeNotifier {
     return events.firstWhere((event) => event.id == id);
   }
 
-  Future<void> joinEvent(EventModel event) async {
-    String? email = AuthService().currentUser!.email;
-
-    if (email != null) {
-      List<String>? participants = event.participants;
-      if (participants != null) {
-        participants.add(email);
-      } else {
-        participants = [email];
-      }
-      bool status = await _eventRepository
-          .updateEvent(event.copyWith(participants: participants));
-      if (status) {
-        ProfileProvider().joinEvent(event.id!);
-      }
+  Future<void> joinEvent(EventModel event, ProfileModel user) async {
+    List<String>? participants = event.participants;
+    if (participants != null) {
+      participants.add(user.email);
+    } else {
+      participants = [user.email];
+    }
+    bool status = await _eventRepository
+        .updateEvent(event.copyWith(participants: participants));
+    if (status) {
+      ProfileProvider().joinEvent(event.id!, user);
     }
   }
 
-  Future<void> leaveEvent(EventModel event) async {
-    String? email = AuthService().currentUser!.email;
-
-    if (email != null) {
-      List<String>? participants = event.participants;
-      if (participants != null) {
-        participants.remove(email);
-      }
-      if (await ProfileProvider().leaveEvent(email)) {
-        await _eventRepository
-            .updateEvent(event.copyWith(participants: participants));
-      }
+  Future<void> leaveEvent(EventModel event, ProfileModel user) async {
+    List<String>? participants = event.participants;
+    if (participants != null) {
+      participants.remove(user.email);
+    }
+    if (await ProfileProvider().leaveEvent(event.id!, user)) {
+      await _eventRepository
+          .updateEvent(event.copyWith(participants: participants));
     }
   }
 

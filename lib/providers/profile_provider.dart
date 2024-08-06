@@ -71,34 +71,34 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> joinEvent(String eventID) async {
+  Future<void> joinEvent(String eventID, ProfileModel user) async {
     List<String> eventHistory;
-    if (_profile!.eventHistory == null) {
+    if (user.eventHistory == null) {
       eventHistory = [];
     } else {
-      eventHistory = _profile!.eventHistory!;
+      eventHistory = user.eventHistory!;
     }
     eventHistory.add(eventID);
     bool status = await _profileRepository
-        .updateProfile(_profile!.copyWith(eventHistory: eventHistory));
+        .updateProfile(user.copyWith(eventHistory: eventHistory));
     if (status) {
-      _profile = _profile!.copyWith(eventHistory: eventHistory);
+      _profile = user.copyWith(eventHistory: eventHistory);
       notifyListeners();
     }
   }
 
-  Future<bool> leaveEvent(String eventID) async {
-    if (_profile!.eventHistory == null) {
+  Future<bool> leaveEvent(String eventID, ProfileModel user) async {
+    if (user.eventHistory == null) {
       return false;
     }
-    List<String> eventHistory = _profile!.eventHistory!;
+    List<String> eventHistory = user.eventHistory!;
     eventHistory.remove(eventID);
 
-    bool status = await _profileRepository.updateProfile(_profile!.copyWith(
-        eventHistory: eventHistory, creditScore: _profile!.creditScore - 1));
+    bool status = await _profileRepository.updateProfile(user.copyWith(
+        eventHistory: eventHistory, creditScore: user.creditScore - 1));
     if (status) {
-      _profile = _profile!.copyWith(
-          eventHistory: eventHistory, creditScore: _profile!.creditScore - 1);
+      _profile = user.copyWith(
+          eventHistory: eventHistory, creditScore: user.creditScore - 1);
       notifyListeners();
     }
     return status;
