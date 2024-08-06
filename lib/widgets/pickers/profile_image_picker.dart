@@ -6,9 +6,10 @@ import 'package:image_picker/image_picker.dart';
 
 class CustomProfileImagePicker extends StatefulWidget {
   const CustomProfileImagePicker(
-      {super.key, required this.actionOnPressed, required this.imageLink});
+      {super.key, required this.actionOnPressed, this.imageFile, required this.imageLink});
 
   final Function(File?) actionOnPressed;
+  final File? imageFile;
   final String imageLink;
 
   @override
@@ -32,6 +33,9 @@ class _CustomProfileImagePickerState extends State<CustomProfileImagePicker> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.imageFile != null) {
+      _selectedImage = widget.imageFile;
+    }
     ImageProvider<Object> profilePic;
     if (_selectedImage == null) {
       profilePic = NetworkImage(widget.imageLink);

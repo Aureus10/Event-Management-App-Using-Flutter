@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum UserType { user, organizer, administrator }
@@ -48,7 +47,7 @@ class ProfileModel {
         creditScore: map['creditScore'],
         imageLink: map['imageLink'],
         status: AccountStatus.values.firstWhere(
-            (e) => e.toString() == 'AccountStatus.${map['status']}'),
+            (status) => status.toString() == 'AccountStatus.${map['status']}'),
         lastLoggedInDate: (map['lastLoggedInDate'] as Timestamp).toDate(),
       );
 

@@ -84,11 +84,12 @@ class RequestProvider extends ChangeNotifier {
 
   Future<bool> updateStatus(BaseRequestModel request, String status) async {
     request = request.copyWith(status: status);
+    notifyListeners();
     return await _requestRepostiory.updateRequest(request);
   }
 
-  Future<BaseRequestModel> getRequest(String id) async {
-    return await _requestRepostiory.getRequest(id);
+  BaseRequestModel getRequest(String id) {
+    return _requestList.firstWhere((request) => request.id == id);
   }
 
   Future<bool> approveEventOrganizerRoleRequest(
@@ -101,12 +102,4 @@ class RequestProvider extends ChangeNotifier {
     return status1 && status2;
   }
 
-  // Future<void> updateListener(BaseRequestModel updatedRequest) async {
-  //   int index = _requestList.indexWhere((event) => event.id == updatedRequest.id);
-
-  //   if (index != -1) {
-  //     _requestList[index] = updatedRequest;
-  //     notifyListeners();
-  //   }
-  // }
 }

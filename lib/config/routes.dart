@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 final Map<String, WidgetBuilder> routesConfig = {
   '/': (_) => const SplashArt(),
   '/auth': (_) => const AuthStateWidget(),
+  '/authSignUp': (_) => const AuthStateSignUpWidget(),
   '/login': (_) => const LoginScreen(),
   '/signup': (_) => const SignupScreen(),
   '/forgotPassword': (_) => const ForgotPasswordScreen(),

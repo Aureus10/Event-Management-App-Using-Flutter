@@ -326,11 +326,15 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               }
             });
           }),
-      const VerticalEmptySpace(
-        height: 24,
-      ),
-      Center(
-        child: CustomActionButton(
+      // const VerticalEmptySpace(
+      //   height: 24,
+      // ),
+      // Center(
+      //   child: ,
+      // ),
+      // const VerticalEmptySpace(),
+    ];
+    Widget firstPageButton = CustomActionButton(
             displayText: 'Continue',
             actionOnPressed: () {
               setState(() {
@@ -352,10 +356,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                   _currentPage++;
                 }
               });
-            }),
-      ),
-      const VerticalEmptySpace(),
-    ];
+            });
     //-------------------------------------Second Page-----------------------------------------//
     List<Widget> secondPage = [
       Text(
@@ -418,11 +419,15 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
           actionOnChanged: (value) {
             _contact = value;
           }),
-      const VerticalEmptySpace(
-        height: 24,
-      ),
-      Center(
-        child: CustomActionButton(
+      // const VerticalEmptySpace(
+      //   height: 24,
+      // ),
+      // Center(
+      //   child: ,
+      // ),
+      // const VerticalEmptySpace(),
+    ];
+    Widget secondPageButton = CustomActionButton(
             displayText: 'Continue',
             actionOnPressed: () {
               if (_formKey.currentState!.validate()) {
@@ -430,10 +435,7 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                   _currentPage++;
                 });
               }
-            }),
-      ),
-      const VerticalEmptySpace(),
-    ];
+            });
     //-------------------------------Third Page------------------------------//
     List<Widget> thirdPage = [
       Text(
@@ -554,11 +556,11 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                   );
                 }),
       ),
-      const VerticalEmptySpace(
-        height: 24,
-      ),
-      Center(
-        child: CustomActionButton(
+      // const VerticalEmptySpace(
+      //   height: 84,
+      // ),
+    ];
+    Widget thirdPageButton = CustomActionButton(
             displayText: 'Organize',
             actionOnPressed: () {
               if (_image != null) {
@@ -571,10 +573,9 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
                   ),
                 );
               }
-            }),
-      ),
-    ];
+            });
     List<List<Widget>> pages = [firstPage, secondPage, thirdPage];
+    List<Widget> pagesButtons = [firstPageButton, secondPageButton, thirdPageButton];
     return Scaffold(
         appBar: HeaderBar(
           headerTitle: 'Organize Event',
@@ -599,6 +600,13 @@ class _OrganizeEventScreenState extends State<OrganizeEventScreen> {
               ),
             ),
           ),
-        ));
+        ),
+        bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: pagesButtons[_currentPage],
+        ),
+      ),
+        );
   }
 }

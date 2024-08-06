@@ -1,4 +1,5 @@
 import 'package:assignment/models/request_model.dart';
+import 'package:assignment/providers/profile_provider.dart';
 import 'package:assignment/providers/request_provider.dart';
 import 'package:assignment/services/auth_service.dart';
 import 'package:assignment/theme/fonts.dart';
@@ -19,6 +20,8 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
   //Import the data initially
 
   late BaseRequestModel _request;
+
+  int? durationDisplayed;
   // int _requestId = 001;
   // String _date = '18/5/2024';
   // String _status = 'Pending Review';
@@ -60,7 +63,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
     }
   }
 
-  Future<void> updateStatus(String status) async {
+  Future<void> updateStatus(String status, {int? duration}) async {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -73,9 +76,24 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
         return;
       }
       ReportModel report = _request as ReportModel;
+      if (report.reportedUserEmail == ProfileProvider().userProfile!.email) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Don\'t try to ban yourself!'),
+          ),
+        );
+        Navigator.of(context).pop();
+        return;
+      }
       AuthService()
-          .banUserUsingEmail(report.reportedUserEmail,
-              report.copyWith(status: 'Approved', days: 7))
+          .banUserUsingEmail(
+              report.reportedUserEmail,
+              report.copyWith(
+                  status: 'Approved',
+                  days: durationDisplayed,
+                  date: DateTime.now()),
+              true)
           .then((status) {
         Navigator.of(context).pop();
         if (status) {
@@ -106,7 +124,6 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
           );
         }
       });
-      
     } else {
       RequestProvider()
           .updateRequest(_request.copyWith(status: status))
@@ -148,9 +165,10 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
               updateStatus('Approved Ban');
             }),
         CustomActionButton(
-            displayText: 'Reject Report',
+            displayText: 'Reject',
             width: 150,
             height: 60,
+            color: Colors.red,
             actionOnPressed: () {
               updateStatus('Rejected');
             }),
@@ -216,7 +234,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
             if (_request is ReportModel)
               Row(children: [
                 const Text(
-                  'Reporting user: ',
+                  'Reporting: ',
                   style: mediumTextStyle,
                 ),
                 const SizedBox(width: 8),
@@ -240,6 +258,10 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
                     if (duration != null) {
                       _request =
                           (_request as ReportModel).copyWith(days: duration);
+                      debugPrint((_request as ReportModel).days.toString());
+                      setState(() {
+                        durationDisplayed = duration;
+                      });
                     }
                   },
                   child: Row(
@@ -249,7 +271,7 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
                         size: 24,
                       ),
                       Text(
-                        '${(_request as ReportModel).days.toString()} days',
+                        '${durationDisplayed ?? 0} days',
                         style: linkTextStyle
                             .copyWith(
                                 decoration: TextDecoration.none, fontSize: 20)
@@ -332,12 +354,15 @@ class _ViewRequestScreenState extends State<ViewRequestScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: updateStatusButtons),
-      ),
+      bottomNavigationBar:
+          _request.status == 'Approved' || _request.status == 'Reviewed'
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: updateStatusButtons),
+                ),
     );
   }
 

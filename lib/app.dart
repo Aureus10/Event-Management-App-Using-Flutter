@@ -44,3 +44,24 @@ class AuthStateWidget extends StatelessWidget {
     );
   }
 }
+
+class AuthStateSignUpWidget extends StatelessWidget {
+  const AuthStateSignUpWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final authService = AuthService();
+    return StreamBuilder(
+      stream: authService.authStateChanges,
+      builder: ((context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const SizedBox.shrink();
+        }
+        if (snapshot.hasData) {
+          return const HomeScreen();
+        }
+        return const SizedBox.shrink();
+      }),
+    );
+  }
+}

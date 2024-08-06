@@ -25,7 +25,6 @@ class ProfileProvider extends ChangeNotifier {
   ProfileModel? get userProfile => _profile;
 
   Future<void> initializeProfile(String email) async {
-    // await _profileRepository.getProfile(email);
     _profile = await _profileRepository.getProfile(email);
     if (await isBanned()) {
       _profile = null;
@@ -104,23 +103,6 @@ class ProfileProvider extends ChangeNotifier {
     }
     return status;
   }
-
-  // Future<bool> deductCreditScore() async {
-  //   try {
-  //     bool status = false;
-  //     if (_profile != null) {
-  //       status = await _profileRepository.updateProfile(
-  //           _profile!.copyWith(creditScore: _profile!.creditScore - 1));
-  //     }
-  //     if (status) {
-  //       _profile = _profile!.copyWith(creditScore: _profile!.creditScore - 1);
-  //       notifyListeners();
-  //     }
-  //     return true;
-  //   } on Exception catch (_) {
-  //     return false;
-  //   }
-  // }
 
   Future<void> updateCreditScore() async {
     if (_profile != null) {

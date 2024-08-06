@@ -16,9 +16,6 @@ class AuthService {
 
   String? get userEmail => _firebaseAuth.currentUser?.email;
 
-  DateTime? get lastLoggedInDate =>
-      _firebaseAuth.currentUser?.metadata.lastSignInTime;
-
   Future<String> signInWithEmailAndPassword({
     required String email,
     required String password,
@@ -92,7 +89,7 @@ class AuthService {
 
   Future<bool> reauthenticateUser(String password) async {
     try {
-      if (currentUser != null) {
+      if (currentUser == null) {
         return false;
       }
       AuthCredential credential = EmailAuthProvider.credential(
@@ -107,15 +104,29 @@ class AuthService {
     }
   }
 
-  Future<bool> banUserUsingEmail(String email, ReportModel banModel) async {
-    ProfileModel targetUser = await ProfileProvider().getOthersProfile(email);
-    return await banUser(targetUser, banModel);
+  Future<void> changePassword(String password) async {
+    await currentUser?.updatePassword(password);
   }
 
-  Future<bool> banUser(ProfileModel targetUser, ReportModel banModel) async {
+  Future<bool> banUserUsingEmail(String email, ReportModel banModel, bool isExisting) async {
+    ProfileModel targetUser = await ProfileProvider().getOthersProfile(email);
+    return await banUser(targetUser, banModel, isExisting);
+  }
+
+  Future<bool> banUser(ProfileModel targetUser, ReportModel banModel, bool isExisting) async {
     bool status1 = await ProfileRepository()
         .updateProfile(targetUser.copyWith(status: AccountStatus.banned));
-    String status2 = await RequestRepository().addRequest(banModel);
+    String status2; 
+        if (isExisting) {
+          if (await RequestRepository().updateRequest(banModel)) {
+            status2 = 'succcess';
+          } else {
+            status2 = 'failed';
+          }
+        } else {
+            status2 = await RequestRepository().addRequest(banModel);
+
+        }
     return status1 && status2 != '';
   }
 }

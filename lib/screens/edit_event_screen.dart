@@ -23,7 +23,8 @@ class _EditEventScreenState extends State<EditEventScreen> {
   File? newImage;
 
   late List<Map<DateTime, DateTime>> sessions;
-  late Map<String, dynamic> materials;
+  late Map<String, String> materials;
+  Map<String, File> newMaterials = {};
 
   bool isSessionsChanged = false;
   bool isMaterialsChanged = false;
@@ -40,6 +41,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(25, 35, 25, 0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: sessions.length * 110,
@@ -162,7 +164,8 @@ class _EditEventScreenState extends State<EditEventScreen> {
                       isMaterialsChanged = true;
                       for (int i = 0; i < names.length; i++) {
                         setState(() {
-                          materials[names[i]!] = files[i]!;
+                          newMaterials[names[i]!] = files[i]!;
+                          materials[names[i]!] = names[i]!;
                         });
                       }
                     }
@@ -226,39 +229,45 @@ class _EditEventScreenState extends State<EditEventScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          CustomActionButton(
-              displayText: 'Update Event',
-              width: 150,
-              height: 60,
-              actionOnPressed: () {
-                if (sessions.last.isEmpty) {
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please select datetime for all sessions.'),
-                    ),
-                  );
-                } else {
-                  _updateEvent(event);
-                }
-              }),
-          CustomActionButton(
-              displayText: 'Cancel Event',
-              width: 150,
-              height: 60,
-              color: Colors.red,
-              actionOnPressed: () async {
-                bool? status = await _showConfirmationDialog(context);
-                if (status != null) {
-                  if (status) {
-                    _cancelEvent(event);
-                  }
-                }
-              }),
-        ],
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              CustomActionButton(
+                  displayText: 'Update',
+                  width: 120,
+                  height: 60,
+                  actionOnPressed: () {
+                    if (sessions.last.isEmpty) {
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content:
+                              Text('Please select datetime for all sessions.'),
+                        ),
+                      );
+                    } else {
+                      _updateEvent(event);
+                    }
+                  }),
+              CustomActionButton(
+                  displayText: 'Cancel',
+                  width: 120,
+                  height: 60,
+                  color: Colors.red,
+                  actionOnPressed: () async {
+                    bool? status = await _showConfirmationDialog(context);
+                    if (status != null) {
+                      if (status) {
+                        _cancelEvent(event);
+                      }
+                    }
+                  }),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -274,6 +283,7 @@ class _EditEventScreenState extends State<EditEventScreen> {
     EventProvider()
         .editEvent(event,
             materials: isMaterialsChanged ? materials : null,
+            newMaterials: isMaterialsChanged ? newMaterials : null,
             sessions: isSessionsChanged ? sessions : null,
             image: newImage)
         .then((updatedEvent) => {
@@ -302,11 +312,11 @@ class _EditEventScreenState extends State<EditEventScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text(
-            'Confirm Deletion',
+            'Confirm Cancellation',
             style: largeTextStyle,
           ),
           content: const Text(
-            'Are you sure you want to delete this item?',
+            'Are you sure you want to cancel the event?',
             style: mediumTextStyle,
           ),
           actions: <Widget>[
@@ -342,28 +352,23 @@ class _EditEventScreenState extends State<EditEventScreen> {
               child: CircularProgressIndicator(),
             ));
 
-    EventProvider()
-        .editEvent(event,
-            materials: isMaterialsChanged ? materials : null,
-            sessions: isSessionsChanged ? sessions : null,
-            image: newImage)
-        .then((updatedEvent) => {
+    EventProvider().cancelEvent(event).then((updatedEvent) => {
+          Navigator.of(context).pop(),
+          if (updatedEvent != null)
+            {
               Navigator.of(context).pop(),
-              if (updatedEvent != null)
-                {
-                  Navigator.of(context).pop(),
-                  Navigator.of(context).pushReplacementNamed('/event_details',
-                      arguments: updatedEvent)
-                }
-              else
-                {
-                  ScaffoldMessenger.of(context).clearSnackBars(),
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Event Cancellation Failed!'),
-                    ),
-                  ),
-                }
-            });
+              Navigator.of(context).pushReplacementNamed('/event_details',
+                  arguments: updatedEvent)
+            }
+          else
+            {
+              ScaffoldMessenger.of(context).clearSnackBars(),
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Event Cancellation Failed!'),
+                ),
+              ),
+            }
+        });
   }
 }

@@ -237,7 +237,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                       child: CircleAvatar(
                         radius: 40,
                         backgroundImage: _organizerImage == null
-                            ? null
+                            ? const NetworkImage('https://firebasestorage.googleapis.com/v0/b/mae-assignment-f43cb.appspot.com/o/profile%2Fprofile_placeholder.jpeg?alt=media&token=029415b7-5f68-4361-aee0-53be1d212d60')
                             : NetworkImage(_organizerImage!),
                       ),
                     ),
@@ -480,7 +480,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
             const SizedBox(height: 8.0),
             if (!event.isAnonymous && _participantsImage != null)
               SizedBox(
-                height: (40 * _participantsImage!.length).toDouble(),
+                height: (70 * _participantsImage!.length).toDouble(),
                 child: ListView.builder(
                     itemCount: _participantsImage!.length,
                     physics: const NeverScrollableScrollPhysics(),

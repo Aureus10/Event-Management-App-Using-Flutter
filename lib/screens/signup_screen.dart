@@ -24,7 +24,6 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
-
   final TextEditingController _dateOfBirthController = TextEditingController();
 
   @override
@@ -38,21 +37,21 @@ class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
 
   // FOR TESTING PURPOSES ONLY
-  // String? _username = 'Golden Lim';
-  // String _email = 'goldenlimjc@gmail.com';
-  // String? _password = 'New1234!';
-  // String? _dateOfBirth = '2003-08-05';
-  // Gender _gender = Gender.female;
-  // String? _contact = '0101237890';
-  // File? _image;
-
-  String? _username;
-  String _email = '';
-  String? _password;
-  String? _dateOfBirth;
+  String? _username = 'Golden Lim';
+  String _email = 'goldenlimjc@gmail.com';
+  String? _password = 'New1234!';
+  String? _dateOfBirth = '2003-08-05';
   Gender _gender = Gender.female;
-  String? _contact;
+  String? _contact = '0101237890';
   File? _image;
+
+  // String? _username;
+  // String _email = '';
+  // String? _password;
+  // String? _dateOfBirth;
+  // Gender _gender = Gender.female;
+  // String? _contact;
+  // File? _image;
 
   void signUp(BuildContext ctx) {
     try {
@@ -77,8 +76,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     context: ctx)
               })
           .then((_) => {
-                Navigator.of(ctx).pushNamedAndRemoveUntil(
-                    '/home', (Route<dynamic> route) => false)
+                // AuthService().signInWithEmailAndPassword(email: _email, password: _password!),
+                // debugPrint(AuthService().currentUser?.email),
+                    Navigator.of(ctx).pushReplacementNamed(
+                        '/authSignUp')
               });
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(ctx).clearSnackBars();
@@ -144,16 +145,16 @@ class _SignupScreenState extends State<SignupScreen> {
       const VerticalEmptySpace(
         height: 50,
       ),
-      CustomActionButton(
-          displayText: 'Next',
-          actionOnPressed: () {
-            if (_formKey.currentState!.validate()) {
-              setState(() {
-                isFirstPage = false;
-              });
-            }
-          }),
     ];
+    Widget firstPageButton = CustomActionButton(
+        displayText: 'Next',
+        actionOnPressed: () {
+          if (_formKey.currentState!.validate()) {
+            setState(() {
+              isFirstPage = false;
+            });
+          }
+        });
     List<Widget> secondPage = [
       const Text(
         'Signup Step 2 out of 2',
@@ -166,12 +167,6 @@ class _SignupScreenState extends State<SignupScreen> {
         'Profile Picture*',
         style: mediumTextStyle,
       ),
-      // CustomImagePicker(actionOnPressed: (image) {
-      //   setState(() {
-      //     _image = image;
-      //   });
-      // }),
-      // const VerticalEmptySpace(),
       const VerticalEmptySpace(),
       CustomProfileImagePicker(
           actionOnPressed: (image) {
@@ -179,16 +174,9 @@ class _SignupScreenState extends State<SignupScreen> {
               _image = image;
             });
           },
+          imageFile: _image,
           imageLink:
-              'https://firebasestorage.googleapis.com/v0/b/mae-assignment-a88ea.appspot.com/o/images%2Feve.jpg?alt=media&token=c723cad0-6ad9-4774-b8e8-1b803520bcbc'),
-      // if (_image != null)
-      //   Center(
-      //     child:
-      //     CircleAvatar(
-      //         backgroundImage: FileImage(_image!),
-      //         radius: 50,
-      //       ),
-      //   ),
+              'https://firebasestorage.googleapis.com/v0/b/mae-assignment-f43cb.appspot.com/o/profile%2Fprofile_placeholder.jpeg?alt=media&token=029415b7-5f68-4361-aee0-53be1d212d60'),
       const VerticalEmptySpace(),
       const Text(
         'Date of Birth*',
@@ -217,23 +205,23 @@ class _SignupScreenState extends State<SignupScreen> {
       const VerticalEmptySpace(
         height: 40,
       ),
-      CustomActionButton(
-          displayText: 'Sign Up',
-          actionOnPressed: () {
-            if (_formKey.currentState!.validate()) {
-              if (_image == null) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Please select an image.'),
-                  ),
-                );
-              } else {
-                signUp(context);
-              }
-            }
-          }),
     ];
+    Widget secondPageButton = CustomActionButton(
+        displayText: 'Sign Up',
+        actionOnPressed: () {
+          if (_formKey.currentState!.validate()) {
+            if (_image == null) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Please select an image.'),
+                ),
+              );
+            } else {
+              signUp(context);
+            }
+          }
+        });
     return Scaffold(
       appBar: HeaderBar(
         headerTitle: 'Create New Account',
@@ -262,6 +250,12 @@ class _SignupScreenState extends State<SignupScreen> {
                       children: isFirstPage ? firstPage : secondPage,
                     ))
               ]),
+        ),
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: isFirstPage ? firstPageButton : secondPageButton,
         ),
       ),
     );

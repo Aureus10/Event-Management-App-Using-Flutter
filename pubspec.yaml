@@ -38,4 +38,5 @@ flutter:
         - asset: assets/fonts/Fredoka-SemiBold.ttf
   assets:
     - assets/images/logo.png
+    - assets/images/profile_placeholder.jpeg
   uses-material-design: true

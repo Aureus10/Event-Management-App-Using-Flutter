@@ -20,6 +20,17 @@ class _BanUserScreenState extends State<BanUserScreen> {
 
   Future<void> _banUser(ProfileModel targetUser) async {
 
+    if (targetUser.email == ProfileProvider().userProfile!.email) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Don\'t try to ban yourself!'),
+          ),
+        );
+      Navigator.of(context).pop();
+      return;
+    }
+
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -36,7 +47,7 @@ class _BanUserScreenState extends State<BanUserScreen> {
             status: 'Approved',
             type: 'Report User',
             description: _reasons,
-            supportingDocs: {})).then((status) {
+            supportingDocs: {}), false).then((status) {
       Navigator.of(context).pop();
       if (status) {
         Navigator.of(context).pop();
